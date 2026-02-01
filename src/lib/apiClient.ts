@@ -36,7 +36,7 @@ apiClient.interceptors.response.use(
         // Handle global errors here (e.g., 401 Unauthorized)
         if (error.response && error.response.status === 401) {
             console.error('Unauthorized access - redirecting to login...'); 
-            redirect("/login");
+            redirect("/");
         }
         return Promise.reject(error);
     }
