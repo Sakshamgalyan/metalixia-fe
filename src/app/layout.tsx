@@ -14,8 +14,8 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Metalixia",
-  description: "Dashboard by Metalixia(Saksham Galyan)",
+  title: "Metalixia Admin Dashboard",
+  description: "Electronic Metal Refining Works Factory - Administration Panel",
 };
 
 
