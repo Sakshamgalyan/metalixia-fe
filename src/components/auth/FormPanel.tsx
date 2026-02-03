@@ -9,7 +9,7 @@ const FormPanel = ({ activeTab, setActiveTab }: { activeTab: "login" | "signup";
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
-        className="relative min-h-screen w-full flex flex-col items-center justify-center p-2 sm:p-4 md:p-4 lg:p-4 bg-white"
+        className="relative min-h-screen w-full flex flex-col items-center justify-center p-2 sm:p-2 md:p-2 lg:p-2 bg-white"
     >
         {/* Tab switcher */}
         <div className="w-full max-w-[80%] mb-4 sm:mb-4">
@@ -27,7 +27,7 @@ const FormPanel = ({ activeTab, setActiveTab }: { activeTab: "login" | "signup";
         </div>
 
         {/* Form container */}
-        <div className="w-full max-w-[80%]">
+        <div className="w-full max-w-[95%] md:max-w-[80%]">
                 <Card variant="elevated">
                 <AnimatePresence mode="wait">
                     {activeTab === "login" ? (

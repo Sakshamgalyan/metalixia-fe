@@ -3,36 +3,36 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle } from "lucide-react";
-import Typography from "../UI/Typography";
-import Input from "../UI/Input";
-import Button from "../UI/Button";
-import { API_BASE_URL } from "@/lib/constants";
-import ApiClient from "@/lib/apiClient";
+import Typography from "@/components/UI/Typography";
+import Input from "@/components/UI/Input";
+import Button from "@/components/UI/Button";
+import { loginApi } from "@/ApiClient/Auth/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/store";
+import { setError, getProfile } from "@/slices/Auth";
 
 const LoginModal = () => {
+    const dispatch = useDispatch<AppDispatch>();
+    const { error } = useSelector((state: RootState) => state.auth);
     const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState("");
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError("");
+    const handleSubmit = async () => {
         setIsLoading(true);
         try {
-            const response = await ApiClient.post(`${API_BASE_URL}/auth/login`, {
-                identifier,
-                password,
-            });
-            
-        } catch (error) {
-            setError("An error occurred during login");
-        }
-
-        setTimeout(() => {
+            const response = await loginApi({ identifier, password });
+            if (response.status === "success") {
+                await dispatch(getProfile()).unwrap();
+            } else {
+                dispatch(setError(response.message));   
+            }
+        } catch (error: any) {
+            dispatch(setError(error?.message || "An error occurred during login"));
+        } finally {
             setIsLoading(false);
-        }, 1500);
+        }
     };
 
     return (
@@ -50,17 +50,6 @@ const LoginModal = () => {
                     Sign in to access the factory management system
                 </Typography>
             </div>
-
-            {error && (
-                <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2"
-                >
-                    <AlertCircle className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" />
-                    <p className="text-sm text-red-700">{error}</p>
-                </motion.div>
-            )}
 
             <div className="space-y-4">
                 <Input

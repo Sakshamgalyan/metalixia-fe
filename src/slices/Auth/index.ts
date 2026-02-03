@@ -1,34 +1,15 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import ApiClient from '@/lib/apiClient';
-
-interface User {
-    id: string;
-    email: string;
-    name?: string;
-}
-
-interface AuthState {
-    user: User | null;
-    isAuthenticated: boolean;
-    loading: boolean;
-    error: string | null;
-}
-
-const initialState: AuthState = {
-    user: null,
-    isAuthenticated: false,
-    loading: false,
-    error: null,
-};
+import { User, initialState } from '@/slices/Auth/type';
+import { logoutApi, profileApi } from '@/ApiClient/Auth/auth';
 
 export const getProfile = createAsyncThunk(
     'auth/getProfile',
     async (_, { rejectWithValue }) => {
         try {
-            const response = await ApiClient.get<User>('/auth/profile');
+            const response = await profileApi();
             return response;
         } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || 'Failed to fetch profile');
+            return rejectWithValue(error?.message || 'Failed to fetch profile');
         }
     }
 );
@@ -37,10 +18,10 @@ export const logout = createAsyncThunk(
     'auth/logout',
     async (_, { rejectWithValue }) => {
         try {
-            await ApiClient.post('/auth/logout');
+            await logoutApi();
             return null;
         } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || 'Logout failed');
+            return rejectWithValue(error?.message || 'Logout failed');
         }
     }
 );
