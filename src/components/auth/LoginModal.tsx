@@ -7,13 +7,14 @@ import Typography from "@/components/UI/Typography";
 import Input from "@/components/UI/Input";
 import Button from "@/components/UI/Button";
 import { loginApi } from "@/ApiClient/Auth/auth";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState, AppDispatch } from "@/store";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/store";
 import { setError, getProfile } from "@/slices/Auth";
+import { useRouter } from "next/navigation";
 
 const LoginModal = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { error } = useSelector((state: RootState) => state.auth);
+    const router = useRouter();
     const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -25,6 +26,7 @@ const LoginModal = () => {
             const response = await loginApi({ identifier, password });
             if (response.status === "success") {
                 await dispatch(getProfile()).unwrap();
+                router.push("/");
             } else {
                 dispatch(setError(response.message));   
             }

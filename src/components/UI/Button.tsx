@@ -1,10 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "link";
+    variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "link" | "menu" | "tertiary";
     size?: "sm" | "md" | "lg";
     fullWidth?: boolean;
     leftIcon?: React.ReactNode;
@@ -48,6 +47,13 @@ const Button = ({
         lg: "text-lg gap-2",
     };
 
+    // Menu variant has left alignment and padding
+    const menuSizeClasses = {
+        sm: "text-sm py-2 px-4 gap-3",
+        md: "text-base py-2.5 px-4 gap-3",
+        lg: "text-lg py-3 px-4 gap-3",
+    };
+
     // Variant styles
     const variantClasses = {
         primary: "bg-gradient-to-r from-[#707FDD] to-[#5a67c4] hover:from-[#5a67c4] hover:to-[#4a57b4] text-white shadow-md hover:shadow-lg",
@@ -56,6 +62,8 @@ const Button = ({
         ghost: "bg-transparent hover:bg-slate-100 text-slate-700",
         danger: "bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-md hover:shadow-lg",
         link: "bg-transparent p-0 hover:underline underline-offset-2",
+        menu: "bg-transparent hover:bg-slate-50 text-slate-700 font-normal justify-start",
+        tertiary: "bg-transparent hover:bg-slate-50 text-slate-600 font-medium justify-start hover:text-slate-900 border border-transparent",
     };
 
     // Icon sizes based on button size
@@ -73,11 +81,11 @@ const Button = ({
 
     // Combined classes
     const baseClasses = `
-        inline-flex items-center justify-center
+        inline-flex items-center ${variant === 'menu' || variant === 'tertiary' ? 'justify-start' : 'justify-center'}
         font-semibold
         ${variant === 'link' ? '' : 'rounded-lg'}
         transition-all duration-300
-        ${variant === 'link' ? linkSizeClasses[size] : sizeClasses[size]}
+        ${variant === 'link' ? linkSizeClasses[size] : (variant === 'menu' || variant === 'tertiary') ? menuSizeClasses[size] : sizeClasses[size]}
         ${!hasCustomColors ? variantClasses[variant] : ''}
         ${variant === 'secondary' && !hasCustomColors ? '' : ''}
         ${fullWidth ? "w-full" : ""}
@@ -110,14 +118,12 @@ const Button = ({
     const { onDrag, onDragStart, onDragEnd, ...safeProps } = restProps as any;
 
     return (
-        <motion.button
+        <button
             type={type}
             onClick={handleClick}
             disabled={isDisabled}
             className={baseClasses}
             style={Object.keys(customStyles).length > 0 ? customStyles : undefined}
-            whileHover={!isDisabled ? { scale: 1.02 } : {}}
-            whileTap={!isDisabled ? { scale: 0.98 } : {}}
             {...safeProps}
         >
             {/* Loading Spinner */}
@@ -143,7 +149,7 @@ const Button = ({
                     {rightIcon}
                 </span>
             )}
-        </motion.button>
+        </button>
     );
 };
 
