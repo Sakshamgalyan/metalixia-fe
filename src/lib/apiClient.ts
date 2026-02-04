@@ -2,13 +2,10 @@ import axios, {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
-  InternalAxiosRequestConfig,
 } from "axios";
-import { redirect } from "next/navigation";
 
-// Create Axios instance
 const apiClient: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000", // Fallback
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000",
   timeout: 10000,
   withCredentials: true,
   headers: {
@@ -16,65 +13,45 @@ const apiClient: AxiosInstance = axios.create({
   },
 });
 
-// Request Interceptor
-apiClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    // TODO: Replace with actual token retrieval logic from your auth store
-    const token = localStorage.getItem("accessToken");
-
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
-
-// Response Interceptor
 apiClient.interceptors.response.use(
-  (response: AxiosResponse) => {
-    return response;
-  },
+  (response: AxiosResponse) => response,
   (error) => {
-    // Handle global errors here (e.g., 401 Unauthorized)
-    if (error.response && error.response.status === 401) {
-      console.error("Unauthorized access - redirecting to login...");
-      redirect("/");
+    if (error.response?.status === 401) {
+      if (typeof window !== "undefined") {
+        window.location.href = "/sign-in";
+      }
     }
     return Promise.reject(error);
-  },
+  }
 );
 
-// Generic API Client methods
 const ApiClient = {
   get: <T>(url: string, config?: AxiosRequestConfig): Promise<T> =>
-    apiClient.get<T>(url, config).then((response) => response.data),
+    apiClient.get<T>(url, config).then((res) => res.data),
 
   post: <T>(
     url: string,
     data?: unknown,
-    config?: AxiosRequestConfig,
+    config?: AxiosRequestConfig
   ): Promise<T> =>
-    apiClient.post<T>(url, data, config).then((response) => response.data),
+    apiClient.post<T>(url, data, config).then((res) => res.data),
 
   put: <T>(
     url: string,
     data?: unknown,
-    config?: AxiosRequestConfig,
+    config?: AxiosRequestConfig
   ): Promise<T> =>
-    apiClient.put<T>(url, data, config).then((response) => response.data),
+    apiClient.put<T>(url, data, config).then((res) => res.data),
 
   patch: <T>(
     url: string,
     data?: unknown,
-    config?: AxiosRequestConfig,
+    config?: AxiosRequestConfig
   ): Promise<T> =>
-    apiClient.patch<T>(url, data, config).then((response) => response.data),
+    apiClient.patch<T>(url, data, config).then((res) => res.data),
 
   delete: <T>(url: string, config?: AxiosRequestConfig): Promise<T> =>
-    apiClient.delete<T>(url, config).then((response) => response.data),
+    apiClient.delete<T>(url, config).then((res) => res.data),
 };
 
 export default ApiClient;
