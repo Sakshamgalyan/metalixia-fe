@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Unbounded, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Layout/Providers";
+import { cookies } from "next/headers";
 
 const unbounded = Unbounded({
   variable: "--font-unbounded",
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -29,7 +30,9 @@ export default function RootLayout({
       <body
         className={`${unbounded.variable} ${dmSans.variable} antialiased`}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

@@ -12,6 +12,9 @@ export interface AccordionProps {
     contentClassName?: string;
     align?: "left" | "right";
     offset?: number;
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+    showArrow?: boolean;
 }
 
 const Accordion = ({
@@ -22,10 +25,23 @@ const Accordion = ({
     contentClassName = "",
     align = "right",
     offset = 8,
+    open,
+    onOpenChange,
+    showArrow = true,
 }: AccordionProps) => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [internalOpen, setInternalOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
+
+    const isControlled = open !== undefined;
+    const isOpen = isControlled ? open : internalOpen;
+
+    const handleOpenChange = (newOpen: boolean) => {
+        if (!isControlled) {
+            setInternalOpen(newOpen);
+        }
+        onOpenChange?.(newOpen);
+    };
 
     // Close when clicking outside
     useEffect(() => {
@@ -34,7 +50,9 @@ const Accordion = ({
                 containerRef.current &&
                 !containerRef.current.contains(event.target as Node)
             ) {
-                setIsOpen(false);
+                if (isOpen) {
+                    handleOpenChange(false);
+                }
             }
         };
 
@@ -42,22 +60,32 @@ const Accordion = ({
             document.addEventListener("mousedown", handleClickOutside);
             return () => document.removeEventListener("mousedown", handleClickOutside);
         }
-    }, [isOpen]);
+    }, [isOpen, onOpenChange, isControlled]);
 
     return (
         <div ref={containerRef} className={`relative ${className}`}>
             {/* Trigger */}
-            <button
-                type="button"
-                onClick={() => setIsOpen(!isOpen)}
-                className={`flex items-center gap-2 ${triggerClassName}`}
+            {/* Trigger */}
+            <div
+                role="button"
+                tabIndex={0}
+                onClick={() => handleOpenChange(!isOpen)}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleOpenChange(!isOpen);
+                    }
+                }}
+                className={`flex items-center gap-2 cursor-pointer ${triggerClassName}`}
             >
                 {trigger}
-                <ChevronDown
-                    className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
-                        }`}
-                />
-            </button>
+                {showArrow && (
+                    <ChevronDown
+                        className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+                            }`}
+                    />
+                )}
+            </div>
 
             {/* Dropdown Content */}
             <AnimatePresence>

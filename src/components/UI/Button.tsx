@@ -133,7 +133,7 @@ const Button = ({
 
             {/* Left Icon */}
             {!isLoading && leftIcon && (
-                <span className={`${iconSizes[size]} flex-shrink-0`}>
+                <span className={`${iconSizes[size]} flex-shrink-0 flex items-center justify-center`}>
                     {leftIcon}
                 </span>
             )}
@@ -145,7 +145,7 @@ const Button = ({
 
             {/* Right Icon */}
             {!isLoading && rightIcon && (
-                <span className={`${iconSizes[size]} flex-shrink-0`}>
+                <span className={`${iconSizes[size]} flex-shrink-0 flex items-center justify-center`}>
                     {rightIcon}
                 </span>
             )}

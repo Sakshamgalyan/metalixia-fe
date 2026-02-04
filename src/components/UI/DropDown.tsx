@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, X, Search, Check, Loader2 } from "lucide-react";
-import { createPortal } from "react-dom";
 
 export interface DropdownOption {
     value: string;
@@ -37,7 +36,7 @@ export interface DropdownProps {
     placement?: "bottom" | "top";
     alignment?: "left" | "right";
     showSelectAll?: boolean;
-    usePortal?: boolean;
+    dropdownWidth?: string | number;
 }
 
 const Dropdown = ({
@@ -65,13 +64,13 @@ const Dropdown = ({
     placement = "bottom",
     alignment = "left",
     showSelectAll = false,
-    usePortal = false,
+    dropdownWidth = "100%",
 }: DropdownProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
     const containerRef = useRef<HTMLDivElement>(null);
-    const dropdownRef = useRef<HTMLDivElement>(null);
+    const menuRef = useRef<HTMLDivElement>(null);
+    const searchInputRef = useRef<HTMLInputElement>(null);
 
     // Size variants
     const sizeClasses = {
@@ -85,55 +84,24 @@ const Dropdown = ({
     const selectedOptions = options.filter(opt => selectedValues.includes(opt.value));
 
     // Filter options based on search
-    const filteredOptions = searchable
-        ? options.filter(opt =>
+    const filteredOptions = useMemo(() => {
+        if (!searchable || !searchQuery) return options;
+        return options.filter(opt =>
             opt.label.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-        : options;
+        );
+    }, [options, searchable, searchQuery]);
 
-    // Handle dropdown open/close
     const toggleDropdown = () => {
         if (disabled || loading) return;
 
         if (!isOpen) {
             setIsOpen(true);
             onOpen?.();
-            updateDropdownPosition();
+            setTimeout(() => searchInputRef.current?.focus(), 100);
         } else {
             setIsOpen(false);
             onClose?.();
             setSearchQuery("");
-        }
-    };
-
-    // Update position for portal with viewport detection
-    const updateDropdownPosition = () => {
-        if (containerRef.current) {
-            const rect = containerRef.current.getBoundingClientRect();
-            const viewportHeight = window.innerHeight;
-            const viewportWidth = window.innerWidth;
-            const dropdownHeight = 300; // Approximate max height (max-h-60 ~ 240px + padding)
-
-            // Determine optimal placement (top or bottom)
-            const spaceBelow = viewportHeight - rect.bottom;
-            const spaceAbove = rect.top;
-            const shouldPlaceAbove = spaceBelow < dropdownHeight && spaceAbove > spaceBelow;
-
-            // Determine optimal alignment (left or right)
-            const spaceRight = viewportWidth - rect.left;
-            const shouldAlignRight = spaceRight < rect.width && rect.right > rect.width;
-
-            if (usePortal) {
-                setDropdownPosition({
-                    top: shouldPlaceAbove ? rect.top - 4 : rect.bottom + 4,
-                    left: shouldAlignRight ? rect.right : rect.left,
-                    width: rect.width,
-                });
-            }
-
-            // Store computed placement for non-portal mode
-            (containerRef.current as any)._computedPlacement = shouldPlaceAbove ? "top" : "bottom";
-            (containerRef.current as any)._computedAlignment = shouldAlignRight ? "right" : "left";
         }
     };
 
@@ -183,12 +151,13 @@ const Dropdown = ({
             if (
                 containerRef.current &&
                 !containerRef.current.contains(event.target as Node) &&
-                dropdownRef.current &&
-                !dropdownRef.current.contains(event.target as Node)
+                (!menuRef.current || !menuRef.current.contains(event.target as Node))
             ) {
-                setIsOpen(false);
-                onClose?.();
-                setSearchQuery("");
+                if (isOpen) {
+                    setIsOpen(false);
+                    onClose?.();
+                    setSearchQuery("");
+                }
             }
         };
 
@@ -197,19 +166,6 @@ const Dropdown = ({
             return () => document.removeEventListener("mousedown", handleClickOutside);
         }
     }, [isOpen, onClose]);
-
-    // Update position on scroll/resize when using portal
-    useEffect(() => {
-        if (isOpen && usePortal) {
-            const handleUpdate = () => updateDropdownPosition();
-            window.addEventListener("scroll", handleUpdate, true);
-            window.addEventListener("resize", handleUpdate);
-            return () => {
-                window.removeEventListener("scroll", handleUpdate, true);
-                window.removeEventListener("resize", handleUpdate);
-            };
-        }
-    }, [isOpen, usePortal]);
 
     // Render selected value display
     const renderSelectedValue = () => {
@@ -265,187 +221,167 @@ const Dropdown = ({
         );
     };
 
-    // Render dropdown menu
-    const renderDropdownMenu = () => {
-        // Get computed placement or fallback to props
-        const computedPlacement = (containerRef.current as any)?._computedPlacement || placement;
-        const computedAlignment = (containerRef.current as any)?._computedAlignment || alignment;
-
-        const menu = (
-            <motion.div
-                ref={dropdownRef}
-                initial={{ opacity: 0, y: computedPlacement === "bottom" ? -10 : 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: computedPlacement === "bottom" ? -10 : 10 }}
-                transition={{ duration: 0.2 }}
-                className={`bg-white border border-slate-300 rounded-lg shadow-xl overflow-hidden z-50 ${usePortal ? "fixed" : "absolute"
-                    } ${computedPlacement === "bottom" ? "top-full mt-1" : "bottom-full mb-1"} ${computedAlignment === "left" ? "left-0" : "right-0"
-                    }`}
-                style={
-                    usePortal
-                        ? {
-                            top: computedPlacement === "bottom" ? dropdownPosition.top : "auto",
-                            bottom: computedPlacement === "top" ? `calc(100vh - ${dropdownPosition.top}px)` : "auto",
-                            left: computedAlignment === "left" ? dropdownPosition.left : "auto",
-                            right: computedAlignment === "right" ? `calc(100vw - ${dropdownPosition.left}px)` : "auto",
-                            width: dropdownPosition.width,
-                            maxHeight: "calc(100vh - 16px)",
-                        }
-                        : {
-                            width: "100%",
-                            maxHeight: "calc(100vh - 16px)",
-                        }
-                }
-            >
-                {/* Search box */}
-                {searchable && (
-                    <div className="p-2 border-b border-slate-200">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                            <input
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder={searchPlaceholder}
-                                className="w-full pl-9 pr-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-400"
-                                onClick={(e) => e.stopPropagation()}
-                            />
-                        </div>
+    const MenuContent = (
+        <motion.div
+            ref={menuRef}
+            initial={{ opacity: 0, y: placement === "bottom" ? -10 : 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: placement === "bottom" ? -10 : 10 }}
+            transition={{ duration: 0.2 }}
+            className="bg-white border border-slate-300 rounded-lg shadow-xl overflow-hidden flex flex-col absolute"
+            style={{
+                top: placement === 'bottom' ? '100%' : 'auto',
+                bottom: placement === 'top' ? '100%' : 'auto',
+                left: alignment === 'right' ? 'auto' : 0,
+                right: alignment === 'right' ? 0 : 'auto',
+                width: dropdownWidth,
+                maxHeight: "300px",
+                zIndex: 9999, // Enforce high z-index
+                marginTop: placement === 'bottom' ? 4 : 0,
+                marginBottom: placement === 'top' ? 4 : 0,
+            }}
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
+        >
+            {/* Search box */}
+            {searchable && (
+                <div className="p-2 border-b border-slate-200">
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <input
+                            ref={searchInputRef}
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder={searchPlaceholder}
+                            className="w-full pl-9 pr-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-400"
+                            onClick={(e) => e.stopPropagation()}
+                        />
                     </div>
-                )}
-
-                {/* Select All */}
-                {multiple && showSelectAll && (
-                    <div className="p-2 border-b border-slate-200">
-                        <button
-                            type="button"
-                            onClick={handleSelectAll}
-                            className="w-full px-3 py-2 text-sm text-left hover:bg-slate-50 rounded flex items-center gap-2 transition-colors"
-                        >
-                            <div className={`w-4 h-4 border-2 rounded flex items-center justify-center ${selectedValues.length === options.length
-                                ? 'border-[#707FDD] bg-[#707FDD]'
-                                : 'border-slate-300'
-                                }`}>
-                                {selectedValues.length === options.length && (
-                                    <Check className="w-3 h-3 text-white" />
-                                )}
-                            </div>
-                            <span className="font-medium">Select All</span>
-                        </button>
-                    </div>
-                )}
-
-                {/* Options list */}
-                <div className="max-h-60 overflow-y-auto">
-                    {filteredOptions.length === 0 ? (
-                        <div className="px-4 py-8 text-center text-sm text-slate-500">
-                            No options found
-                        </div>
-                    ) : (
-                        filteredOptions.map((option) => {
-                            const isSelected = selectedValues.includes(option.value);
-                            return (
-                                <button
-                                    key={option.value}
-                                    type="button"
-                                    onClick={() => handleOptionClick(option)}
-                                    disabled={option.disabled}
-                                    className={`w-full px-4 py-2.5 text-left flex items-center gap-3 transition-colors ${option.disabled
-                                        ? "opacity-50 cursor-not-allowed"
-                                        : "hover:bg-slate-50 cursor-pointer"
-                                        } ${isSelected ? "bg-slate-50" : ""}`}
-                                >
-                                    {multiple && (
-                                        <div className={`w-4 h-4 border-2 rounded flex items-center justify-center flex-shrink-0 ${isSelected
-                                            ? 'border-[#707FDD] bg-[#707FDD]'
-                                            : 'border-slate-300'
-                                            }`}>
-                                            {isSelected && <Check className="w-3 h-3 text-white" />}
-                                        </div>
-                                    )}
-                                    {option.icon && (
-                                        <span className="flex-shrink-0">{option.icon}</span>
-                                    )}
-                                    <span
-                                        className={`flex-1 truncate ${isSelected ? "font-medium" : ""
-                                            }`}
-                                        style={isSelected ? { color: '#707FDD' } : {}}
-                                    >
-                                        {option.label}
-                                    </span>
-                                    {!multiple && isSelected && (
-                                        <Check className="w-4 h-4 flex-shrink-0" style={{ color: '#707FDD' }} />
-                                    )}
-                                </button>
-                            );
-                        })
-                    )}
                 </div>
-            </motion.div>
-        );
+            )}
 
-        return usePortal && typeof document !== "undefined"
-            ? createPortal(menu, document.body)
-            : menu;
-    };
+            {/* Select All */}
+            {multiple && showSelectAll && (
+                <div className="p-2 border-b border-slate-200">
+                    <button
+                        type="button"
+                        onClick={handleSelectAll}
+                        className="w-full px-3 py-2 text-sm text-left hover:bg-slate-50 rounded flex items-center gap-2 transition-colors"
+                    >
+                        <div className={`w-4 h-4 border-2 rounded flex items-center justify-center ${selectedValues.length === options.length
+                            ? 'border-[#707FDD] bg-[#707FDD]'
+                            : 'border-slate-300'
+                            }`}>
+                            {selectedValues.length === options.length && (
+                                <Check className="w-3 h-3 text-white" />
+                            )}
+                        </div>
+                        <span className="font-medium">Select All</span>
+                    </button>
+                </div>
+            )}
+
+            {/* Options list */}
+            <div className="overflow-y-auto custom-scrollbar flex-1">
+                {filteredOptions.length === 0 ? (
+                    <div className="px-4 py-8 text-center text-sm text-slate-500">
+                        No options found
+                    </div>
+                ) : (
+                    filteredOptions.map((option) => {
+                        const isSelected = selectedValues.includes(option.value);
+                        return (
+                            <button
+                                key={option.value}
+                                type="button"
+                                onClick={() => handleOptionClick(option)}
+                                disabled={option.disabled}
+                                className={`w-full px-4 py-2.5 text-left flex items-center gap-3 transition-colors ${option.disabled
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : "hover:bg-slate-50 cursor-pointer"
+                                    } ${isSelected ? "bg-slate-50" : ""}`}
+                            >
+                                {multiple && (
+                                    <div className={`w-4 h-4 border-2 rounded flex items-center justify-center flex-shrink-0 ${isSelected
+                                        ? 'border-[#707FDD] bg-[#707FDD]'
+                                        : 'border-slate-300'
+                                        }`}>
+                                        {isSelected && <Check className="w-3 h-3 text-white" />}
+                                    </div>
+                                )}
+                                {option.icon && (
+                                    <span className="flex-shrink-0">{option.icon}</span>
+                                )}
+                                <span
+                                    className={`flex-1 truncate ${isSelected ? "font-medium" : ""
+                                        }`}
+                                    style={isSelected ? { color: '#707FDD' } : {}}
+                                >
+                                    {option.label}
+                                </span>
+                                {!multiple && isSelected && (
+                                    <Check className="w-4 h-4 flex-shrink-0" style={{ color: '#707FDD' }} />
+                                )}
+                            </button>
+                        );
+                    })
+                )}
+            </div>
+        </motion.div>
+    );
 
     return (
-        <div className={`w-full ${className}`}>
-            {/* Dropdown trigger and label container */}
-            <div ref={containerRef} className="relative">
-                {/* Label */}
-                {label && (
-                    <label className="block text-sm font-regular text-slate-700 ml-1">
-                        {label}
-                    </label>
-                )}
+        <div className={`w-full ${className} relative`} ref={containerRef}>
+            {/* Label */}
+            {label && (
+                <label className="block text-sm font-regular text-slate-700 ml-1">
+                    {label}
+                </label>
+            )}
 
-                <button
-                    type="button"
-                    onClick={toggleDropdown}
-                    disabled={disabled || loading}
-                    className={`
-                        w-full flex items-center justify-between gap-2
-                        ${sizeClasses[size]}
-                        bg-white border rounded-lg
-                        transition-all duration-200 outline-none
-                        ${hasError
-                            ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200"
-                            : "border-slate-300 focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
-                        }
-                        ${disabled || loading ? "opacity-50 cursor-not-allowed bg-slate-50" : "cursor-pointer hover:border-slate-400"}
-                    `}
-                >
-                    <div className="flex items-center gap-2 flex-1 min-w-0">
-                        {leftIcon && <span className="flex-shrink-0 text-slate-400">{leftIcon}</span>}
-                        <div className="flex-1 min-w-0 text-left">{renderSelectedValue()}</div>
-                    </div>
+            <button
+                type="button"
+                onClick={toggleDropdown}
+                disabled={disabled || loading}
+                className={`
+                    w-full flex items-center justify-between gap-2
+                    ${sizeClasses[size]}
+                    bg-white border rounded-lg
+                    transition-all duration-200 outline-none
+                    ${hasError
+                        ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200"
+                        : "border-slate-300 focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+                    }
+                    ${disabled || loading ? "opacity-50 cursor-not-allowed bg-slate-50" : "cursor-pointer hover:border-slate-400"}
+                `}
+            >
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                    {leftIcon && <span className="flex-shrink-0 text-slate-400">{leftIcon}</span>}
+                    <div className="flex-1 min-w-0 text-left">{renderSelectedValue()}</div>
+                </div>
 
-                    <div className="flex items-center gap-1 flex-shrink-0">
-                        {loading && <Loader2 className="w-4 h-4 text-slate-400 animate-spin" />}
-                        {clearable && selectedValues.length > 0 && !loading && !disabled && (
-                            <button
-                                type="button"
-                                onClick={handleClear}
-                                className="p-0.5 hover:bg-slate-100 rounded transition-colors"
-                            >
-                                <X className="w-4 h-4 text-slate-400 hover:text-slate-600" />
-                            </button>
-                        )}
-                        {rightIcon ? (
-                            <span className="text-slate-400">{rightIcon}</span>
-                        ) : (
-                            <ChevronDown
-                                className={`w-4 h-4 text-slate-400 transition-transform ${isOpen ? "rotate-180" : ""
-                                    }`}
-                            />
-                        )}
-                    </div>
-                </button>
-
-                {/* Dropdown menu */}
-                <AnimatePresence>{isOpen && renderDropdownMenu()}</AnimatePresence>
-            </div>
+                <div className="flex items-center gap-1 flex-shrink-0">
+                    {loading && <Loader2 className="w-4 h-4 text-slate-400 animate-spin" />}
+                    {clearable && selectedValues.length > 0 && !loading && !disabled && (
+                        <div
+                            role="button"
+                            onClick={handleClear}
+                            className="p-0.5 hover:bg-slate-100 rounded transition-colors"
+                        >
+                            <X className="w-4 h-4 text-slate-400 hover:text-slate-600" />
+                        </div>
+                    )}
+                    {rightIcon ? (
+                        <span className="text-slate-400">{rightIcon}</span>
+                    ) : (
+                        <ChevronDown
+                            className={`w-4 h-4 text-slate-400 transition-transform ${isOpen ? "rotate-180" : ""
+                                }`}
+                        />
+                    )}
+                </div>
+            </button>
 
             {/* Helper text or error message */}
             {(helperText || errorMessage) && (
@@ -456,6 +392,13 @@ const Dropdown = ({
                     {hasError ? errorMessage : helperText}
                 </p>
             )}
+
+            {/* Dropdown Menu */}
+            <AnimatePresence>
+                {isOpen && !disabled && (
+                    MenuContent
+                )}
+            </AnimatePresence>
         </div>
     );
 };
