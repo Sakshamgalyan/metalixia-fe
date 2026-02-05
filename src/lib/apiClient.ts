@@ -18,7 +18,10 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       if (typeof window !== "undefined") {
-        window.location.href = "/sign-in";
+        // Only redirect if not already on the sign-in page to avoid loops
+        if (window.location.pathname !== "/sign-in") {
+          window.location.href = "/sign-in";
+        }
       }
     }
     return Promise.reject(error);
