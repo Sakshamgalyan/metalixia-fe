@@ -5,29 +5,50 @@ import Button from "@/components/UI/Button";
 import Accordion from "@/components/UI/Accordion";
 import Dropdown from "@/components/UI/DropDown";
 import { AllRoles, AllPosts } from "@/lib/constants";
-import { useEmployeeListDispatchContext, useEmployeeListStateContext } from "@/context/admin/EmployeeList/hooks";
-import { setFilterPost, setFilterRole } from "@/context/admin/EmployeeList/action";
-
-export interface EmployeeFilters {
-    name: string;
-    role: string;
-    email: string;
-    mobileNo: string;
-}
+import {
+    useEmployeeListDispatchContext,
+    useEmployeeListStateContext,
+} from "@/context/admin/EmployeeList/hooks";
+import {
+    setFilterData,
+    setFilterPayload,
+    setFilterPost,
+    setFilterRole,
+    setLoading,
+} from "@/context/admin/EmployeeList/action";
+import { getAllEmployees } from "@/ApiClient/Admin/admin";
 
 const FilterModal = ({ trigger }: { trigger: React.ReactNode }) => {
     const { filterRole, filterPost } = useEmployeeListStateContext();
     const dispatch = useEmployeeListDispatchContext();
 
     const [isOpen, setIsOpen] = useState(false);
-    const handleApply = () => {
-        setIsOpen(false);
-    };
 
     const handleClear = () => {
         dispatch(setFilterRole([]));
         dispatch(setFilterPost([]));
         setIsOpen(false);
+    };
+
+    const handleApply = async () => {
+        dispatch(setLoading(true));
+        try {
+            setIsOpen(false);
+            const payload: any = {};
+            if (filterRole?.length) {
+                payload.role = filterRole;
+            }
+            if (filterPost?.length) {
+                payload.post = filterPost;
+            }
+            dispatch(setFilterPayload(payload));
+            const response = await getAllEmployees(payload);
+            dispatch(setFilterData(response));
+        } catch (error) {
+            console.error("Error fetching employees:", error);
+        } finally {
+            dispatch(setLoading(false));
+        }
     };
 
     return (
@@ -48,10 +69,12 @@ const FilterModal = ({ trigger }: { trigger: React.ReactNode }) => {
                         label: role,
                     }))}
                     value={filterRole || []}
-                    onChange={(val) => dispatch(setFilterRole(typeof val === 'string' ? [val] : (val || [])))}
+                    onChange={(val) =>
+                        dispatch(setFilterRole(typeof val === "string" ? [val] : val || []))
+                    }
                     placeholder="Select role"
                     showSelectAll
-                />
+                    />
                 <Dropdown
                     label="Post"
                     size="sm"
@@ -61,7 +84,9 @@ const FilterModal = ({ trigger }: { trigger: React.ReactNode }) => {
                         label: post,
                     }))}
                     value={filterPost || []}
-                    onChange={(val) => dispatch(setFilterPost(typeof val === 'string' ? [val] : (val || [])))}
+                    onChange={(val) =>
+                        dispatch(setFilterPost(typeof val === "string" ? [val] : val || []))
+                    }
                     placeholder="Select Post"
                     showSelectAll
                 />

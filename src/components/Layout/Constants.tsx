@@ -34,7 +34,7 @@ export const menuItems: MenuItem[] = [
             {
                 icon: <LayoutDashboard className="w-5 h-5" />,
                 label: "Dashboard",
-                href: "/dashboard",
+                href: "/",
                 visible: ["admin", "employee", "superAdmin", "reportAdmin"],
             }
         ],
@@ -51,7 +51,7 @@ export const menuItems: MenuItem[] = [
             {
                 icon: <Camera className="w-5 h-5" />,
                 label: "Camera Feeds",
-                href: "/camera-feeds",
+                href: "/camera-feed",
                 visible: ["superAdmin", "reportAdmin"],
             },
             {

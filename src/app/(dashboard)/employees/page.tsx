@@ -1,4 +1,4 @@
-import EmployeesList from "@/components/dashboard/Admin/EmployeesList"
+import EmployeesList from "@/components/dashboard/Admin/Employee/EmployeesList"
 import EmployeeListProvider from "@/context/admin/EmployeeList"
 
 const Employee = () => {

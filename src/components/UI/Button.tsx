@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "link" | "menu" | "tertiary";
-    size?: "sm" | "md" | "lg";
+    size?: "xs" | "sm" | "md" | "lg";
     fullWidth?: boolean;
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
@@ -13,7 +13,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
     disabled?: boolean;
     bgColor?: string;
     textColor?: string;
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 const Button = ({
@@ -35,6 +35,7 @@ const Button = ({
 }: ButtonProps) => {
     // Size variants
     const sizeClasses = {
+        xs: "text-xs py-1 px-2 gap-1.5",
         sm: "text-sm py-2 px-4 gap-2",
         md: "text-base py-3 px-6 gap-2",
         lg: "text-lg py-4 px-8 gap-3",
@@ -42,6 +43,7 @@ const Button = ({
 
     // Link variant has minimal padding
     const linkSizeClasses = {
+        xs: "text-xs gap-1",
         sm: "text-sm gap-1",
         md: "text-base gap-2",
         lg: "text-lg gap-2",
@@ -49,6 +51,7 @@ const Button = ({
 
     // Menu variant has left alignment and padding
     const menuSizeClasses = {
+        xs: "text-xs py-1 px-2 gap-2",
         sm: "text-sm py-2 px-4 gap-3",
         md: "text-base py-2.5 px-4 gap-3",
         lg: "text-lg py-3 px-4 gap-3",
@@ -68,6 +71,7 @@ const Button = ({
 
     // Icon sizes based on button size
     const iconSizes = {
+        xs: "w-3.5 h-3.5",
         sm: "w-4 h-4",
         md: "w-5 h-5",
         lg: "w-6 h-6",
@@ -139,9 +143,11 @@ const Button = ({
             )}
 
             {/* Button Text */}
-            <span>
-                {isLoading && loadingText ? loadingText : children}
-            </span>
+            {(children || (isLoading && loadingText)) && (
+                <span>
+                    {isLoading && loadingText ? loadingText : children}
+                </span>
+            )}
 
             {/* Right Icon */}
             {!isLoading && rightIcon && (

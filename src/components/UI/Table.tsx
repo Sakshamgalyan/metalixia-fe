@@ -25,6 +25,7 @@ export interface PaginationConfig {
 interface TableProps<T> {
     data: T[];
     columns: TableColumn<T>[];
+    headerAlign?: "left" | "center" | "right";
     isLoading?: boolean;
     onRowClick?: (row: T) => void;
     keyExtractor: (row: T) => string | number;
@@ -35,6 +36,7 @@ interface TableProps<T> {
 const Table = <T,>({
     data,
     columns,
+    headerAlign = "left",
     isLoading = false,
     onRowClick,
     keyExtractor,
@@ -51,7 +53,8 @@ const Table = <T,>({
                                 {columns.map((column, index) => (
                                     <th
                                         key={index}
-                                        className={`py-3 px-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider ${column.headerClassName || ""
+                                        className={`py-3 px-4 ${headerAlign === "center" ? "text-center" : headerAlign === "right" ? "text-right" : "text-left"
+                                            } text-xs font-semibold text-slate-500 uppercase tracking-wider ${column.headerClassName || ""
                                             }`}
                                     >
                                         {column.header}
@@ -99,7 +102,7 @@ const Table = <T,>({
                                             return (
                                                 <td
                                                     key={index}
-                                                    className={`py-3 px-4 text-sm text-slate-700 whitespace-nowrap ${column.className || ""
+                                                    className={`py-3 px-4 text-sm text-center text-slate-700 whitespace-nowrap ${column.className || ""
                                                         }`}
                                                 >
                                                     {content}

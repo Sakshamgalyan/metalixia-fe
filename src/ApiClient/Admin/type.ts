@@ -1,13 +1,8 @@
 export interface EmployeeListPayload {
-  pageNo?: number;
+  page?: number;
   limit?: number;
-  name?: string[];
-  role?: string;
-  email?: string[];
-  mobileNo?: string[];
+  role?: string[];
   post?: string[];
-  from?: number;
-  to?: number;
 }
 
 export interface EmployeeListResponse {

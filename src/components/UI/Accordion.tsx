@@ -96,7 +96,7 @@ const Accordion = ({
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className={`absolute z-50 mt-2 bg-white rounded-lg shadow-lg border border-slate-200 overflow-hidden ${align === "right" ? "right-0" : "left-0"
+                        className={`absolute z-50 mt-2 bg-white rounded-lg shadow-lg border border-slate-200 ${align === "right" ? "right-0" : "left-0"
                             } ${contentClassName}`}
                         style={{ top: `calc(100% + ${offset}px)` }}
                     >

@@ -30,8 +30,8 @@ const Chips = ({
 }: ChipProps) => {
     // Size variants
     const sizeClasses = {
-        sm: "px-2.5 py-0.5 text-xs gap-1.5",
-        md: "px-3 py-1 text-sm gap-2",
+        sm: "px-3 py-1 text-sm gap-1.5",
+        md: "px-4 py-2 text-md gap-2",
     };
 
     // Icon sizes
@@ -92,7 +92,7 @@ const Chips = ({
     return (
         <div
             className={`
-                inline-flex items-center justify-center rounded-full font-medium transition-all duration-200
+                inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200
                 ${sizeClasses[size]}
                 ${colorClass}
                 ${interactiveClass}

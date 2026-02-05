@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, X, Search, Check, Loader2 } from "lucide-react";
 
@@ -49,7 +50,7 @@ const Dropdown = ({
     label,
     leftIcon,
     rightIcon,
-    size = "md",
+    size = "sm",
     disabled = false,
     multiple = false,
     searchable = false,
@@ -221,24 +222,66 @@ const Dropdown = ({
         );
     };
 
+    // Portal logic
+    const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0, width: 0, placement: "bottom" });
+
+    const updatePosition = () => {
+        if (containerRef.current && isOpen) {
+            const rect = containerRef.current.getBoundingClientRect();
+
+            const spaceBelow = window.innerHeight - rect.bottom;
+            const spaceAbove = rect.top;
+            const menuHeight = 300;
+
+            // Default to bottom: Anchor to Container Bottom
+            let newTop = rect.bottom + 4;
+            let newPlacement = "bottom";
+
+            // If not enough space below AND enough space above, flip it
+            if (spaceBelow < menuHeight && spaceAbove > menuHeight) {
+                newTop = rect.top - 4; // Anchor to Container Top (Above Label)
+                newPlacement = "top";
+            } else if (spaceBelow < menuHeight && spaceAbove > spaceBelow) {
+                newTop = rect.top - 4;
+                newPlacement = "top";
+            }
+
+            setMenuPosition({
+                top: newTop,
+                left: rect.left,
+                width: rect.width,
+                placement: newPlacement
+            });
+        }
+    };
+
+    useEffect(() => {
+        if (isOpen) {
+            updatePosition();
+            window.addEventListener('resize', updatePosition);
+            window.addEventListener('scroll', updatePosition, true);
+        }
+        return () => {
+            window.removeEventListener('resize', updatePosition);
+            window.removeEventListener('scroll', updatePosition, true);
+        };
+    }, [isOpen]);
+
     const MenuContent = (
         <motion.div
             ref={menuRef}
-            initial={{ opacity: 0, y: placement === "bottom" ? -10 : 10 }}
+            initial={{ opacity: 0, y: menuPosition.placement === "bottom" ? -10 : 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: placement === "bottom" ? -10 : 10 }}
+            exit={{ opacity: 0, y: menuPosition.placement === "bottom" ? -10 : 10 }}
             transition={{ duration: 0.2 }}
-            className="bg-white border border-slate-300 rounded-lg shadow-xl overflow-hidden flex flex-col absolute"
+            className="bg-white border border-slate-300 rounded-lg shadow-xl overflow-hidden flex flex-col fixed"
             style={{
-                top: placement === 'bottom' ? '100%' : 'auto',
-                bottom: placement === 'top' ? '100%' : 'auto',
-                left: alignment === 'right' ? 'auto' : 0,
-                right: alignment === 'right' ? 0 : 'auto',
-                width: dropdownWidth,
+                top: menuPosition.placement === "bottom" ? menuPosition.top : undefined,
+                bottom: menuPosition.placement === "top" ? (window.innerHeight - menuPosition.top) : undefined,
+                left: menuPosition.left,
+                width: dropdownWidth === "100%" ? menuPosition.width : dropdownWidth,
                 maxHeight: "300px",
-                zIndex: 9999, // Enforce high z-index
-                marginTop: placement === 'bottom' ? 4 : 0,
-                marginBottom: placement === 'top' ? 4 : 0,
+                zIndex: 9999,
             }}
             onMouseDown={(e) => e.stopPropagation()}
             onClick={(e) => e.stopPropagation()}
@@ -340,10 +383,17 @@ const Dropdown = ({
                 </label>
             )}
 
-            <button
-                type="button"
+            <div
+                role="button"
+                tabIndex={disabled || loading ? -1 : 0}
+                aria-disabled={disabled || loading}
                 onClick={toggleDropdown}
-                disabled={disabled || loading}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleDropdown();
+                    }
+                }}
                 className={`
                     w-full flex items-center justify-between gap-2
                     ${sizeClasses[size]}
@@ -366,7 +416,15 @@ const Dropdown = ({
                     {clearable && selectedValues.length > 0 && !loading && !disabled && (
                         <div
                             role="button"
+                            tabIndex={0}
                             onClick={handleClear}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    handleClear(e as any);
+                                }
+                            }}
                             className="p-0.5 hover:bg-slate-100 rounded transition-colors"
                         >
                             <X className="w-4 h-4 text-slate-400 hover:text-slate-600" />
@@ -381,7 +439,7 @@ const Dropdown = ({
                         />
                     )}
                 </div>
-            </button>
+            </div>
 
             {/* Helper text or error message */}
             {(helperText || errorMessage) && (
@@ -393,12 +451,13 @@ const Dropdown = ({
                 </p>
             )}
 
-            {/* Dropdown Menu */}
-            <AnimatePresence>
-                {isOpen && !disabled && (
-                    MenuContent
-                )}
-            </AnimatePresence>
+            {/* Dropdown Menu Portal */}
+            {typeof document !== 'undefined' && createPortal(
+                <AnimatePresence>
+                    {isOpen && !disabled && MenuContent}
+                </AnimatePresence>,
+                document.body
+            )}
         </div>
     );
 };

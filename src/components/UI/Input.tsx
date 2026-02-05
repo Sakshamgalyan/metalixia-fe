@@ -27,7 +27,7 @@ const Input = ({
     label,
     placeholder,
     helperText,
-    size = "md",
+    size = "sm",
     fullWidth = false,
     variant = "default",
     type = "text",
@@ -103,7 +103,7 @@ const Input = ({
             {/* Label */}
             {label && (
                 <label className="block text-sm font-regular text-slate-700 ml-1">
-                    {label}
+                    {label} {restProps.required && <span className="text-red-500">*</span>}
                 </label>
             )}
 
