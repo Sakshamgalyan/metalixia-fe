@@ -30,6 +30,7 @@ export interface ProfileResponse {
     name: string;
     email: string;
     mobileNo: string;
+    employeeId: string;
     post: string;
   };
 }

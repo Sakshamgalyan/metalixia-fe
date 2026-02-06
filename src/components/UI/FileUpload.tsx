@@ -110,11 +110,29 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
     if (validFiles.length === 0) return;
 
+    // Filter out duplicates
+    const uniqueFiles = validFiles.filter((newFile) => {
+      const isDuplicate = fileList.some(
+        (existingFile) =>
+          existingFile.name === newFile.name &&
+          existingFile.size === newFile.size &&
+          existingFile.type === newFile.type,
+      );
+
+      if (isDuplicate) {
+        toast.warning(`File ${newFile.name} is already added`);
+        return false;
+      }
+      return true;
+    });
+
+    if (uniqueFiles.length === 0) return;
+
     let updatedList: File[];
     if (allowMultiple) {
-      updatedList = [...fileList, ...validFiles];
+      updatedList = [...fileList, ...uniqueFiles];
     } else {
-      updatedList = [validFiles[0]];
+      updatedList = [uniqueFiles[0]];
     }
 
     setFileList(updatedList);

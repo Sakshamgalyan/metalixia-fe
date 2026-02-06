@@ -67,6 +67,12 @@ export const menuItems: MenuItem[] = [
         items: [
             {
                 icon: <Mail className="w-5 h-5" />,
+                label: "Uploaded Report",
+                href: "/uploaded-report",
+                visible: ["admin", "employee", "superAdmin", "reportAdmin"],
+            },
+            {
+                icon: <Mail className="w-5 h-5" />,
                 label: "Mailed Report",
                 href: "/mailed-report",
                 visible: ["admin", "employee", "superAdmin", "reportAdmin"],

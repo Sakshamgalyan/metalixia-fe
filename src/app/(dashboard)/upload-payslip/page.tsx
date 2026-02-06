@@ -1,4 +1,4 @@
-import PayslipUpload from "@/components/dashboard/Payslip/PayslipUpload";
+import PayslipUpload from "@/components/dashboard/Employees/Payslip/PayslipUpload";
 
 const UploadPayslipPage = () => {
   return <div className="">

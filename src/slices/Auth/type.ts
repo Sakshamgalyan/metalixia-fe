@@ -4,6 +4,7 @@ export interface User {
     name?: string;
     role?: string;
     mobileNo?: string;
+    employeeId?: string;
     isEmailVerified?: boolean;
     post?: string;
 }

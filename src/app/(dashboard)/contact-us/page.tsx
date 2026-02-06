@@ -1,4 +1,4 @@
-import ContactView from "@/components/dashboard/Contact/ContactView";
+import ContactView from "@/components/dashboard/Others/Contact/ContactView";
 
 const ContactUsPage = () => {
   return <ContactView />;

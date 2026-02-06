@@ -1,4 +1,4 @@
-import PayslipView from "@/components/dashboard/Payslip/PayslipView";
+import PayslipView from "@/components/dashboard/Employees/Payslip/PayslipView";
 
 const Page = () => {
   return <PayslipView />;

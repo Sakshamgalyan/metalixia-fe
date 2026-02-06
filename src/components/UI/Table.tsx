@@ -36,7 +36,7 @@ interface TableProps<T> {
 const Table = <T,>({
     data,
     columns,
-    headerAlign = "left",
+    headerAlign = "center",
     isLoading = false,
     onRowClick,
     keyExtractor,

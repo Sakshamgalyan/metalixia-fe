@@ -13,6 +13,7 @@ import {
   deleteEmployee,
 } from "@/ApiClient/Admin/admin";
 import NoDataState from "@/components/Common/NoDataState";
+import { columns } from "./Constants";
 
 const ApprovalList = () => {
   const [users, setUsers] = useState<any[]>([]);
@@ -54,48 +55,6 @@ const ApprovalList = () => {
     }
   };
 
-  const columns: TableColumn<any>[] = [
-    {
-      header: "Name",
-      accessor: "name",
-      className: "font-medium text-slate-900 capitalize",
-    },
-    {
-      header: "Email",
-      accessor: "email",
-    },
-    {
-      header: "Mobile No",
-      accessor: "mobileNo",
-    },
-    {
-      header: "Actions",
-      accessor: "actions",
-      className: "flex gap-2 justify-center",
-      render: (item) => (
-        <div className="flex gap-2 justify-center">
-          <Button
-            bgColor="#16a34a"
-            textColor="#ffffff"
-            size="sm"
-            onClick={() => handleApprove(item)}
-            title="Approve"
-          >
-            <Check size={16} />
-          </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() => handleDelete(item)}
-            title="Delete"
-          >
-            <Trash2 size={16} />
-          </Button>
-        </div>
-      ),
-    },
-  ];
-
   return (
     <div className="px-6 py-10">
       <div className="flex flex-col gap-1 mb-6">
@@ -108,7 +67,7 @@ const ApprovalList = () => {
       {loading ? (
         <Table
           data={[]}
-          columns={columns}
+          columns={columns(handleApprove, handleDelete)}
           isLoading
           headerAlign="center"
           keyExtractor={(item: any) => item.id}
@@ -116,7 +75,7 @@ const ApprovalList = () => {
       ) : users.length > 0 ? (
         <Table
           data={users}
-          columns={columns}
+          columns={columns(handleApprove, handleDelete)}
           headerAlign="center"
           keyExtractor={(item: any) => item.id}
         />

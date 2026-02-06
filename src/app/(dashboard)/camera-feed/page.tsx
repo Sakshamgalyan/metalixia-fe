@@ -1,4 +1,4 @@
-import CameraFeedView from "@/components/dashboard/CameraFeed/CameraFeedView";
+import CameraFeedView from "@/components/dashboard/Admin/CameraFeed/CameraFeedView";
 
 const Page = () => {
   return <CameraFeedView />;
