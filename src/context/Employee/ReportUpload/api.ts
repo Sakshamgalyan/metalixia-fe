@@ -33,9 +33,10 @@ export const getMyReports = async (
   dispatch: Dispatch<ReportUploadAction>,
   page: number,
   limit: number,
+  employeeId: string,
 ) => {
   try {
-    const response = await ApiClient.get<ReportList>("/employee/get-reports", {
+    const response = await ApiClient.get<ReportList>(`/employee/get-reports/${employeeId}`, {
       params: {
         page,
         limit,

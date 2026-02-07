@@ -12,7 +12,7 @@ import Typography from "@/components/UI/Typography";
 import { toast } from "sonner";
 
 interface FileUploadProps {
-  label?: string;
+  label?: React.ReactNode;
   description?: string;
   accept?: string; // e.g. "image/*, .pdf"
   maxSize?: number; // in MB

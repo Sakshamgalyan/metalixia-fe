@@ -22,6 +22,7 @@ import NoDataState from "@/components/Common/NoDataState";
 import { fetchReportUploadLoading } from "@/context/Employee/ReportUpload/actions";
 import { useAppSelector } from "@/store/hooks";
 import Card from "@/components/UI/Card";
+import DeleteModal from "./DeleteModal";
 
 const ReportUpload = () => {
   const [reportName, setReportName] = useState<string>("");
@@ -31,10 +32,14 @@ const ReportUpload = () => {
   const dispatch = useReportUploadDispatchContext();
   const { listLoading, uploadLoading, listData } =
     useReportUploadStateContext();
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<Report | null>(null);
 
   useEffect(() => {
-    getMyReports(dispatch, 1, 10);
-  }, [dispatch]);
+    if (employeeId) {
+      getMyReports(dispatch, 1, 10, employeeId);
+    }
+  }, [dispatch, employeeId]);
 
   const handleSubmit = async () => {
     if (!employeeId) {
@@ -59,7 +64,7 @@ const ReportUpload = () => {
       await uploadReportApi(dispatch, formData);
       setReportName("");
       setFiles([]);
-      getMyReports(dispatch, 1, 10);
+      getMyReports(dispatch, 1, 10, employeeId);
     } catch (error) {
       console.error("Upload failed", error);
     } finally {
@@ -68,8 +73,8 @@ const ReportUpload = () => {
   };
 
   const handleDelete = async (item: Report) => {
-    await deleteReportApi(dispatch, item.id)
-    getMyReports(dispatch, 1, 10);
+    setSelectedItem(item);
+    setDeleteModal(true);
   };
   return (
     <div className="px-3 py-7 max-w-[95%] mx-auto">
@@ -150,6 +155,12 @@ const ReportUpload = () => {
             />
           )}
         </div>
+
+        <DeleteModal
+          isOpen={deleteModal}
+          onClose={() => setDeleteModal(false)}
+          item={selectedItem}
+        />
       </div>
     </div>
   );
