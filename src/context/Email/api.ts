@@ -1,7 +1,7 @@
 import { Dispatch } from "react";
 import ApiClient from "@/lib/apiClient";
 import { toast } from "sonner";
-import { EmailAction } from "./types";
+import { EmailAction, EmailTemplateItem } from "./types";
 import {
   sendEmailLoading,
   sendEmailSuccess,
@@ -52,7 +52,7 @@ export const getTemplatesApi = async (dispatch: Dispatch<EmailAction>) => {
   dispatch(fetchTemplatesLoading(true));
   try {
     const response = await ApiClient.get("/email/templates");
-    dispatch(fetchTemplatesSuccess(response));
+    dispatch(fetchTemplatesSuccess(response as unknown as EmailTemplateItem[]));
   } catch (error: any) {
     console.error("Failed to fetch templates", error);
     dispatch(fetchTemplatesLoading(false));

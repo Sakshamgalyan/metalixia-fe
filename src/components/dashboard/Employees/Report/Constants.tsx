@@ -7,6 +7,7 @@ import {
   FileSpreadsheet,
   FileImage,
   File,
+  ArrowDown,
 } from "lucide-react";
 import Chips from "@/components/UI/Chips";
 import Button from "@/components/UI/Button";
@@ -21,6 +22,7 @@ export interface Report {
 }
 
 export const columns = (
+  onDownload: (item: Report) => void,
   onDelete: (item: Report) => void,
 ): TableColumn<Report>[] => [
   {
@@ -100,12 +102,19 @@ export const columns = (
     accessor: "action",
     className: "flex gap-2 justify-center",
     render: (item) => (
-      <Button
-        variant="danger"
-        size="sm"
-        leftIcon={<TrashIcon />}
-        onClick={() => onDelete(item)}
-      />
+      <div className="flex items-center gap-2">
+        <Button
+          size="sm"
+          leftIcon={<ArrowDown />}
+          onClick={() => onDownload(item)}
+        />
+        <Button
+          variant="danger"
+          size="sm"
+          leftIcon={<TrashIcon />}
+          onClick={() => onDelete(item)}
+        />
+      </div>
     ),
   },
 ];

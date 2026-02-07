@@ -32,8 +32,10 @@ const EmailHistoryList = ({ history, isLoading }: EmailHistoryListProps) => {
       header: "Date",
       accessor: "createdAt" as keyof EmailHistoryItem,
       render: (item: EmailHistoryItem) => (
-        <span className="text-xs text-slate-400">
-          {format(new Date(item.createdAt), "dd MMM yyyy, HH:mm")}
+        <span className="text-xs text-slate-400" suppressHydrationWarning>
+          {item.createdAt && !isNaN(new Date(item.createdAt).getTime())
+            ? format(new Date(item.createdAt), "dd MMM yyyy, HH:mm")
+            : "Invalid Date"}
         </span>
       ),
     },

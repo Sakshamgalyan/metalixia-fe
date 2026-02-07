@@ -76,6 +76,11 @@ const ReportUpload = () => {
     setSelectedItem(item);
     setDeleteModal(true);
   };
+
+  const handleDownload = async (item: Report) => {
+    console.log(item);
+  };
+
   return (
     <div className="px-3 py-7 max-w-[95%] mx-auto">
       <div className="flex flex-col gap-1 mb-8">
@@ -134,7 +139,7 @@ const ReportUpload = () => {
 
           {listLoading ? (
             <Table
-              columns={columns(handleDelete)}
+              columns={columns(handleDownload, handleDelete)}
               data={[]}
               isLoading={listLoading}
               emptyMessage="No reports uploaded yet"
@@ -143,7 +148,7 @@ const ReportUpload = () => {
           ) : (listData?.data?.length ?? 0) > 0 ? (
             <Table
               data={listData?.data ?? []}
-              columns={columns(handleDelete)}
+              columns={columns(handleDownload, handleDelete)}
               isLoading={listLoading}
               emptyMessage="No reports uploaded yet"
               keyExtractor={(item) => item.id}

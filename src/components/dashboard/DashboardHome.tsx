@@ -8,9 +8,13 @@ import {
   Box,
   AlertTriangle,
   CheckCircle,
+  Truck,
+  TrendingUp,
   Clock,
 } from "lucide-react";
 import Typography from "@/components/UI/Typography";
+import { useState } from "react";
+import Chart from "@/components/UI/Chart";
 import Chips from "@/components/UI/Chips";
 
 const DashboardHome = () => {
@@ -138,27 +142,23 @@ const DashboardHome = () => {
               </select>
             </div>
 
-            {/* Enhanced Bar Chart Simulation */}
-            <div className="h-[300px] flex items-end justify-between gap-2 px-4">
-              {[
+            {/* Custom CSS Bar Chart using Chart Component */}
+            <Chart
+              data={[
                 65, 59, 80, 81, 56, 55, 40, 70, 75, 50, 60, 90, 85, 95, 100, 80,
                 70, 60, 50, 40, 55, 65, 75, 85,
-              ].map((h, i) => (
-                <div
-                  key={i}
-                  className="w-full bg-slate-100 rounded-t-sm relative group cursor-pointer hover:bg-[#707FDD]/10 transition-colors"
-                >
-                  <div
-                    className="absolute bottom-0 left-1 right-1 bg-[#707FDD] rounded-t-sm transition-all duration-500"
-                    style={{ height: `${h}%` }}
-                  ></div>
-                  <div className="opacity-0 group-hover:opacity-100 absolute -top-12 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs py-1 px-2 rounded pointer-events-none transition-opacity z-10 w-max">
-                    {h}% Efficiency
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-between mt-4 text-xs text-slate-400 px-4">
+              ]}
+              height={320}
+              gradientFrom="from-blue-600"
+              gradientTo="to-blue-400"
+              labelColor="text-blue-400"
+              labels={["00:00", "06:00", "12:00", "18:00", "23:59"]}
+              className="px-2 relative z-10"
+              showXAxis={false}
+            />
+
+            {/* Custom X-Axis Labels for Production Efficiency (since data points > labels) */}
+            <div className="flex justify-between mt-6 text-xs font-mono text-slate-500 px-2 uppercase tracking-wide">
               <span>00:00</span>
               <span>06:00</span>
               <span>12:00</span>
@@ -167,70 +167,50 @@ const DashboardHome = () => {
             </div>
           </div>
 
-          {/* Material Logistics Charts - Separated Cards */}
+          {/* Logistics Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Dispatch Chart Card */}
-            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-              <Typography variant="h6" className="mb-4 text-slate-600">
-                Material Dispatch (Outbound)
-              </Typography>
-              <div className="h-[150px] flex items-end justify-between gap-1">
-                {[40, 60, 45, 70, 50, 80, 65].map((h, i) => (
-                  <div
-                    key={i}
-                    className="flex-1 bg-slate-50 rounded-sm relative group cursor-pointer h-full flex items-end"
-                  >
-                    <div
-                      className="w-full bg-emerald-500 rounded-sm hover:bg-emerald-400 transition-all duration-500"
-                      style={{ height: `${h}%` }}
-                    ></div>
-                    <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-1 px-2 rounded pointer-events-none transition-opacity z-10">
-                      {h} Units
-                    </div>
-                  </div>
-                ))}
+            {/* Dispatch Chart */}
+            <div className="bg-[#1a1f37] p-6 rounded-2xl border border-slate-800 shadow-lg relative overflow-hidden">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 bg-emerald-500/10 rounded-lg">
+                  <Truck size={18} className="text-emerald-400" />
+                </div>
+                <Typography variant="h6" className="text-white font-medium">
+                  Outbound Logistics
+                </Typography>
               </div>
-              <div className="flex justify-between mt-2 text-[10px] text-slate-400">
-                <span>Mon</span>
-                <span>Tue</span>
-                <span>Wed</span>
-                <span>Thu</span>
-                <span>Fri</span>
-                <span>Sat</span>
-                <span>Sun</span>
-              </div>
+
+              <Chart
+                data={[40, 60, 45, 70, 50, 80, 65]}
+                height={180}
+                gradientFrom="from-emerald-600"
+                gradientTo="to-emerald-400"
+                labelColor="text-emerald-400"
+                labels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
+                showXAxis={true}
+              />
             </div>
 
-            {/* Incoming Chart Card */}
-            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-              <Typography variant="h6" className="mb-4 text-slate-600">
-                Material Incoming (Inbound)
-              </Typography>
-              <div className="h-[150px] flex items-end justify-between gap-1">
-                {[30, 45, 60, 40, 75, 50, 55].map((h, i) => (
-                  <div
-                    key={i}
-                    className="flex-1 bg-slate-50 rounded-sm relative group cursor-pointer h-full flex items-end"
-                  >
-                    <div
-                      className="w-full bg-blue-500 rounded-sm hover:bg-blue-400 transition-all duration-500"
-                      style={{ height: `${h}%` }}
-                    ></div>
-                    <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-1 px-2 rounded pointer-events-none transition-opacity z-10">
-                      {h} Units
-                    </div>
-                  </div>
-                ))}
+            {/* Incoming Chart */}
+            <div className="bg-[#1a1f37] p-6 rounded-2xl border border-slate-800 shadow-lg relative overflow-hidden">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 bg-indigo-500/10 rounded-lg">
+                  <Box size={18} className="text-indigo-400" />
+                </div>
+                <Typography variant="h6" className="text-white font-medium">
+                  Inbound Inventory
+                </Typography>
               </div>
-              <div className="flex justify-between mt-2 text-[10px] text-slate-400">
-                <span>Mon</span>
-                <span>Tue</span>
-                <span>Wed</span>
-                <span>Thu</span>
-                <span>Fri</span>
-                <span>Sat</span>
-                <span>Sun</span>
-              </div>
+
+              <Chart
+                data={[30, 45, 60, 40, 75, 50, 55]}
+                height={180}
+                gradientFrom="from-indigo-600"
+                gradientTo="to-indigo-400"
+                labelColor="text-indigo-400"
+                labels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
+                showXAxis={true}
+              />
             </div>
           </div>
         </div>

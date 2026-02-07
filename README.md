@@ -17,3 +17,4 @@ gray
 green
 #149d52
 
+#1a1f37
