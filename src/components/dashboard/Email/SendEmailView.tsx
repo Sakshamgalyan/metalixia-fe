@@ -1,33 +1,61 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Send, AlignLeft, FileText as FileIcon } from "lucide-react";
 import { toast } from "sonner";
-import {
-  Send,
-  Mail,
-  Type,
-  AlignLeft,
-  FileText as FileIcon,
-} from "lucide-react";
 import Typography from "@/components/UI/Typography";
 import Input from "@/components/UI/Input";
 import Button from "@/components/UI/Button";
 import FileUpload from "@/components/UI/FileUpload";
+import TextArea from "@/components/UI/TextArea";
+import {
+  EmailProvider,
+  useEmailDispatch,
+  useEmailState,
+} from "@/context/Email";
+import {
+  getEmailHistoryApi,
+  getTemplatesApi,
+  sendEmailApi,
+} from "@/context/Email/api";
+import EmailHistoryList from "./EmailHistoryList";
+import EmailTemplateList from "./EmailTemplateList";
+import { useAppSelector } from "@/store/hooks";
 
-const SendEmailView = () => {
+const SendEmailContent = () => {
+  const dispatch = useEmailDispatch();
+  const { history, historyLoading, templates, templatesLoading, sendLoading } =
+    useEmailState();
+  const { user } = useAppSelector((state) => state.auth);
+  const employeeId = user?.employeeId;
+
   const [emailData, setEmailData] = useState({
     to: "",
     subject: "",
     message: "",
   });
   const [files, setFiles] = useState<File[]>([]);
-  const [sending, setSending] = useState(false);
+
+  useEffect(() => {
+    if (employeeId) {
+      getEmailHistoryApi(dispatch, employeeId);
+      getTemplatesApi(dispatch);
+    }
+  }, [dispatch, employeeId]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setEmailData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleTemplateSelect = (template: any) => {
+    setEmailData((prev) => ({
+      ...prev,
+      subject: template.subject,
+      message: template.body,
+    }));
   };
 
   const validateEmail = (email: string) => {
@@ -40,6 +68,11 @@ const SendEmailView = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!employeeId) {
+      toast.error("Employee ID is missing");
+      return;
+    }
 
     if (!emailData.to || !validateEmail(emailData.to)) {
       toast.error("Please enter a valid recipient email");
@@ -54,89 +87,128 @@ const SendEmailView = () => {
       return;
     }
 
-    setSending(true);
-    // Mock API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    const formData = new FormData();
+    formData.append("to", emailData.to);
+    formData.append("subject", emailData.subject);
+    formData.append("message", emailData.message);
+    formData.append("employeeId", employeeId);
 
-    toast.success("Email sent successfully!");
-    setEmailData({ to: "", subject: "", message: "" });
-    setFiles([]);
-    setSending(false);
+    files.forEach((file) => {
+      formData.append("attachments", file);
+    });
+
+    const success = await sendEmailApi(dispatch, formData);
+
+    if (success) {
+      setEmailData({ to: "", subject: "", message: "" });
+      setFiles([]);
+      getEmailHistoryApi(dispatch, employeeId);
+    }
   };
 
   return (
-    <div className="px-6 py-10 max-w-[90%] mx-auto">
-      <div className="flex flex-col gap-1 mb-8">
+    <div className="px-3 py-4 max-w-[95%] mx-auto">
+      <div className="flex flex-col gap-1 mb-5">
         <Typography variant="h2">Send Email</Typography>
         <Typography variant="p" className="text-slate-500">
           Compose and send valid emails to employees or clients
         </Typography>
       </div>
 
-      <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-        <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="flex  gap-4">
-            <Input
-              name="to"
-              value={emailData.to}
-              onChange={handleChange}
-              placeholder="recipient@example.com"
-              required
-              label="To"
-              fullWidth
-              />
-            <Input
-              name="subject"
-              value={emailData.subject}
-              onChange={handleChange}
-              placeholder="Email Subject"
-              required
-              label="Subject"
-              fullWidth
-              />
-          </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Left Side: Compose Email */}
+        <div className="lg:col-span-1">
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="flex gap-4">
+                <Input
+                  name="to"
+                  value={emailData.to}
+                  onChange={handleChange}
+                  placeholder="recipient@example.com"
+                  required
+                  label="To"
+                  fullWidth
+                />
+                <Input
+                  name="subject"
+                  value={emailData.subject}
+                  onChange={handleChange}
+                  placeholder="Email Subject"
+                  required
+                  label="Subject"
+                  fullWidth
+                />
+              </div>
 
-          <div className="space-y-1">
-            <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
-              <AlignLeft size={16} /> Message
-            </label>
-            <textarea
-              name="message"
-              value={emailData.message}
-              onChange={handleChange}
-              rows={8}
-              className="w-full px-4 py-3 text-sm text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#707FDD]/20 focus:border-[#707FDD] transition-all"
-              placeholder="Write your message here..."
-              required
+              <TextArea
+                name="message"
+                value={emailData.message}
+                onChange={handleChange}
+                rows={6}
+                label={
+                  <span className="inline-flex items-center gap-2">
+                    <AlignLeft size={16} /> Message
+                  </span>
+                }
+                placeholder="Write your message here..."
+                required
+              />
+
+              <FileUpload
+                value={files}
+                onChange={setFiles}
+                maxSize={10}
+                label={
+                  <span className="inline-flex items-center gap-2 text-sm font-medium text-slate-700">
+                    <FileIcon size={16} /> Attachments
+                  </span>
+                }
+              />
+
+              <div className="flex justify-end pt-2">
+                <Button
+                  type="submit"
+                  isLoading={sendLoading}
+                  loadingText="Sending..."
+                  leftIcon={<Send size={18} />}
+                  className="min-w-[150px]"
+                >
+                  Send Email
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* Right Side: History & Templates */}
+        <div className="lg:col-span-1 space-y-6">
+          {/* Templates Section */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <EmailTemplateList
+              templates={templates}
+              isLoading={templatesLoading}
+              onSelect={handleTemplateSelect}
             />
           </div>
 
-          <div className="space-y-1">
-            <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
-              <FileIcon size={16} /> Attachments
-            </label>
-            <FileUpload
-              value={files}
-              onChange={setFiles}
-              maxSize={10}
+          {/* History Section */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <EmailHistoryList
+              history={history.data}
+              isLoading={historyLoading}
             />
           </div>
-
-          <div className="flex justify-end pt-2">
-            <Button
-              type="submit"
-              isLoading={sending}
-              loadingText="Sending..."
-              leftIcon={<Send size={18} />}
-              className="min-w-[150px]"
-            >
-              Send Email
-            </Button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   );
 };
+
+const SendEmailView = () => (
+  <EmailProvider>
+    <SendEmailContent />
+  </EmailProvider>
+);
 
 export default SendEmailView;

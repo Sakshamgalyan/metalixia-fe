@@ -17,11 +17,13 @@ import {
   deleteReportApi,
   getMyReports,
   uploadReportApi,
+  downloadReportApi,
 } from "@/context/Employee/ReportUpload/api";
 import NoDataState from "@/components/Common/NoDataState";
 import { fetchReportUploadLoading } from "@/context/Employee/ReportUpload/actions";
 import { useAppSelector } from "@/store/hooks";
 import Card from "@/components/UI/Card";
+import DeleteModal from "./DeleteModal";
 
 const ReportUpload = () => {
   const [reportName, setReportName] = useState<string>("");
@@ -31,10 +33,14 @@ const ReportUpload = () => {
   const dispatch = useReportUploadDispatchContext();
   const { listLoading, uploadLoading, listData } =
     useReportUploadStateContext();
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<Report | null>(null);
 
   useEffect(() => {
-    getMyReports(dispatch, 1, 10);
-  }, [dispatch]);
+    if (employeeId) {
+      getMyReports(dispatch, 1, 10, employeeId);
+    }
+  }, [dispatch, employeeId]);
 
   const handleSubmit = async () => {
     if (!employeeId) {
@@ -59,7 +65,7 @@ const ReportUpload = () => {
       await uploadReportApi(dispatch, formData);
       setReportName("");
       setFiles([]);
-      getMyReports(dispatch, 1, 10);
+      getMyReports(dispatch, 1, 10, employeeId);
     } catch (error) {
       console.error("Upload failed", error);
     } finally {
@@ -68,9 +74,27 @@ const ReportUpload = () => {
   };
 
   const handleDelete = async (item: Report) => {
-    await deleteReportApi(dispatch, item.id)
-    getMyReports(dispatch, 1, 10);
+    setSelectedItem(item);
+    setDeleteModal(true);
   };
+
+  const handleDownload = async (item: Report) => {
+    let extension = "pdf";
+    const type = item.fileType?.toLowerCase() || "";
+    if (type.includes("word") || type.includes("document")) extension = "docx";
+    else if (type.includes("excel") || type.includes("spreadsheet"))
+      extension = "xlsx";
+    else if (type.includes("image")) extension = "png";
+    else if (type.includes("csv")) extension = "csv";
+
+    const filename = `${item.name}.${extension}`;
+    try {
+      await downloadReportApi(item.id, filename);
+    } catch (error) {
+      console.error("Download failed", error);
+    }
+  };
+
   return (
     <div className="px-3 py-7 max-w-[95%] mx-auto">
       <div className="flex flex-col gap-1 mb-8">
@@ -129,7 +153,7 @@ const ReportUpload = () => {
 
           {listLoading ? (
             <Table
-              columns={columns(handleDelete)}
+              columns={columns(handleDownload, handleDelete)}
               data={[]}
               isLoading={listLoading}
               emptyMessage="No reports uploaded yet"
@@ -138,7 +162,7 @@ const ReportUpload = () => {
           ) : (listData?.data?.length ?? 0) > 0 ? (
             <Table
               data={listData?.data ?? []}
-              columns={columns(handleDelete)}
+              columns={columns(handleDownload, handleDelete)}
               isLoading={listLoading}
               emptyMessage="No reports uploaded yet"
               keyExtractor={(item) => item.id}
@@ -150,6 +174,12 @@ const ReportUpload = () => {
             />
           )}
         </div>
+
+        <DeleteModal
+          isOpen={deleteModal}
+          onClose={() => setDeleteModal(false)}
+          item={selectedItem}
+        />
       </div>
     </div>
   );

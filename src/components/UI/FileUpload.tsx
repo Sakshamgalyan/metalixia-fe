@@ -12,7 +12,7 @@ import Typography from "@/components/UI/Typography";
 import { toast } from "sonner";
 
 interface FileUploadProps {
-  label?: string;
+  label?: React.ReactNode;
   description?: string;
   accept?: string; // e.g. "image/*, .pdf"
   maxSize?: number; // in MB
@@ -170,9 +170,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
   return (
     <div className={`space-y-2 ${className}`}>
-      <Typography variant="p" className="text-sm  text-slate-500">
-        {label}
-      </Typography>
+      <div className="text-sm text-slate-500">{label}</div>
       {/* Drop Zone */}
       <div
         className={`relative w-full h-32 border-2 border-dashed rounded-xl transition-all duration-200 ease-in-out flex flex-col items-center justify-center text-center

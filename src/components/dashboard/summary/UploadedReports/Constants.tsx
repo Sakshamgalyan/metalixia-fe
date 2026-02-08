@@ -6,6 +6,7 @@ import Chips from "@/components/UI/Chips";
 export const columns = (
   handleApprove: (item: any) => void,
   handleReject: (item: any) => void,
+  handleDownload: (item: any) => void,
 ): TableColumn<any>[] => [
   {
     header: "Report Name",
@@ -93,6 +94,7 @@ export const columns = (
       <Button
         size="sm"
         leftIcon={<X size={16} />}
+        disabled={item.status !== "rejected"}
         onClick={() => handleApprove(item)}
       />
     ),
@@ -104,7 +106,7 @@ export const columns = (
       <Button
         size="sm"
         leftIcon={<Download size={16} />}
-        onClick={() => handleApprove(item)}
+        onClick={() => handleDownload(item)}
       />
     ),
   },
