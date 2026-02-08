@@ -351,11 +351,11 @@ const Dropdown = ({
             No options found
           </div>
         ) : (
-          filteredOptions.map((option) => {
+          filteredOptions.map((option, index) => {
             const isSelected = selectedValues.includes(option.value);
             return (
               <button
-                key={option.value}
+                key={`${option.value}-${index}`}
                 type="button"
                 onClick={() => handleOptionClick(option)}
                 disabled={option.disabled}

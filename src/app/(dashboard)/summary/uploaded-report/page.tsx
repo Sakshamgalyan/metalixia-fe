@@ -1,4 +1,4 @@
-import UploadedReport from "@/components/dashboard/Admin/UploadedReports/uploadedReport"
+import UploadedReport from "@/components/dashboard/summary/UploadedReports/uploadedReport"
 import UploadedReportContextProvider from "@/context/admin/UploadedReports"
 
 const Page = () => {

@@ -17,6 +17,7 @@ import {
   deleteReportApi,
   getMyReports,
   uploadReportApi,
+  downloadReportApi,
 } from "@/context/Employee/ReportUpload/api";
 import NoDataState from "@/components/Common/NoDataState";
 import { fetchReportUploadLoading } from "@/context/Employee/ReportUpload/actions";
@@ -78,7 +79,20 @@ const ReportUpload = () => {
   };
 
   const handleDownload = async (item: Report) => {
-    console.log(item);
+    let extension = "pdf";
+    const type = item.fileType?.toLowerCase() || "";
+    if (type.includes("word") || type.includes("document")) extension = "docx";
+    else if (type.includes("excel") || type.includes("spreadsheet"))
+      extension = "xlsx";
+    else if (type.includes("image")) extension = "png";
+    else if (type.includes("csv")) extension = "csv";
+
+    const filename = `${item.name}.${extension}`;
+    try {
+      await downloadReportApi(item.id, filename);
+    } catch (error) {
+      console.error("Download failed", error);
+    }
   };
 
   return (

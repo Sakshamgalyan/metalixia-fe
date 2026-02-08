@@ -147,9 +147,9 @@ const SendEmailContent = () => {
                 onChange={handleChange}
                 rows={6}
                 label={
-                  <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-2">
                     <AlignLeft size={16} /> Message
-                  </div>
+                  </span>
                 }
                 placeholder="Write your message here..."
                 required
@@ -160,9 +160,9 @@ const SendEmailContent = () => {
                 onChange={setFiles}
                 maxSize={10}
                 label={
-                  <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                  <span className="inline-flex items-center gap-2 text-sm font-medium text-slate-700">
                     <FileIcon size={16} /> Attachments
-                  </div>
+                  </span>
                 }
               />
 

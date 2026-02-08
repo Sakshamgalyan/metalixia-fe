@@ -135,7 +135,7 @@ const Input = ({
     <div className={`${fullWidth ? "w-full" : "w-auto"}`}>
       {/* Label */}
       {label && (
-        <label className="block text-sm font-regular text-slate-700 ml-1">
+        <label className="block text-sm font-regular text-slate-700 mb-1 ml-1">
           {label}{" "}
           {restProps.required && <span className="text-red-500">*</span>}
         </label>

@@ -1,7 +1,7 @@
-import AttendanceView from "@/components/dashboard/Attendance/AttendanceView";
+import Attendance from "@/components/dashboard/Employees/Attendance/Attendance";
 
-const AttendancePage = () => {
-  return <AttendanceView />;
+const page = () => {
+  return <Attendance />;
 };
 
-export default AttendancePage;
+export default page;

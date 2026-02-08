@@ -106,12 +106,14 @@ export const columns = (
         <Button
           size="sm"
           leftIcon={<ArrowDown />}
+          disabled={item.status === "rejected"}
           onClick={() => onDownload(item)}
         />
         <Button
           variant="danger"
           size="sm"
           leftIcon={<TrashIcon />}
+          disabled={item.status === "mailed" || item.status === "rejected"}
           onClick={() => onDelete(item)}
         />
       </div>
