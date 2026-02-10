@@ -6,6 +6,7 @@ import {
   ProfileResponse,
   RegisterPayload,
   RegisterResponse,
+  VerifyOtpPayload,
 } from "./type";
 
 export const loginApi = async (data: LoginPayload) => {
@@ -70,4 +71,40 @@ export const logoutApi = async () => {
 export const profileApi = async () => {
   const response: ProfileResponse = await ApiClient.get("/auth/profile");
   return response.user;
+};
+
+export const sendOtpApi = async (data: { email: string }) => {
+  try {
+    const response = await ApiClient.post("/email/send-otp", data);
+    toast.success("OTP Sent", {
+      description: "Please check your email for the verification code.",
+      duration: 3000,
+    });
+    return response;
+  } catch (error: any) {
+    toast.error("Failed to send OTP", {
+      description:
+        error?.response?.data?.message || "Could not send verification email. Please try again.",
+      duration: 4000,
+    });
+    throw error;
+  }
+};
+
+export const verifyOtpApi = async (data: VerifyOtpPayload) => {
+  try {
+    const response = await ApiClient.post("/email/verify-otp", data);
+    toast.success("Verification Successful", {
+      description: "Your email has been verified! 🎉",
+      duration: 3000,
+    });
+    return response;
+  } catch (error: any) {
+    toast.error("Verification Failed", {
+      description:
+        error?.response?.data?.message || "Invalid or expired OTP. Please try again.",
+      duration: 4000,
+    });
+    throw error;
+  }
 };

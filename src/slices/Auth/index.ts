@@ -9,6 +9,12 @@ export const getProfile = createAsyncThunk(
             const response = await profileApi();
             return response;
         } catch (error: any) {
+            const status = error?.response?.status;
+            if (status && status !== 200) {
+                if (typeof window !== 'undefined') {
+                    window.location.href = '/sign-in';
+                }
+            }
             return rejectWithValue(error?.message || 'Failed to fetch profile');
         }
     }

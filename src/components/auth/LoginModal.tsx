@@ -6,13 +6,13 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import Typography from "@/components/UI/Typography";
 import Input from "@/components/UI/Input";
 import Button from "@/components/UI/Button";
-import { loginApi } from "@/ApiClient/Auth/auth";
+import { loginApi, profileApi, sendOtpApi } from "@/ApiClient/Auth/auth";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store";
-import { setError } from "@/slices/Auth";
+import { setError, setUser } from "@/slices/Auth";
 import { useRouter } from "next/navigation";
 
-const LoginModal = () => {
+const LoginModal = ({ onVerificationNeeded }: { onVerificationNeeded?: () => void }) => {
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
     const [identifier, setIdentifier] = useState("");
@@ -25,11 +25,46 @@ const LoginModal = () => {
         try {
             const response = await loginApi({ identifier, password });
             if (response.status === "success") {
-                router.push("/");
+                const user = await profileApi();
+
+                dispatch(setUser(user));
+
+                if (user.isVerified) {
+                    router.push("/");
+                } else {
+                    if (onVerificationNeeded) {
+                        try {
+                            await sendOtpApi({ email: user.email });
+                            onVerificationNeeded();
+                        } catch (otpError) {
+                            console.error("Failed to send OTP:", otpError);
+                            onVerificationNeeded();
+                        }
+                    } else {
+                        router.push("/not-access");
+                    }
+                }
             } else {
-                dispatch(setError(response.message));   
+                dispatch(setError(response.message));
             }
         } catch (error: any) {
+            if (error?.response?.status === 401 &&
+                error?.response?.data?.message === "Email not verified. Please verify your email to continue."
+            ) {
+                if (onVerificationNeeded) {
+                    try {
+                        const email = identifier;
+                        await sendOtpApi({ email });
+                        dispatch(setUser({ email } as any));
+
+                        onVerificationNeeded();
+                        return;
+                    } catch (otpError) {
+                        console.error("Failed to send OTP:", otpError);
+                    }
+                }
+            }
+
             dispatch(setError(error?.message || "An error occurred during login"));
         } finally {
             setIsLoading(false);

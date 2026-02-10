@@ -32,5 +32,25 @@ export interface ProfileResponse {
     mobileNo: string;
     employeeId: string;
     post: string;
+    isVerified: boolean;
   };
+}
+
+export interface VerifyOtpPayload {
+  email: string;
+  otp: string;
+}
+
+export interface VerifyOtpResponse {
+  message: string;
+  status: string;
+}
+
+export interface SendOtpPayload {
+  email: string;
+}
+
+export interface SendOtpResponse {
+  message: string;
+  status: string;
 }
