@@ -11,7 +11,6 @@ import {
   RefreshCw,
   Power,
   Lock,
-  User,
 } from "lucide-react";
 import Typography from "@/components/UI/Typography";
 import Button from "@/components/UI/Button";

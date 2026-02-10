@@ -16,9 +16,8 @@ const apiClient: AxiosInstance = axios.create({
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 || error.response?.status === 500) {
       if (typeof window !== "undefined") {
-        // Only redirect if not already on the sign-in page to avoid loops
         if (window.location.pathname !== "/sign-in") {
           window.location.href = "/sign-in";
         }
