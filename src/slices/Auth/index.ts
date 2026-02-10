@@ -24,16 +24,16 @@ export const logout = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
+      document.cookie =
+        "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie =
+        "refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+      document.cookie =
+        "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.galyan.in";
+      document.cookie =
+        "refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.galyan.in";
       await logoutApi();
-
-      // Clear cookies on client side
-      if (typeof document !== "undefined") {
-        document.cookie =
-          "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.galyan.in";
-        document.cookie =
-          "refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.galyan.in";
-      }
-
       return null;
     } catch (error: any) {
       return rejectWithValue(error?.message || "Logout failed");
