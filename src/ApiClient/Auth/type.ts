@@ -33,6 +33,9 @@ export interface ProfileResponse {
     employeeId: string;
     post: string;
     isVerified: boolean;
+    profilePicture: string;
+    description: string;
+    address: string;
   };
 }
 

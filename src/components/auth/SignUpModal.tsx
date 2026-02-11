@@ -9,6 +9,14 @@ import {
   EyeOff,
   User,
   ArrowRight,
+  User2,
+  User2Icon,
+  Users,
+  Briefcase,
+  CheckCircle,
+  Factory,
+  Wrench,
+  FlaskConical,
 } from "lucide-react";
 import Typography from "@/components/UI/Typography";
 import Input from "@/components/UI/Input";
@@ -136,6 +144,23 @@ const SignUpModal = () => {
             onChange={(value) => setPost(value as string)}
             placeholder="Select your department"
             size="sm"
+            leftIcon={
+              post === "hr" ? (
+                <Users className="w-4 h-4 text-slate-400" />
+              ) : post === "manager" ? (
+                <Briefcase className="w-4 h-4 text-slate-400" />
+              ) : post === "quality" ? (
+                <CheckCircle className="w-4 h-4 text-slate-400" />
+              ) : post === "production" ? (
+                <Factory className="w-4 h-4 text-slate-400" />
+              ) : post === "maintenance" ? (
+                <Wrench className="w-4 h-4 text-slate-400" />
+              ) : post === "labIncharge" ? (
+                <FlaskConical className="w-4 h-4 text-slate-400" />
+              ) : (
+                <Users className="w-4 h-4 text-slate-400" />
+              )
+            }
             options={[
               { value: "hr", label: "HR" },
               { value: "manager", label: "Manager" },
@@ -204,7 +229,7 @@ const SignUpModal = () => {
           size="md"
           fullWidth
           onClick={handleSubmit}
-          disabled={loading}
+          disabled={loading || !agreeToTerms || !post || !mobileNo || !name || !email || !password || !confirmPassword}
           isLoading={loading}
           loadingText="Creating..."
         >

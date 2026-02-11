@@ -26,16 +26,12 @@ const LoginModal = ({ onVerificationNeeded, onForgotPassword }: { onVerification
             toast.error("Please enter your email address first");
             return;
         }
-
-        setIsLoading(true);
         try {
             await forgotPasswordApi({ email: identifier });
             dispatch(setUser({ email: identifier } as any));
             if (onForgotPassword) onForgotPassword();
         } catch (error) {
             console.error("Forgot password error:", error);
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -108,11 +104,11 @@ const LoginModal = ({ onVerificationNeeded, onForgotPassword }: { onVerification
 
             <div className="space-y-4">
                 <Input
-                    type="text"
+                    type="email"
                     value={identifier}
-                    label="Email Address / Phone Number"
+                    label="Email Address"
                     onChange={(e) => setIdentifier(e.target.value)}
-                    placeholder="user@metalixia.com / 1234567890"
+                    placeholder="user@metalixia.com"
                     required
                     size="sm"
                     leftIcon={<Mail className="w-4 h-4 text-slate-400" />}
@@ -150,7 +146,7 @@ const LoginModal = ({ onVerificationNeeded, onForgotPassword }: { onVerification
                     size="md"
                     fullWidth
                     onClick={handleSubmit}
-                    disabled={isLoading}
+                    disabled={isLoading || !identifier || !password}
                     isLoading={isLoading}
                     loadingText="Logging in..."
 
