@@ -21,11 +21,11 @@ const FormPanel = ({ activeTab, setActiveTab }: { activeTab: "login" | "signup" 
                 <Factory className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
             </div>
             <div className="flex flex-col">
-                <Typography variant="h4" weight="semibold" className="leading-tight">
+                <Typography variant="h1" weight="semibold" className="leading-tight">
                     Metalixia
                 </Typography>
                 <Typography variant="p" weight="normal" textColor="#5a67ba" className="text-[10px] sm:text-xs leading-tight">
-                    Refining Works Factory
+                    Electronic Metal Refining Works
                 </Typography>
             </div>
         </div>

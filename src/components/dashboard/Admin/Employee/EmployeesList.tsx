@@ -19,7 +19,6 @@ import NoDataState from "@/components/Common/NoDataState";
 import FilterModal from "./FilterModal";
 import { getColumns } from "./Constants";
 import EmployeeModal from "./EmployeeModal";
-import { toast } from "sonner";
 import DeleteModal from "./DeleteModal";
 
 const EmployeesList = () => {
