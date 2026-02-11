@@ -144,7 +144,7 @@ const Attendance = () => {
   };
 
   return (
-    <div className="px-3 py-5 w-[95%] mx-auto space-y-8">
+    <div className="px-4 py-6 md:px-6 md:py-10 w-full mx-auto space-y-8">
       <div className="space-y-2">
         <Typography variant="h4">Attendance Calendar & Leave</Typography>
         <Typography className="text-slate-500 text-sm">

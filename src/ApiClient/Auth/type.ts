@@ -54,3 +54,14 @@ export interface SendOtpResponse {
   message: string;
   status: string;
 }
+
+export interface ResetPasswordPayload {
+  email: string;
+  otp: string;
+  password: string;
+}
+
+export interface ResetPasswordResponse {
+  message: string;
+  status: string;
+}

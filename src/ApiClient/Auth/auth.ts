@@ -6,6 +6,8 @@ import {
   ProfileResponse,
   RegisterPayload,
   RegisterResponse,
+  ResetPasswordPayload,
+  ResetPasswordResponse,
   VerifyOtpPayload,
 } from "./type";
 
@@ -103,6 +105,45 @@ export const verifyOtpApi = async (data: VerifyOtpPayload) => {
     toast.error("Verification Failed", {
       description:
         error?.response?.data?.message || "Invalid or expired OTP. Please try again.",
+      duration: 4000,
+    });
+    throw error;
+  }
+};
+
+export const forgotPasswordApi = async (data: { email: string }) => {
+  try {
+    const response = await ApiClient.post("/auth/forgot-password", data);
+    toast.success("OTP Sent", {
+      description: "Please check your email for the recovery code.",
+      duration: 3000,
+    });
+    return response;
+  } catch (error: any) {
+    toast.error("Process Failed", {
+      description:
+        error?.response?.data?.message || "Could not send recovery email. Please try again.",
+      duration: 4000,
+    });
+    throw error;
+  }
+};
+
+export const resetPasswordApi = async (data: ResetPasswordPayload) => {
+  try {
+    const response: ResetPasswordResponse = await ApiClient.post(
+      "/auth/reset-password",
+      data,
+    );
+    toast.success("Password Updated", {
+      description: "Your password has been reset successfully! 🔑",
+      duration: 3000,
+    });
+    return response;
+  } catch (error: any) {
+    toast.error("Reset Failed", {
+      description:
+        error?.response?.data?.message || "Invalid OTP or error resetting password.",
       duration: 4000,
     });
     throw error;

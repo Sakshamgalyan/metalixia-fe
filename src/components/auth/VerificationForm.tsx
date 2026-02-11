@@ -11,7 +11,7 @@ import { AppDispatch, RootState } from "@/store";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-const VerificationForm = () => {
+const VerificationForm = ({ onVerified }: { onVerified?: () => void }) => {
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
     const { user } = useSelector((state: RootState) => state.auth);
@@ -90,7 +90,12 @@ const VerificationForm = () => {
             });
 
             if ((response as any).status === "success") {
-                router.push("/");
+                if (onVerified) {
+                    sessionStorage.setItem("reset_otp", otpString);
+                    onVerified();
+                } else {
+                    router.push("/");
+                }
             }
         } catch (error: any) {
             console.error("Verification error:", error);

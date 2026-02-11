@@ -77,15 +77,15 @@ const EmployeesList = () => {
   const columns = getColumns(handleEdit, handleDelete);
 
   return (
-    <div className="px-6 py-10">
-      <div className="flex justify-between items-center mb-6">
+    <div className="px-4 py-6 md:px-6 md:py-10">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div className="flex flex-col gap-1">
           <Typography variant="h2">Employees</Typography>
           <Typography variant="p" className="text-slate-500">
             Manage your team members
           </Typography>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
           <FilterModal
             trigger={
               <Button variant="secondary" size="sm" leftIcon={<FunnelIcon />}>

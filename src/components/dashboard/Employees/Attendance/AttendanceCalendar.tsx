@@ -112,9 +112,9 @@ const AttendanceCalendar = ({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center bg-white rounded-lg border border-slate-200 p-1">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full md:w-auto">
+          <div className="flex items-center bg-white rounded-lg border border-slate-200 p-1 w-full sm:w-auto justify-between sm:justify-start">
             <button
               onClick={prevMonth}
               className="p-1 hover:bg-slate-100 rounded-md transition-colors text-slate-600"
@@ -132,7 +132,7 @@ const AttendanceCalendar = ({
             </button>
           </div>
 
-          <div className="flex gap-3 text-xs">
+          <div className="flex flex-wrap gap-3 text-xs">
             <div className="flex items-center gap-1">
               <div className="w-3 h-3 bg-green-100 border border-green-200 rounded-sm"></div>{" "}
               Present
@@ -152,80 +152,84 @@ const AttendanceCalendar = ({
           onClick={() => setIsLeaveModalOpen(true)}
           leftIcon={<Plus size={16} />}
           size="sm"
+          className="w-full md:w-auto"
         >
           Apply Leave
         </Button>
       </div>
 
       <Card padding="none" className="overflow-hidden">
-        {/* Days Header */}
-        <div className="grid grid-cols-7 border-b border-slate-200 bg-slate-50">
-          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-            <div
-              key={day}
-              className="py-3 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider"
-            >
-              {day}
+        <div className="overflow-x-auto">
+          <div className="min-w-[800px]">
+            {/* Days Header */}
+            <div className="grid grid-cols-7 border-b border-slate-200 bg-slate-50">
+              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+                <div
+                  key={day}
+                  className="py-3 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider"
+                >
+                  {day}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* Calendar Grid */}
-        <div className="grid grid-cols-7 divide-x divide-y divide-slate-200 bg-white">
-          {calendarDays.map((day, dayIdx) => {
-            const isCurrentMonth = isSameMonth(day, monthStart);
-            const isToday = isSameDay(day, new Date());
-            const record = getDayStatus(day);
-            const statusClass = record
-              ? statusColors[record.status] || "bg-slate-50 text-slate-500"
-              : "";
+            {/* Calendar Grid */}
+            <div className="grid grid-cols-7 divide-x divide-y divide-slate-200 bg-white">
+              {calendarDays.map((day, dayIdx) => {
+                const isCurrentMonth = isSameMonth(day, monthStart);
+                const isToday = isSameDay(day, new Date());
+                const record = getDayStatus(day);
+                const statusClass = record
+                  ? statusColors[record.status] || "bg-slate-50 text-slate-500"
+                  : "";
 
-            return (
-              <div
-                key={day.toString()}
-                className={`
+                return (
+                  <div
+                    key={day.toString()}
+                    className={`
                   min-h-[100px] p-2 flex flex-col gap-1 transition-colors
                   ${!isCurrentMonth ? "bg-slate-50/50" : "bg-white"}
                   ${isToday ? "bg-blue-50/30" : ""}
                 `}
-              >
-                <div className="flex justify-between items-start">
-                  <span
-                    className={`
+                  >
+                    <div className="flex justify-between items-start">
+                      <span
+                        className={`
                     text-sm font-medium w-7 h-7 flex items-center justify-center rounded-full
-                    ${
-                      isToday
-                        ? "bg-[#707FDD] text-white"
-                        : !isCurrentMonth
-                          ? "text-slate-400"
-                          : "text-slate-700"
-                    }
+                    ${isToday
+                            ? "bg-[#707FDD] text-white"
+                            : !isCurrentMonth
+                              ? "text-slate-400"
+                              : "text-slate-700"
+                          }
                   `}
-                  >
-                    {format(day, "d")}
-                  </span>
-                </div>
+                      >
+                        {format(day, "d")}
+                      </span>
+                    </div>
 
-                {record && (
-                  <div
-                    className={`text-xs p-1.5 rounded border mt-auto mb-1 ${statusClass}`}
-                  >
-                    <div className="font-semibold">{record.status}</div>
-                    {record.inTime && (
-                      <div className="opacity-80 text-[10px]">
-                        In: {record.inTime}
-                      </div>
-                    )}
-                    {record.outTime && (
-                      <div className="opacity-80 text-[10px]">
-                        Out: {record.outTime}
+                    {record && (
+                      <div
+                        className={`text-xs p-1.5 rounded border mt-auto mb-1 ${statusClass}`}
+                      >
+                        <div className="font-semibold">{record.status}</div>
+                        {record.inTime && (
+                          <div className="opacity-80 text-[10px]">
+                            In: {record.inTime}
+                          </div>
+                        )}
+                        {record.outTime && (
+                          <div className="opacity-80 text-[10px]">
+                            Out: {record.outTime}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          </div>
         </div>
       </Card>
 

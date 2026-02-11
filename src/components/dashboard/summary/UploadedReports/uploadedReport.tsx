@@ -64,15 +64,15 @@ const UploadedReport = () => {
   };
 
   return (
-    <div className="px-6 py-10">
-      <div className="flex justify-between items-center">
-        <div className="flex flex-col gap-1 mb-6">
+    <div className="px-4 py-6 md:px-6 md:py-10">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <div className="flex flex-col gap-1">
           <Typography variant="h2">Uploaded Reports</Typography>
           <Typography variant="p" className="text-slate-500">
             List of uploaded reports
           </Typography>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
           <Button onClick={handleMailedReports} size="sm">
             Mailed Reports
           </Button>

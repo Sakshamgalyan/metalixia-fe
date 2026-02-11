@@ -6,19 +6,38 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import Typography from "@/components/UI/Typography";
 import Input from "@/components/UI/Input";
 import Button from "@/components/UI/Button";
-import { loginApi, profileApi, sendOtpApi } from "@/ApiClient/Auth/auth";
+import { forgotPasswordApi, loginApi, profileApi, sendOtpApi } from "@/ApiClient/Auth/auth";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store";
 import { setError, setUser } from "@/slices/Auth";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
-const LoginModal = ({ onVerificationNeeded }: { onVerificationNeeded?: () => void }) => {
+const LoginModal = ({ onVerificationNeeded, onForgotPassword }: { onVerificationNeeded?: () => void, onForgotPassword?: () => void }) => {
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
     const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
+    const handleForgotPassword = async () => {
+        if (!identifier) {
+            toast.error("Please enter your email address first");
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            await forgotPasswordApi({ email: identifier });
+            dispatch(setUser({ email: identifier } as any));
+            if (onForgotPassword) onForgotPassword();
+        } catch (error) {
+            console.error("Forgot password error:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const handleSubmit = async () => {
         setIsLoading(true);
@@ -120,6 +139,7 @@ const LoginModal = ({ onVerificationNeeded }: { onVerificationNeeded?: () => voi
                         className="text-sm transition-colors duration-200"
                         onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
                         onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+                        onClick={handleForgotPassword}
                     >
                         Forgot password?
                     </Button>
