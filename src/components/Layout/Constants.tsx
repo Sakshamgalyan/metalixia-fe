@@ -13,6 +13,7 @@ import {
   Search,
   Send,
   Settings,
+  ShoppingCart,
   Truck,
   Upload,
   Users,
@@ -82,6 +83,12 @@ export const menuItems: MenuItem[] = [
         icon: <Factory className="w-5 h-5" />,
         label: "Production",
         href: "/summary/production",
+        visible: ["superAdmin", "reportAdmin", "hr", "quality", "manager", "maintenance"],
+      },
+      {
+        icon: <ShoppingCart className="w-5 h-5" />,
+        label: "Inventory",
+        href: "/summary/inventory",
         visible: ["superAdmin", "reportAdmin", "hr", "quality", "manager", "maintenance"],
       },
       {
