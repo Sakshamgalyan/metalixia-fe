@@ -1,21 +1,20 @@
 export enum AllRoles {
-    SUPERADMIN = "superAdmin",
-    REPORTADMIN = "reportAdmin",
-    HR = "hr",
-    QUALITY = "quality",
-    MANAGER = "manager",
-    EMPLOYEE = "employee",
-    MAINTENANCE = "maintenance",
-    USER = "user",
+    SUPERADMIN = "SuperAdmin",
+    REPORTADMIN = "ReportAdmin",
+    HR = "HR",
+    QUALITY = "Quality",
+    MANAGER = "Manager",
+    EMPLOYEE = "Employee",
+    MAINTENANCE = "Maintenance",
+    USER = "User",
 }
 
-export enum AllPosts {
-    SUPERADMIN = "superAdmin",
-    REPORTADMIN = "reportAdmin",
-    HR = "hr",
-    QUALITY = "quality",
-    MANAGER = "manager",
-    EMPLOYEE = "employee",
-    MAINTENANCE = "maintenance",
-    USER = "user",
+export const AllPosts = {
+    OWNER : "Owner",
+    MANAGER : "Manager",
+    HR : "HR",
+    QUALITY : "Quality",
+    EMPLOYEE : "Employee",
+    MAINTENANCE : "Maintenance",
+    USER : "User",
 }
