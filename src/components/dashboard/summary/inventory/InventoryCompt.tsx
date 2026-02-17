@@ -172,7 +172,7 @@ const InventoryCompt = () => {
       accessor: "price",
       render: (row) => (
         <span className="font-medium text-slate-700">
-          ${row.price.toLocaleString()}
+          ${row.price.toLocaleString("en-US")}
         </span>
       ),
     },
@@ -243,7 +243,7 @@ const InventoryCompt = () => {
       value: `$${MOCK_INVENTORY.reduce(
         (acc, item) => acc + item.stock * item.price,
         0,
-      ).toLocaleString()}`,
+      ).toLocaleString("en-US", { maximumFractionDigits: 2 })}`,
       icon: <DollarSign className="text-emerald-500" />,
       change: "+8.5%",
       color: "bg-emerald-50",
