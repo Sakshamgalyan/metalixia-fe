@@ -112,7 +112,7 @@ const SearchEmployeeView = () => {
       production: "Production",
       maintenance: "Maintenance",
       labIncharge: "Lab Incharge",
-      superAdmin: "Super Admin",
+      Owner: "Owner", 
       employee: "Employee",
     };
     return postMap[post] || post;
@@ -126,7 +126,7 @@ const SearchEmployeeView = () => {
       production: "bg-orange-100 text-orange-700",
       maintenance: "bg-yellow-100 text-yellow-700",
       labIncharge: "bg-pink-100 text-pink-700",
-      superAdmin: "bg-red-100 text-red-700",
+      Owner: "bg-red-100 text-red-700",
       employee: "bg-slate-100 text-slate-700",
     };
     return colorMap[post] || "bg-slate-100 text-slate-700";
