@@ -53,14 +53,14 @@ const PayslipUpload = () => {
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    // if (!selectedEmployee) {
-    //   toast.error("Please select an employee");
-    //   return;
-    // }
-    // if (!month || !year) {
-    //   toast.error("Please select month and year");
-    //   return;
-    // }
+    if (!selectedEmployee) {
+      toast.error("Please select an employee");
+      return;
+    }
+    if (!month || !year) {
+      toast.error("Please select month and year");
+      return;
+    }
     if (editingId) {
       // await updatePayslipAp(
       //   dispatch,
