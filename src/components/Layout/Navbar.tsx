@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { User, Settings, LogOut } from "lucide-react";
 import Accordion from "../UI/Accordion";
 import Typography from "../UI/Typography";
@@ -7,11 +8,13 @@ import Button from "../UI/Button";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { logout } from "@/slices/Auth";
 import { useRouter } from "next/navigation";
+import ProfileModal from "./ProfileModal";
 
 const Navbar = () => {
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -23,7 +26,7 @@ const Navbar = () => {
   };
 
   const handleProfile = () => {
-    router.push("/profile");
+    setIsProfileModalOpen(true);
   };
 
   const handleSettings = () => {
@@ -100,6 +103,10 @@ const Navbar = () => {
           </Accordion>
         </div>
       </div>
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+      />
     </nav>
   );
 };

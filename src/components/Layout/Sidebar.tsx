@@ -10,11 +10,10 @@ import { menuItems } from "./Constants";
 import { useAppSelector } from "@/store/hooks";
 
 const Sidebar = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, loading } = useAppSelector((state) => state.auth);
   const role = user?.role;
 
   useEffect(() => {
@@ -30,14 +29,7 @@ const Sidebar = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    // const timer = setTimeout(() => {
-    //   setIsLoading(false);
-    // }, 1000);
-    // return () => clearTimeout(timer);
-  }, []);
-
-  if (isLoading) {
+  if (loading || !user) {
     return (
       <div
         className={`h-screen bg-slate-50 border-r border-slate-200 p-4 transition-all duration-300 ${isCollapsed ? "w-20" : "w-64"}`}
@@ -146,15 +138,18 @@ const Sidebar = () => {
                       fullWidth
                       leftIcon={
                         <span
-                          className={isActive ? "text-[#5a67ba]" : "text-slate-400"}
+                          className={
+                            isActive ? "text-[#5a67ba]" : "text-slate-400"
+                          }
                         >
                           {item.icon}
                         </span>
                       }
-                      className={`${isActive
-                        ? "!bg-[#a3adf3ff]/20 !text-[#5a67ba] hover:!bg-[#a3adf3ff]/30"
-                        : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
-                        } ${isCollapsed ? "justify-center pr-9 mr-1" : ""}`}
+                      className={`${
+                        isActive
+                          ? "!bg-[#a3adf3ff]/20 !text-[#5a67ba] hover:!bg-[#a3adf3ff]/30"
+                          : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                      } ${isCollapsed ? "justify-center pr-9 mr-1" : ""}`}
                       title={isCollapsed ? item.label : ""}
                       onClick={() => router.push(item.href)}
                     >
