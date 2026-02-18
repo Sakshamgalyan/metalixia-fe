@@ -7,7 +7,6 @@ import {
   Cpu,
   HardDrive,
   Globe,
-  Clock,
   AlertCircle,
   CheckCircle,
   XCircle,
