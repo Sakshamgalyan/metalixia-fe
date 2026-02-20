@@ -169,9 +169,9 @@ const EmployeeModal = ({ isOpen, onClose, employee }: EmployeeModalProps) => {
             <Dropdown
               label="Role"
               placeholder="Select Role"
-              options={Object.values(AllRoles).map((r) => ({
-                label: r,
-                value: r,
+              options={Object.entries(AllRoles).map(([key, label]) => ({
+                label: label,
+                value: key,
               }))}
               value={formData.role ? [formData.role] : []}
               onChange={(val) => handleDropdownChange("role", val)}

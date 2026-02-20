@@ -64,9 +64,9 @@ const FilterModal = ({ trigger }: { trigger: React.ReactNode }) => {
                     label="Role"
                     size="sm"
                     multiple
-                    options={Object.values(AllRoles).map((role) => ({
-                        value: role,
-                        label: role,
+                    options={Object.entries(AllRoles).map(([key, label]) => ({
+                        value: key,
+                        label: label,
                     }))}
                     value={filterRole || []}
                     onChange={(val) =>
@@ -74,7 +74,7 @@ const FilterModal = ({ trigger }: { trigger: React.ReactNode }) => {
                     }
                     placeholder="Select role"
                     showSelectAll
-                    />
+                />
                 <Dropdown
                     label="Post"
                     size="sm"
