@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   Mail,
   Monitor,
+  Package,
   Phone,
   Search,
   Send,
@@ -99,9 +100,15 @@ export const menuItems: MenuItem[] = [
         visible: ["superAdmin", "reportAdmin", "hr", "quality", "manager", "maintenance"],
       },
       {
+        icon: <Package className="w-5 h-5" />,
+        label: "Raw Material",
+        href: "/summary/raw-material",
+        visible: ["superAdmin", "reportAdmin", "hr", "quality", "manager", "maintenance"],
+      },
+      {
         icon: <FileUp className="w-5 h-5" />,
-        label: "Material Incoming",
-        href: "/summary/material-incoming",
+        label: "Company Material",
+        href: "/summary/company-material",
         visible: ["superAdmin", "reportAdmin", "hr", "quality", "manager", "maintenance"],
       },
       {
