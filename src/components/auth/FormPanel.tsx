@@ -7,8 +7,11 @@ import VerificationForm from "./VerificationForm";
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
 import { Factory } from "lucide-react";
 import Typography from "../UI/Typography";
+import { useAuthContext } from "./AuthContext";
 
-const FormPanel = ({ activeTab, setActiveTab }: { activeTab: "login" | "signup" | "verification" | "reset-password"; setActiveTab: (tab: "login" | "signup" | "verification" | "reset-password") => void }) => (
+const FormPanel = () => {
+    const { activeTab, setActiveTab } = useAuthContext();
+    return (
     <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -51,13 +54,13 @@ const FormPanel = ({ activeTab, setActiveTab }: { activeTab: "login" | "signup" 
             <Card variant="elevated">
                 <AnimatePresence mode="wait">
                     {activeTab === "login" ? (
-                        <LoginForm key="login" onVerificationNeeded={() => setActiveTab("verification")} onForgotPassword={() => setActiveTab("verification")} />
+                        <LoginForm key="login" />
                     ) : activeTab === "signup" ? (
                         <SignupForm key="signup" />
                     ) : activeTab === "verification" ? (
-                        <VerificationForm key="verification" onVerified={() => setActiveTab("reset-password")} />
+                        <VerificationForm key="verification" />
                     ) : (
-                        <ResetPasswordForm key="reset-password" onSuccess={() => setActiveTab("login")} />
+                        <ResetPasswordForm key="reset-password" />
                     )}
                 </AnimatePresence>
             </Card>
@@ -70,7 +73,7 @@ const FormPanel = ({ activeTab, setActiveTab }: { activeTab: "login" | "signup" 
             </p>
         </div>
     </motion.div>
-);
+    );
+};
 
 export default FormPanel;
-

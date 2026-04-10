@@ -10,11 +10,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useAuthContext } from "./AuthContext";
 
-const VerificationForm = ({ onVerified }: { onVerified?: () => void }) => {
+const VerificationForm = () => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const { user } = useSelector((state: RootState) => state.auth);
+  const { setActiveTab } = useAuthContext();
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [isLoading, setIsLoading] = useState(false);
@@ -93,12 +95,8 @@ const VerificationForm = ({ onVerified }: { onVerified?: () => void }) => {
       });
 
       if ((response as any).status === "success") {
-        if (onVerified) {
-          sessionStorage.setItem("reset_otp", otpString);
-          onVerified();
-        } else {
-          router.push("/");
-        }
+        sessionStorage.setItem("reset_otp", otpString);
+        setActiveTab("reset-password");
       }
     } catch (error: any) {
       console.error("Verification error:", error);
@@ -208,6 +206,17 @@ const VerificationForm = ({ onVerified }: { onVerified?: () => void }) => {
             Verify Email <ArrowRight className="w-5 h-5" />
           </div>
         </Button>
+        <div className="mt-4 text-center">
+          <Button
+            variant="link"
+            size="sm"
+            type="button"
+            onClick={() => setActiveTab("login")}
+            className="text-slate-500 hover:text-slate-700"
+          >
+            Back to Login
+          </Button>
+        </div>
       </div>
     </motion.div>
   );

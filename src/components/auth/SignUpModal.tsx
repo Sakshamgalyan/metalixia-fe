@@ -27,31 +27,43 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { setError, setLoading } from "@/slices/Auth";
 import { registerApi } from "@/ApiClient/Auth/auth";
+import { useAuthContext } from "./AuthContext";
 
 const SignUpModal = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [mobileNo, setMobileNo] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const { signupForm, setSignupForm, setActiveTab } = useAuthContext();
+  const {
+    name,
+    email,
+    password,
+    mobileNo,
+    confirmPassword,
+    agreeToTerms,
+    post,
+  } = signupForm;
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
-  const [post, setPost] = useState<string>("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  
   const dispatch = useDispatch<AppDispatch>();
   const { loading } = useSelector((state: RootState) => state.auth);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitted(true);
     dispatch(setError(""));
 
-    if (password !== confirmPassword) {
-      dispatch(setError("Passwords do not match"));
-      return;
-    }
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-    if (!agreeToTerms) {
-      dispatch(setError("Please accept the terms and conditions"));
+    if (
+      !name || name.length < 3 ||
+      !email || !isValidEmail ||
+      !mobileNo || mobileNo.length !== 10 ||
+      !post ||
+      !password || password.length < 8 ||
+      password !== confirmPassword ||
+      !agreeToTerms
+    ) {
       return;
     }
 
@@ -67,6 +79,7 @@ const SignUpModal = () => {
       });
       if (response.status === "success") {
         dispatch(setError(""));
+        setActiveTab("login");
       } else {
         dispatch(setError(response.message));
       }
@@ -100,17 +113,21 @@ const SignUpModal = () => {
         </Typography>
       </div>
 
-      <div className="space-y-3">
+      <form onSubmit={handleSubmit} className="space-y-3">
         <Input
           label="Full Name"
           name="name"
           type="text"
           size="sm"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) =>
+            setSignupForm((prev) => ({ ...prev, name: e.target.value }))
+          }
           placeholder="Employee Name"
           required
           leftIcon={<User className="w-4 h-4 text-slate-400" />}
+          hasError={isSubmitted && (!name || name.length < 3)}
+          helperText={isSubmitted && !name ? "Name is required" : isSubmitted && name.length < 3 ? "Name must be at least 3 characters" : undefined}
         />
 
         <Input
@@ -118,10 +135,14 @@ const SignUpModal = () => {
           type="email"
           size="sm"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) =>
+            setSignupForm((prev) => ({ ...prev, email: e.target.value }))
+          }
           placeholder="employee@metalixia.com"
           required
           leftIcon={<Mail className="w-4 h-4 text-slate-400" />}
+          hasError={isSubmitted && (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))}
+          helperText={isSubmitted && !email ? "Email is required" : isSubmitted && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? "Enter a valid email address" : undefined}
         />
 
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 w-full">
@@ -132,16 +153,22 @@ const SignUpModal = () => {
             size="sm"
             fullWidth
             value={mobileNo}
-            onChange={(e) => setMobileNo(e.target.value)}
+            onChange={(e) =>
+              setSignupForm((prev) => ({ ...prev, mobileNo: e.target.value }))
+            }
             placeholder="90XXXXXX90"
             required
             leftIcon={<User className="w-4 h-4 text-slate-400" />}
+            hasError={isSubmitted && (!mobileNo || mobileNo.length !== 10)}
+            helperText={isSubmitted && !mobileNo ? "Mobile number is required" : isSubmitted && mobileNo.length !== 10 ? "Mobile number must be exactly 10 digits" : undefined}
           />
 
           <Dropdown
             label="Department"
             value={post}
-            onChange={(value) => setPost(value as string)}
+            onChange={(value) =>
+              setSignupForm((prev) => ({ ...prev, post: value as string }))
+            }
             placeholder="Select your department"
             size="sm"
             leftIcon={
@@ -169,6 +196,8 @@ const SignUpModal = () => {
               { value: "maintenance", label: "Maintenance" },
               { value: "labIncharge", label: "Lab Incharge" },
             ]}
+            hasError={isSubmitted && !post}
+            errorMessage={isSubmitted && !post ? "Department is required" : undefined}
           />
         </div>
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 w-full">
@@ -176,7 +205,9 @@ const SignUpModal = () => {
             label="Password"
             type={showPassword ? "text" : "password"}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) =>
+              setSignupForm((prev) => ({ ...prev, password: e.target.value }))
+            }
             placeholder="Enter your password"
             size="sm"
             fullWidth
@@ -190,6 +221,8 @@ const SignUpModal = () => {
               )
             }
             onRightIconClick={() => setShowPassword(!showPassword)}
+            hasError={isSubmitted && (!password || password.length < 8)}
+            helperText={isSubmitted && !password ? "Password is required" : isSubmitted && password.length < 8 ? "Password must be at least 8 characters" : undefined}
           />
 
           <Input
@@ -197,7 +230,12 @@ const SignUpModal = () => {
             name="confirmPassword"
             type={showConfirmPassword ? "text" : "password"}
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) =>
+              setSignupForm((prev) => ({
+                ...prev,
+                confirmPassword: e.target.value,
+              }))
+            }
             placeholder="Confirm your password"
             size="sm"
             fullWidth
@@ -213,6 +251,8 @@ const SignUpModal = () => {
             onRightIconClick={() =>
               setShowConfirmPassword(!showConfirmPassword)
             }
+            hasError={isSubmitted && (!confirmPassword || password !== confirmPassword)}
+            helperText={isSubmitted && !confirmPassword ? "Please confirm your password" : isSubmitted && password !== confirmPassword ? "Passwords do not match" : undefined}
           />
         </div>
         <div className="my-4 mx-1">
@@ -220,7 +260,12 @@ const SignUpModal = () => {
             label="I agree to the Terms & Conditions"
             size="sm"
             checked={agreeToTerms}
-            onChange={() => setAgreeToTerms(!agreeToTerms)}
+            onChange={() =>
+              setSignupForm((prev) => ({
+                ...prev,
+                agreeToTerms: !prev.agreeToTerms,
+              }))
+            }
           />
         </div>
 
@@ -228,8 +273,8 @@ const SignUpModal = () => {
           variant="primary"
           size="md"
           fullWidth
-          onClick={handleSubmit}
-          disabled={loading || !agreeToTerms || !post || !mobileNo || !name || !email || !password || !confirmPassword}
+          type="submit"
+          disabled={loading || !agreeToTerms}
           isLoading={loading}
           loadingText="Creating..."
         >
@@ -237,7 +282,7 @@ const SignUpModal = () => {
             Create an Account <ArrowRight className="w-5 h-5" />
           </div>
         </Button>
-      </div>
+      </form>
     </motion.div>
   );
 };

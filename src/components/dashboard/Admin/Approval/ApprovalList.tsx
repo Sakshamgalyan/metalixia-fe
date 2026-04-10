@@ -54,7 +54,12 @@ const ApprovalList = () => {
   const handleDelete = async (user: any) => {
     try {
       await deleteEmployee(user.id);
-      fetchUsers();
+      const payload = {
+        page: currentPage,  
+        limit: 10,
+        role: ["user"],
+      };
+      fetchUsers(payload);
     } catch (error) {
       console.error("Failed to delete user", error);
     }

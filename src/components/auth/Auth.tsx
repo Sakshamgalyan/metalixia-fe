@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import DecorativePanel from "./DecorativePanel";
 import FormPanel from "./FormPanel";
+import { AuthProvider, useAuthContext } from "./AuthContext";
 
-const Auth = () => {
-  const [activeTab, setActiveTab] = useState<"login" | "signup" | "verification" | "reset-password">("login");
+const AuthContent = () => {
+  const { activeTab } = useAuthContext();
 
   return (
     <div className="min-h-screen w-full bg-white">
@@ -16,7 +16,7 @@ const Auth = () => {
             {activeTab === "login" || activeTab === "verification" || activeTab === "reset-password" ? (
               <DecorativePanel side="login" />
             ) : (
-              <FormPanel activeTab={activeTab} setActiveTab={setActiveTab} />
+              <FormPanel />
             )}
           </AnimatePresence>
         </div>
@@ -25,7 +25,7 @@ const Auth = () => {
         <div className="relative overflow-hidden min-h-screen">
           <AnimatePresence mode="wait">
             {activeTab === "login" || activeTab === "verification" || activeTab === "reset-password" ? (
-              <FormPanel activeTab={activeTab} setActiveTab={setActiveTab} />
+              <FormPanel />
             ) : (
               <>
                 {/* Show DecorativePanel only on large screens */}
@@ -34,10 +34,7 @@ const Auth = () => {
                 </div>
                 {/* Show FormPanel on mobile */}
                 <div className="lg:hidden h-full">
-                  <FormPanel
-                    activeTab={activeTab}
-                    setActiveTab={setActiveTab}
-                  />
+                  <FormPanel />
                 </div>
               </>
             )}
@@ -45,6 +42,14 @@ const Auth = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const Auth = () => {
+  return (
+    <AuthProvider>
+      <AuthContent />
+    </AuthProvider>
   );
 };
 

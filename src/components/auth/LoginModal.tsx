@@ -12,14 +12,16 @@ import { AppDispatch } from "@/store";
 import { setError, setUser } from "@/slices/Auth";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useAuthContext } from "./AuthContext";
 
-const LoginModal = ({ onVerificationNeeded, onForgotPassword }: { onVerificationNeeded?: () => void, onForgotPassword?: () => void }) => {
+const LoginModal = () => {
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
-    const [identifier, setIdentifier] = useState("");
-    const [password, setPassword] = useState("");
+    const { loginForm, setLoginForm, setActiveTab } = useAuthContext();
+    const { identifier, password } = loginForm;
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const handleForgotPassword = async () => {
         if (!identifier) {
@@ -29,13 +31,16 @@ const LoginModal = ({ onVerificationNeeded, onForgotPassword }: { onVerification
         try {
             await forgotPasswordApi({ email: identifier });
             dispatch(setUser({ email: identifier } as any));
-            if (onForgotPassword) onForgotPassword();
+            setActiveTab("verification");
         } catch (error) {
             console.error("Forgot password error:", error);
         }
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+        setIsSubmitted(true);
+        if (!identifier || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier) || !password || password.length < 8) return;
         setIsLoading(true);
         try {
             const response = await loginApi({ identifier, password });
@@ -47,16 +52,12 @@ const LoginModal = ({ onVerificationNeeded, onForgotPassword }: { onVerification
                 if (user.isVerified) {
                     router.push("/");
                 } else {
-                    if (onVerificationNeeded) {
-                        try {
-                            await sendOtpApi({ email: user.email });
-                            onVerificationNeeded();
-                        } catch (otpError) {
-                            console.error("Failed to send OTP:", otpError);
-                            onVerificationNeeded();
-                        }
-                    } else {
-                        router.push("/not-access");
+                    try {
+                        await sendOtpApi({ email: user.email });
+                        setActiveTab("verification");
+                    } catch (otpError) {
+                        console.error("Failed to send OTP:", otpError);
+                        setActiveTab("verification");
                     }
                 }
             } else {
@@ -66,17 +67,15 @@ const LoginModal = ({ onVerificationNeeded, onForgotPassword }: { onVerification
             if (error?.response?.status === 401 &&
                 error?.response?.data?.message === "Email not verified. Please verify your email to continue."
             ) {
-                if (onVerificationNeeded) {
-                    try {
-                        const email = identifier;
-                        await sendOtpApi({ email });
-                        dispatch(setUser({ email } as any));
+                try {
+                    const email = identifier;
+                    await sendOtpApi({ email });
+                    dispatch(setUser({ email } as any));
 
-                        onVerificationNeeded();
-                        return;
-                    } catch (otpError) {
-                        console.error("Failed to send OTP:", otpError);
-                    }
+                    setActiveTab("verification");
+                    return;
+                } catch (otpError) {
+                    console.error("Failed to send OTP:", otpError);
                 }
             }
 
@@ -102,29 +101,33 @@ const LoginModal = ({ onVerificationNeeded, onForgotPassword }: { onVerification
                 </Typography>
             </div>
 
-            <div className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
                 <Input
                     type="email"
                     value={identifier}
                     label="Email Address"
-                    onChange={(e) => setIdentifier(e.target.value)}
+                    onChange={(e) => setLoginForm((prev) => ({ ...prev, identifier: e.target.value }))}
                     placeholder="user@metalixia.com"
                     required
                     size="sm"
                     leftIcon={<Mail className="w-4 h-4 text-slate-400" />}
+                    hasError={isSubmitted && (!identifier || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier))}
+                    helperText={isSubmitted && !identifier ? "Email is required" : identifier && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier) ? "Enter a valid email address" : undefined}
                 />
 
                 <Input
                     type={showPassword ? "text" : "password"}
                     value={password}
                     label="Password"
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => setLoginForm((prev) => ({ ...prev, password: e.target.value }))}
                     placeholder="Enter your password"
                     required
                     size="sm"
                     leftIcon={<Lock className="w-4 h-4 text-slate-400" />}
                     rightIcon={showPassword ? <EyeOff className="w-4 h-4 text-slate-400" /> : <Eye className="w-4 h-4 text-slate-400" />}
                     onRightIconClick={() => setShowPassword(!showPassword)}
+                    hasError={isSubmitted && (!password || password.length < 8)}
+                    helperText={isSubmitted && !password ? "Password is required" : password && password.length < 8 ? "Password must be at least 8 characters" : undefined}
                 />
 
                 <div className="flex items-center justify-end">
@@ -145,8 +148,8 @@ const LoginModal = ({ onVerificationNeeded, onForgotPassword }: { onVerification
                     variant="primary"
                     size="md"
                     fullWidth
-                    onClick={handleSubmit}
-                    disabled={isLoading || !identifier || !password}
+                    type="submit"
+                    disabled={isLoading}
                     isLoading={isLoading}
                     loadingText="Logging in..."
 
@@ -155,7 +158,7 @@ const LoginModal = ({ onVerificationNeeded, onForgotPassword }: { onVerification
                         Login <ArrowRight className="w-5 h-5" />
                     </div>
                 </Button>
-            </div>
+            </form>
         </motion.div>
     );
 };

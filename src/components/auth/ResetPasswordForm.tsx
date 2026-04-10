@@ -10,13 +10,11 @@ import { resetPasswordApi } from "@/ApiClient/Auth/auth";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { toast } from "sonner";
+import { useAuthContext } from "./AuthContext";
 
-interface ResetPasswordFormProps {
-    onSuccess: () => void;
-}
-
-const ResetPasswordForm = ({ onSuccess }: ResetPasswordFormProps) => {
+const ResetPasswordForm = () => {
     const { user } = useSelector((state: RootState) => state.auth);
+    const { setActiveTab } = useAuthContext();
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -56,7 +54,7 @@ const ResetPasswordForm = ({ onSuccess }: ResetPasswordFormProps) => {
             const otp = sessionStorage.getItem("reset_otp");
             if (!otp) {
                 toast.error("Session expired. Please verify OTP again.");
-                onSuccess(); // Go back to login
+                setActiveTab("login"); // Go back to login
                 return;
             }
 
@@ -68,11 +66,11 @@ const ResetPasswordForm = ({ onSuccess }: ResetPasswordFormProps) => {
 
             if (response.status === "success") {
                 sessionStorage.removeItem("reset_otp");
-                onSuccess();
+                setActiveTab("login");
             }
         } catch (error) {
             console.error("Reset password error:", error);
-        } finally {
+        } finally { 
             setIsLoading(false);
         }
     };
@@ -134,6 +132,17 @@ const ResetPasswordForm = ({ onSuccess }: ResetPasswordFormProps) => {
                         Reset Password <ArrowRight className="w-5 h-5" />
                     </div>
                 </Button>
+                <div className="mt-4 text-center">
+                    <Button
+                        variant="link"
+                        size="sm"
+                        type="button"
+                        onClick={() => setActiveTab("login")}
+                        className="text-slate-500 hover:text-slate-700"
+                    >
+                        Back to Login
+                    </Button>
+                </div>
             </div>
         </motion.div>
     );
