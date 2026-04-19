@@ -22,7 +22,8 @@ export interface DropdownProps {
   label?: React.ReactNode;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
-  size?: "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg";
+  variant?: "default" | "ghost" | "inline";
   disabled?: boolean;
   multiple?: boolean;
   searchable?: boolean;
@@ -51,6 +52,7 @@ const Dropdown = ({
   leftIcon,
   rightIcon,
   size = "sm",
+  variant = "default",
   disabled = false,
   multiple = false,
   searchable = false,
@@ -75,9 +77,19 @@ const Dropdown = ({
 
   // Size variants
   const sizeClasses = {
+    xs: "text-xs py-1 px-1.5 min-h-[28px]",
     sm: "text-sm py-2 px-3",
     md: "text-base py-3 px-4",
     lg: "text-lg py-4 px-5",
+  };
+
+  // Style variants
+  const variantClasses = {
+    default: hasError
+      ? "bg-white border rounded-lg border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200"
+      : "bg-white border rounded-lg border-slate-300 focus:border-slate-500 focus:ring-2 focus:ring-slate-200 hover:border-slate-400",
+    ghost: "bg-transparent border-transparent hover:bg-slate-100 rounded-lg",
+    inline: "bg-transparent border-none outline-none appearance-none cursor-pointer",
   };
 
   // Get selected options
@@ -297,7 +309,7 @@ const Dropdown = ({
         left: menuPosition.left,
         width: dropdownWidth === "100%" ? menuPosition.width : dropdownWidth,
         maxHeight: "300px",
-        zIndex: 9999,
+        zIndex: 9999999, // Extremely high z-index to ensure it renders above datepickers and modals
       }}
       onMouseDown={(e) => e.stopPropagation()}
       onClick={(e) => e.stopPropagation()}
@@ -345,7 +357,7 @@ const Dropdown = ({
       )}
 
       {/* Options list */}
-      <div className="overflow-y-auto custom-scrollbar flex-1">
+      <div className={`overflow-y-auto flex-1 ${size === 'xs' ? '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]' : 'custom-scrollbar'}`}>
         {filteredOptions.length === 0 ? (
           <div className="px-4 py-8 text-center text-sm text-slate-500">
             No options found
@@ -359,7 +371,9 @@ const Dropdown = ({
                 type="button"
                 onClick={() => handleOptionClick(option)}
                 disabled={option.disabled}
-                className={`w-full px-4 py-2.5 text-left flex items-center gap-3 transition-colors ${
+                className={`w-full text-left flex items-center gap-2 transition-colors ${
+                  size === "xs" ? "px-2 py-1.5 text-sm" : "px-4 py-2.5"
+                } ${
                   option.disabled
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:bg-slate-50 cursor-pointer"
@@ -424,14 +438,9 @@ const Dropdown = ({
         className={`
                     w-full flex items-center justify-between gap-2
                     ${sizeClasses[size]}
-                    bg-white border rounded-lg
+                    ${variantClasses[variant]}
                     transition-all duration-200 outline-none
-                    ${
-                      hasError
-                        ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200"
-                        : "border-slate-300 focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
-                    }
-                    ${disabled || loading ? "opacity-50 cursor-not-allowed bg-slate-50" : "cursor-pointer hover:border-slate-400"}
+                    ${disabled || loading ? "opacity-50 cursor-not-allowed bg-slate-50" : "cursor-pointer"}
                 `}
       >
         <div className="flex items-center gap-2 flex-1 min-w-0">

@@ -1,7 +1,7 @@
 import { Dispatch } from "react";
 import ApiClient from "@/lib/apiClient";
 import { toast } from "sonner";
-import { CompanyMaterialAction, CompanyMaterialListResponse } from "./type";
+import { CompanyMaterialAction, CompanyMaterialListResponse, CompanyMaterialStats } from "./type";
 import {
     fetchCompanyMaterialListLoading,
     fetchCompanyMaterialListSuccess,
@@ -9,6 +9,10 @@ import {
     createCompanyMaterialSuccess,
     updateCompanyMaterialReceiverLoading,
     updateCompanyMaterialReceiverSuccess,
+    updateCompanyMaterialLoading,
+    updateCompanyMaterialSuccess,
+    fetchCompanyMaterialStatsLoading,
+    fetchCompanyMaterialStatsSuccess,
 } from "./actions";
 
 export const getCompanyMaterialsApi = async (
@@ -53,6 +57,27 @@ export const createCompanyMaterialApi = async (
     }
 };
 
+export const updateCompanyMaterialApi = async (
+    dispatch: Dispatch<CompanyMaterialAction>,
+    id: string,
+    data: any,
+) => {
+    dispatch(updateCompanyMaterialLoading(true));
+    try {
+        const response = await ApiClient.patch(`/material/company/${id}`, data);
+        dispatch(updateCompanyMaterialSuccess(response));
+        toast.success("Company material updated successfully");
+        return;
+    } catch (error: any) {
+        toast.error("Failed to update company material", {
+            description: error?.response?.data?.message || "Something went wrong",
+        });
+        throw error;
+    } finally {
+        dispatch(updateCompanyMaterialLoading(false));
+    }
+};
+
 export const updateCompanyMaterialReceiverApi = async (
     dispatch: Dispatch<CompanyMaterialAction>,
     id: string,
@@ -71,5 +96,23 @@ export const updateCompanyMaterialReceiverApi = async (
         throw error;
     } finally {
         dispatch(updateCompanyMaterialReceiverLoading(false));
+    }
+};
+
+export const getCompanyMaterialStatsApi = async (
+    dispatch: Dispatch<CompanyMaterialAction>,
+) => {
+    dispatch(fetchCompanyMaterialStatsLoading(true));
+    try {
+        const response = await ApiClient.get<CompanyMaterialStats>("/material/company/stats");
+        dispatch(fetchCompanyMaterialStatsSuccess(response));
+        return;
+    } catch (error: any) {
+        toast.error("Failed to fetch stats", {
+            description: error?.response?.data?.message || "Something went wrong",
+        });
+        throw error;
+    } finally {
+        dispatch(fetchCompanyMaterialStatsLoading(false));
     }
 };

@@ -8,7 +8,12 @@ import {
     CREATE_COMPANYMATERIAL_SUCCESS,
     UPDATE_COMPANYMATERIAL_RECEIVER_LOADING,
     UPDATE_COMPANYMATERIAL_RECEIVER_SUCCESS,
+    UPDATE_COMPANYMATERIAL_LOADING,
+    UPDATE_COMPANYMATERIAL_SUCCESS,
+    FETCH_COMPANYMATERIAL_STATS_LOADING,
+    FETCH_COMPANYMATERIAL_STATS_SUCCESS,
     SET_PAGE,
+    SET_MODAL,
 } from "./type";
 
 export const initialState: CompanyMaterialState = {
@@ -16,7 +21,14 @@ export const initialState: CompanyMaterialState = {
     listData: null,
     createLoading: false,
     updateReceiverLoading: false,
+    updateLoading: false,
+    statsLoading: false,
+    statsData: null,
     page: 1,
+    modal: {
+        mode: null,
+        selectedItem: null,
+    },
 };
 
 const reducer: Reducer<CompanyMaterialState, CompanyMaterialAction> = (
@@ -52,10 +64,34 @@ const reducer: Reducer<CompanyMaterialState, CompanyMaterialAction> = (
             return {
                 ...state,
             };
+        case UPDATE_COMPANYMATERIAL_LOADING:
+            return {
+                ...state,
+                updateLoading: action.payload,
+            };
+        case UPDATE_COMPANYMATERIAL_SUCCESS:
+            return {
+                ...state,
+            };
+        case FETCH_COMPANYMATERIAL_STATS_LOADING:
+            return {
+                ...state,
+                statsLoading: action.payload,
+            };
+        case FETCH_COMPANYMATERIAL_STATS_SUCCESS:
+            return {
+                ...state,
+                statsData: action.payload,
+            };
         case SET_PAGE:
             return {
                 ...state,
                 page: action.payload,
+            };
+        case SET_MODAL:
+            return {
+                ...state,
+                modal: action.payload,
             };
         default:
             return state;

@@ -8,6 +8,7 @@ import Button from "../UI/Button";
 import Typography from "../UI/Typography";
 import { menuItems } from "./Constants";
 import { useAppSelector } from "@/store/hooks";
+import Link from "next/link";
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -74,29 +75,31 @@ const Sidebar = () => {
     <div
       className={`h-screen bg-slate-50 border-r border-slate-200 p-4 transition-all duration-300 flex flex-col ${isCollapsed ? "w-22" : "w-64"}`}
     >
-      <div className="mb-6 flex items-center justify-between flex-shrink-0">
-        <div
-          className={`flex items-center gap-3 ${isCollapsed ? "justify-center w-full" : ""}`}
-        >
-          <div className="w-10 h-10 rounded-full bg-[#5a67ba] flex items-center justify-center text-white font-semibold">
-            M
+      <Link href={"/"}>
+        <div className="mb-6 flex items-center justify-between flex-shrink-0">
+          <div
+            className={`flex items-center gap-3 ${isCollapsed ? "justify-center w-full" : ""}`}
+          >
+            <div className="w-10 h-10 rounded-full bg-[#5a67ba] flex items-center justify-center text-white font-semibold">
+              M
+            </div>
+            {!isCollapsed && (
+              <Typography variant="h6" weight="medium" textColor="#334155">
+                METALIXIA
+              </Typography>
+            )}
           </div>
           {!isCollapsed && (
-            <Typography variant="h6" weight="medium" textColor="#334155">
-              METALIXIA
-            </Typography>
+            <button
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="p-2 hover:bg-slate-200 rounded-lg transition-colors"
+              title="Collapse sidebar"
+            >
+              <PanelLeft className="w-5 h-5 text-slate-600" />
+            </button>
           )}
         </div>
-        {!isCollapsed && (
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-2 hover:bg-slate-200 rounded-lg transition-colors"
-            title="Collapse sidebar"
-          >
-            <PanelLeft className="w-5 h-5 text-slate-600" />
-          </button>
-        )}
-      </div>
+      </Link>
 
       {isCollapsed && (
         <button

@@ -2,13 +2,11 @@ import CompanyMaterialCompt from "@/components/dashboard/summary/CompanyMaterial
 import CompanyMaterialContextProvider from "@/context/Summary/CompanyMaterial";
 
 const Page = () => {
-    return (
-        <CompanyMaterialContextProvider>
-            <div className="">
-                <CompanyMaterialCompt />
-            </div>
-        </CompanyMaterialContextProvider>
-    );
+  return (
+    <CompanyMaterialContextProvider>
+      <CompanyMaterialCompt />
+    </CompanyMaterialContextProvider>
+  );
 };
 
 export default Page;
