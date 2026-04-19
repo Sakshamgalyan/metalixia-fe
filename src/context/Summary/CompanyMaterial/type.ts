@@ -4,7 +4,12 @@ export const CREATE_COMPANYMATERIAL_LOADING = "CREATE_COMPANYMATERIAL_LOADING";
 export const CREATE_COMPANYMATERIAL_SUCCESS = "CREATE_COMPANYMATERIAL_SUCCESS";
 export const UPDATE_COMPANYMATERIAL_RECEIVER_LOADING = "UPDATE_COMPANYMATERIAL_RECEIVER_LOADING";
 export const UPDATE_COMPANYMATERIAL_RECEIVER_SUCCESS = "UPDATE_COMPANYMATERIAL_RECEIVER_SUCCESS";
+export const UPDATE_COMPANYMATERIAL_LOADING = "UPDATE_COMPANYMATERIAL_LOADING";
+export const UPDATE_COMPANYMATERIAL_SUCCESS = "UPDATE_COMPANYMATERIAL_SUCCESS";
+export const FETCH_COMPANYMATERIAL_STATS_LOADING = "FETCH_COMPANYMATERIAL_STATS_LOADING";
+export const FETCH_COMPANYMATERIAL_STATS_SUCCESS = "FETCH_COMPANYMATERIAL_STATS_SUCCESS";
 export const SET_PAGE = "SET_PAGE";
+export const SET_MODAL = "SET_MODAL";
 
 export interface FETCH_COMPANYMATERIAL_LIST_LOADING_ACTION {
     type: typeof FETCH_COMPANYMATERIAL_LIST_LOADING;
@@ -36,9 +41,41 @@ export interface UPDATE_COMPANYMATERIAL_RECEIVER_SUCCESS_ACTION {
     payload: any;
 }
 
+export interface UPDATE_COMPANYMATERIAL_LOADING_ACTION {
+    type: typeof UPDATE_COMPANYMATERIAL_LOADING;
+    payload: boolean;
+}
+
+export interface UPDATE_COMPANYMATERIAL_SUCCESS_ACTION {
+    type: typeof UPDATE_COMPANYMATERIAL_SUCCESS;
+    payload: any;
+}
+
+export interface FETCH_COMPANYMATERIAL_STATS_LOADING_ACTION {
+    type: typeof FETCH_COMPANYMATERIAL_STATS_LOADING;
+    payload: boolean;
+}
+
+export interface FETCH_COMPANYMATERIAL_STATS_SUCCESS_ACTION {
+    type: typeof FETCH_COMPANYMATERIAL_STATS_SUCCESS;
+    payload: CompanyMaterialStats;
+}
+
 export interface SET_PAGE_ACTION {
     type: typeof SET_PAGE;
     payload: number;
+}
+
+export type ModalMode = "add" | "edit" | "receive" | null;
+
+export interface ModalState {
+    mode: ModalMode;
+    selectedItem: CompanyMaterialItem | null;
+}
+
+export interface SET_MODAL_ACTION {
+    type: typeof SET_MODAL;
+    payload: ModalState;
 }
 
 export type CompanyMaterialState = {
@@ -46,7 +83,11 @@ export type CompanyMaterialState = {
     listData: CompanyMaterialListResponse | null;
     createLoading: boolean;
     updateReceiverLoading: boolean;
+    updateLoading: boolean;
+    statsLoading: boolean;
+    statsData: CompanyMaterialStats | null;
     page: number;
+    modal: ModalState;
 };
 
 export type CompanyMaterialAction =
@@ -56,7 +97,12 @@ export type CompanyMaterialAction =
     | CREATE_COMPANYMATERIAL_SUCCESS_ACTION
     | UPDATE_COMPANYMATERIAL_RECEIVER_LOADING_ACTION
     | UPDATE_COMPANYMATERIAL_RECEIVER_SUCCESS_ACTION
-    | SET_PAGE_ACTION;
+    | UPDATE_COMPANYMATERIAL_LOADING_ACTION
+    | UPDATE_COMPANYMATERIAL_SUCCESS_ACTION
+    | FETCH_COMPANYMATERIAL_STATS_LOADING_ACTION
+    | FETCH_COMPANYMATERIAL_STATS_SUCCESS_ACTION
+    | SET_PAGE_ACTION
+    | SET_MODAL_ACTION;
 
 export interface CompanyMaterialItem {
     _id: string;
@@ -66,8 +112,12 @@ export interface CompanyMaterialItem {
     unit: string;
     receivedBy: string;
     receivedById: string;
-    receivedAt: string;
     inventoryLocation: string;
+    expectedOn: string | null;
+    deliveryBy: string | null;
+    receivedOn: string | null;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface CompanyMaterialListResponse {
@@ -76,4 +126,17 @@ export interface CompanyMaterialListResponse {
     page: number;
     limit: number;
     totalPages: number;
+}
+
+export interface DailyCount {
+    date: string;
+    count: number;
+    totalQuantity: number;
+}
+
+export interface CompanyMaterialStats {
+    dailyCounts: DailyCount[];
+    totalThisWeek: number;
+    totalQuantityThisWeek: number;
+    activeCompanies: number;
 }

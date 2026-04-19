@@ -9,8 +9,6 @@ import {
   EyeOff,
   User,
   ArrowRight,
-  User2,
-  User2Icon,
   Users,
   Briefcase,
   CheckCircle,
