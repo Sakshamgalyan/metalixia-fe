@@ -24,7 +24,6 @@ const RawMaterialCompt = () => {
         fetchData(page);
     }, [page, dispatch]);
 
-    // Table Columns
     const columns: TableColumn<RawMaterialItem>[] = [
         {
             header: "Material Name",
@@ -104,7 +103,6 @@ const RawMaterialCompt = () => {
                 <Table
                     data={filteredData}
                     columns={columns}
-                    headerAlign="left"
                     keyExtractor={(item) => item._id}
                     paginationConfig={{
                         currentPage: page,

@@ -76,6 +76,12 @@ export const menuItems: MenuItem[] = [
         href: "/admin/approvals",
         visible: ["superAdmin", "reportAdmin"],
       },
+      {
+        icon: <Factory className="w-5 h-5" />,
+        label: "Companies",
+        href: "/admin/companies",
+        visible: ["superAdmin", "reportAdmin"],
+      },
     ],
   },
   {

@@ -19,11 +19,15 @@ export const getCompanyMaterialsApi = async (
     dispatch: Dispatch<CompanyMaterialAction>,
     page: number,
     limit: number,
+    search?: string,
 ) => {
     dispatch(fetchCompanyMaterialListLoading(true));
     try {
+        const params: any = { page, limit };
+        if (search) params.search = search;
+
         const response = await ApiClient.get<CompanyMaterialListResponse>("/material/company", {
-            params: { page, limit },
+            params,
         });
         dispatch(fetchCompanyMaterialListSuccess(response));
         return;
