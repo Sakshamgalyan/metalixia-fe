@@ -34,6 +34,7 @@ export interface InputProps extends Omit<
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   borderRadius?: "none" | "sm" | "md" | "lg" | "full";
   className?: string;
+  errorMessage?: string;
 }
 
 const Input = ({
@@ -54,6 +55,7 @@ const Input = ({
   onChange,
   borderRadius = "md",
   className = "",
+  errorMessage,
   ...restProps
 }: InputProps) => {
   // Valid HTML input types
@@ -78,7 +80,7 @@ const Input = ({
       : null,
   );
   const finalType = isValidType ? type : "text";
-  const displayError = hasError || !!typeError;
+  const displayError = hasError || !!typeError || !!errorMessage;
 
   // Size variants
   const sizeClasses = {
@@ -185,12 +187,12 @@ const Input = ({
       </div>
 
       {/* Helper Text / Error Message */}
-      {(helperText || typeError) && (
+      {(errorMessage || typeError || helperText) && (
         <p
           id="helper-text"
           className={`mt-1.5 text-xs ${displayError ? "text-red-600" : "text-slate-600"}`}
         >
-          {typeError || helperText}
+          {errorMessage || typeError || helperText}
         </p>
       )}
     </div>

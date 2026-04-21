@@ -3,6 +3,9 @@ export const FETCH_RAWMATERIAL_LIST_SUCCESS = "FETCH_RAWMATERIAL_LIST_SUCCESS";
 export const CREATE_RAWMATERIAL_LOADING = "CREATE_RAWMATERIAL_LOADING";
 export const CREATE_RAWMATERIAL_SUCCESS = "CREATE_RAWMATERIAL_SUCCESS";
 export const SET_PAGE = "SET_PAGE";
+export const SET_MODAL = "SET_MODAL";
+export const FETCH_RAWMATERIAL_STATS_LOADING = "FETCH_RAWMATERIAL_STATS_LOADING";
+export const FETCH_RAWMATERIAL_STATS_SUCCESS = "FETCH_RAWMATERIAL_STATS_SUCCESS";
 
 export interface FETCH_RAWMATERIAL_LIST_LOADING_ACTION {
     type: typeof FETCH_RAWMATERIAL_LIST_LOADING;
@@ -29,11 +32,35 @@ export interface SET_PAGE_ACTION {
     payload: number;
 }
 
+export interface SET_MODAL_ACTION {
+    type: typeof SET_MODAL;
+    payload: {
+        isOpen: boolean;
+        type: "add" | "export" | null;
+    };
+}
+
+export interface FETCH_RAWMATERIAL_STATS_LOADING_ACTION {
+    type: typeof FETCH_RAWMATERIAL_STATS_LOADING;
+    payload: boolean;
+}
+
+export interface FETCH_RAWMATERIAL_STATS_SUCCESS_ACTION {
+    type: typeof FETCH_RAWMATERIAL_STATS_SUCCESS;
+    payload: RawMaterialStats;
+}
+
 export type RawMaterialState = {
     listLoading: boolean;
     listData: RawMaterialListResponse | null;
+    statsData: RawMaterialStats | null;
+    statsLoading: boolean;
     createLoading: boolean;
     page: number;
+    modalState: {
+        isOpen: boolean;
+        type: "add" | "export" | null;
+    };
 };
 
 export type RawMaterialAction =
@@ -41,7 +68,21 @@ export type RawMaterialAction =
     | FETCH_RAWMATERIAL_LIST_SUCCESS_ACTION
     | CREATE_RAWMATERIAL_LOADING_ACTION
     | CREATE_RAWMATERIAL_SUCCESS_ACTION
-    | SET_PAGE_ACTION;
+    | SET_PAGE_ACTION
+    | SET_MODAL_ACTION
+    | FETCH_RAWMATERIAL_STATS_LOADING_ACTION
+    | FETCH_RAWMATERIAL_STATS_SUCCESS_ACTION;
+
+export interface RawMaterialStats {
+    totalThisWeek: number;
+    totalInvestmentThisWeek: number;
+    activeSources: number;
+    dailyCounts: {
+        date: string;
+        count: number;
+        totalValue: number;
+    }[];
+}
 
 export interface RawMaterialItem {
     _id: string;
@@ -53,6 +94,7 @@ export interface RawMaterialItem {
     receivedBy: string;
     receivedById: string;
     receivedAt: string;
+    expectedOn: string;
 }
 
 export interface RawMaterialListResponse {

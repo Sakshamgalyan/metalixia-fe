@@ -1,49 +1,44 @@
 "use client";
 
-import React, { createContext, useReducer, ReactNode } from "react";
+import React, { createContext, useReducer, useCallback } from "react";
+import type { Dispatch, ReactNode } from "react";
 import { PartState, PartAction } from "./type";
+import reducer, { initialState } from "./reducer";
 
-const initialState: PartState = {
-  listData: null,
-  listLoading: false,
-  page: 1,
-  modal: {
-    mode: null,
-    selectedItem: null,
-  },
-  actionLoading: false,
+type StateContext = {
+  state: PartState;
 };
 
-export const PartStateContext = createContext<PartState | undefined>(undefined);
-export const PartDispatchContext = createContext<React.Dispatch<PartAction> | undefined>(undefined);
-
-const partReducer = (state: PartState, action: PartAction): PartState => {
-  switch (action.type) {
-    case "FETCH_PART_LIST_LOADING":
-      return { ...state, listLoading: action.payload };
-    case "FETCH_PART_LIST_SUCCESS":
-      return { ...state, listData: action.payload, listLoading: false };
-    case "SET_PAGE":
-      return { ...state, page: action.payload };
-    case "SET_MODAL":
-      return { ...state, modal: action.payload };
-    case "ACTION_LOADING":
-      return { ...state, actionLoading: action.payload };
-    case "ACTION_SUCCESS":
-      return { ...state, actionLoading: false, modal: { mode: null, selectedItem: null } };
-    default:
-      return state;
-  }
+type DispatchContext = {
+  dispatch: Dispatch<PartAction>;
 };
 
-export default function PartContextProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(partReducer, initialState);
+export const PartStateContext = createContext<StateContext | undefined>(
+  undefined
+);
+export const PartDispatchContext = createContext<DispatchContext | undefined>(
+  undefined
+);
+
+export default function PartContextProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const enhancedDispatch = useCallback(
+    (action: PartAction) => {
+      return dispatch(action);
+    },
+    [dispatch]
+  );
 
   return (
-    <PartStateContext.Provider value={state}>
-      <PartDispatchContext.Provider value={dispatch}>
+    <PartDispatchContext.Provider value={{ dispatch: enhancedDispatch }}>
+      <PartStateContext.Provider value={{ state }}>
         {children}
-      </PartDispatchContext.Provider>
-    </PartStateContext.Provider>
+      </PartStateContext.Provider>
+    </PartDispatchContext.Provider>
   );
 }

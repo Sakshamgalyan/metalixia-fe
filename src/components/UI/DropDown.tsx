@@ -419,7 +419,7 @@ const Dropdown = ({
     <div className={`w-full ${className} relative`} ref={containerRef}>
       {/* Label */}
       {label && (
-        <label className="block text-sm font-regular text-slate-700 ml-1">
+        <label className="block text-sm font-regular text-slate-700 ml-1 mb-1">
           {label}
         </label>
       )}

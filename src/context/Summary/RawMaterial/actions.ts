@@ -9,8 +9,29 @@ import {
     CREATE_RAWMATERIAL_SUCCESS_ACTION,
     SET_PAGE,
     SET_PAGE_ACTION,
+    SET_MODAL,
+    SET_MODAL_ACTION,
     RawMaterialListResponse,
+    FETCH_RAWMATERIAL_STATS_LOADING,
+    FETCH_RAWMATERIAL_STATS_LOADING_ACTION,
+    FETCH_RAWMATERIAL_STATS_SUCCESS,
+    FETCH_RAWMATERIAL_STATS_SUCCESS_ACTION,
+    RawMaterialStats,
 } from "./type";
+
+export const fetchRawMaterialStatsLoading = (
+    loading: boolean,
+): FETCH_RAWMATERIAL_STATS_LOADING_ACTION => ({
+    type: FETCH_RAWMATERIAL_STATS_LOADING,
+    payload: loading,
+});
+
+export const fetchRawMaterialStatsSuccess = (
+    payload: RawMaterialStats,
+): FETCH_RAWMATERIAL_STATS_SUCCESS_ACTION => ({
+    type: FETCH_RAWMATERIAL_STATS_SUCCESS,
+    payload,
+});
 
 export const fetchRawMaterialListLoading = (
     loading: boolean,
@@ -43,4 +64,12 @@ export const createRawMaterialSuccess = (
 export const setPage = (page: number): SET_PAGE_ACTION => ({
     type: SET_PAGE,
     payload: page,
+});
+
+export const setModal = (modalState: {
+    isOpen: boolean;
+    type: "add" | "export" | null;
+}): SET_MODAL_ACTION => ({
+    type: SET_MODAL,
+    payload: modalState,
 });
