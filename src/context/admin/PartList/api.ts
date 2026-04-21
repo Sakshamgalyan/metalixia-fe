@@ -7,35 +7,26 @@ import {
   fetchPartListSuccess,
   actionLoading,
   actionSuccess,
+  fetchCompaniesListLoading,
+  fetchCompaniesListSuccess,
 } from "./actions";
 
 export const getPartsApi = async (
   dispatch: Dispatch<PartAction>,
   page: number,
   limit: number,
-  search?: string
+  search?: string,
 ) => {
   dispatch(fetchPartListLoading(true));
   try {
     const params: any = { page, limit };
     if (search) params.search = search;
 
-    // Based on backend company controller endpoints - adjust if different
     const response = await ApiClient.get<any>("/company/get-all-parts", {
       params,
     });
-    
-    const responseData = response.data || response;
 
-    if (Array.isArray(responseData)) {
-        dispatch(fetchPartListSuccess({
-            data: responseData,
-            total: responseData.length,
-            page: 1, limit: 10, totalPages: 1
-        }));
-    } else {
-        dispatch(fetchPartListSuccess(responseData));
-    }
+    dispatch(fetchPartListSuccess(response));
   } catch (error: any) {
     toast.error("Failed to fetch parts", {
       description: error?.response?.data?.message || "Something went wrong",
@@ -47,7 +38,7 @@ export const getPartsApi = async (
 
 export const createPartApi = async (
   dispatch: Dispatch<PartAction>,
-  data: any
+  data: any,
 ) => {
   dispatch(actionLoading(true));
   try {
@@ -71,7 +62,7 @@ export const createPartApi = async (
 export const updatePartApi = async (
   dispatch: Dispatch<PartAction>,
   id: string,
-  data: any
+  data: any,
 ) => {
   dispatch(actionLoading(true));
   try {
@@ -91,7 +82,7 @@ export const updatePartApi = async (
 
 export const deletePartApi = async (
   dispatch: Dispatch<PartAction>,
-  id: string
+  id: string,
 ) => {
   dispatch(actionLoading(true));
   try {
@@ -106,5 +97,19 @@ export const deletePartApi = async (
     throw error;
   } finally {
     dispatch(actionLoading(false));
+  }
+};
+
+export const getCompaniesListApi = async (dispatch: Dispatch<PartAction>) => {
+  dispatch(fetchCompaniesListLoading(true));
+  try {
+    const response = await ApiClient.get<any>("/company/list");
+    dispatch(fetchCompaniesListSuccess(response));
+  } catch (error: any) {
+    toast.error("Failed to fetch companies", {
+      description: error?.response?.data?.message || "Something went wrong",
+    });
+  } finally {
+    dispatch(fetchCompaniesListLoading(false));
   }
 };

@@ -7,13 +7,22 @@ import {
     CREATE_RAWMATERIAL_LOADING,
     CREATE_RAWMATERIAL_SUCCESS,
     SET_PAGE,
+    SET_MODAL,
+    FETCH_RAWMATERIAL_STATS_LOADING,
+    FETCH_RAWMATERIAL_STATS_SUCCESS,
 } from "./type";
 
 export const initialState: RawMaterialState = {
     listLoading: false,
     listData: null,
+    statsData: null,
+    statsLoading: false,
     createLoading: false,
     page: 1,
+    modalState: {
+        isOpen: false,
+        type: null,
+    },
 };
 
 const reducer: Reducer<RawMaterialState, RawMaterialAction> = (
@@ -21,6 +30,16 @@ const reducer: Reducer<RawMaterialState, RawMaterialAction> = (
     action,
 ) => {
     switch (action.type) {
+        case FETCH_RAWMATERIAL_STATS_LOADING:
+            return {
+                ...state,
+                statsLoading: action.payload,
+            };
+        case FETCH_RAWMATERIAL_STATS_SUCCESS:
+            return {
+                ...state,
+                statsData: action.payload,
+            };
         case FETCH_RAWMATERIAL_LIST_LOADING:
             return {
                 ...state,
@@ -44,6 +63,11 @@ const reducer: Reducer<RawMaterialState, RawMaterialAction> = (
             return {
                 ...state,
                 page: action.payload,
+            };
+        case SET_MODAL:
+            return {
+                ...state,
+                modalState: action.payload,
             };
         default:
             return state;

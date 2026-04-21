@@ -9,16 +9,17 @@ import {
   usePartStateContext,
 } from "@/context/admin/PartList/hooks";
 import { setModal } from "@/context/admin/PartList/actions";
-import { createPartApi, updatePartApi } from "@/context/admin/PartList/api";
-import Dropdown, { DropdownOption } from "@/components/UI/DropDown";
-import ApiClient from "@/lib/apiClient";
+import { createPartApi, updatePartApi, getCompaniesListApi } from "@/context/admin/PartList/api";
+import Dropdown from "@/components/UI/DropDown";
+
+import { toast } from "sonner";
 
 interface PartModalProps {
   onSuccess: () => void;
 }
 
 const PartModal = ({ onSuccess }: PartModalProps) => {
-  const { modal, actionLoading } = usePartStateContext();
+  const { modal, actionLoading, companiesList, companiesListLoading } = usePartStateContext();
   const dispatch = usePartDispatchContext();
 
   const [formData, setFormData] = useState({
@@ -28,37 +29,20 @@ const PartModal = ({ onSuccess }: PartModalProps) => {
     description: "",
   });
 
-  const [companies, setCompanies] = useState<DropdownOption[]>([]);
-  const [loadingCompanies, setLoadingCompanies] = useState(false);
-
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const isOpen = modal.mode === "add" || modal.mode === "edit";
 
   useEffect(() => {
-    const fetchCompanies = async () => {
-      setLoadingCompanies(true);
-      try {
-        const response = await ApiClient.get<any>("/company", { params: { limit: 100 } });
-        const companyList = response.data?.data || response.data || [];
-        if (Array.isArray(companyList)) {
-          setCompanies(companyList.map((c: any) => ({ label: c.companyName, value: c._id })));
-        }
-      } catch (e) {
-        // Handle gracefully
-      } finally {
-        setLoadingCompanies(false);
-      }
-    };
     if (isOpen) {
-      fetchCompanies();
+      getCompaniesListApi(dispatch);
     }
-  }, [isOpen]);
+  }, [isOpen, dispatch]);
 
   useEffect(() => {
     if (modal.mode === "edit" && modal.selectedItem) {
       setFormData({
-        companyId: (modal.selectedItem as any).companyId || "", // Assuming companyId is returned on populated part
+        companyId: (modal.selectedItem as any).companyId || "",
         partName: modal.selectedItem.partName || "",
         partNumber: modal.selectedItem.partNumber || "",
         description: modal.selectedItem.description || "",
@@ -128,10 +112,10 @@ const PartModal = ({ onSuccess }: PartModalProps) => {
       <div className="space-y-4">
         <Dropdown
           label="Company Name"
-          options={companies}
+          options={companiesList}
           value={formData.companyId}
           onChange={(v) => handleDropdownChange("companyId", v)}
-          loading={loadingCompanies}
+          loading={companiesListLoading}
           hasError={!!errors.companyId}
           errorMessage={errors.companyId}
           searchable
@@ -144,8 +128,9 @@ const PartModal = ({ onSuccess }: PartModalProps) => {
           onChange={handleInputChange}
           required
           fullWidth
+          hasError={!!errors.partName}
+          errorMessage={errors.partName}
         />
-        {errors.partName && <p className="text-sm text-red-500 mt-1">{errors.partName}</p>}
         
         <Input
           label="Part Number"
@@ -154,8 +139,9 @@ const PartModal = ({ onSuccess }: PartModalProps) => {
           onChange={handleInputChange}
           required
           fullWidth
+          hasError={!!errors.partNumber}
+          errorMessage={errors.partNumber}
         />
-        {errors.partNumber && <p className="text-sm text-red-500 mt-1">{errors.partNumber}</p>}
 
         <Input
           label="Description"

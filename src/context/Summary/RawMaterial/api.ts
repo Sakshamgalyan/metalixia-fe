@@ -7,17 +7,39 @@ import {
     fetchRawMaterialListSuccess,
     createRawMaterialLoading,
     createRawMaterialSuccess,
+    fetchRawMaterialStatsLoading,
+    fetchRawMaterialStatsSuccess,
 } from "./actions";
+
+export const getRawMaterialStatsApi = async (
+    dispatch: Dispatch<RawMaterialAction>,
+) => {
+    dispatch(fetchRawMaterialStatsLoading(true));
+    try {
+        const response = await ApiClient.get<any>("/material/raw/stats");
+        dispatch(fetchRawMaterialStatsSuccess(response));
+    } catch (error: any) {
+        toast.error("Failed to fetch statistics", {
+            description: error?.response?.data?.message || "Something went wrong",
+        });
+    } finally {
+        dispatch(fetchRawMaterialStatsLoading(false));
+    }
+};
 
 export const getRawMaterialsApi = async (
     dispatch: Dispatch<RawMaterialAction>,
     page: number,
     limit: number,
+    search?: string,
 ) => {
     dispatch(fetchRawMaterialListLoading(true));
     try {
+        const params: any = { page, limit };
+        if (search) params.search = search;
+        
         const response = await ApiClient.get<RawMaterialListResponse>("/material/raw", {
-            params: { page, limit },
+            params,
         });
         dispatch(fetchRawMaterialListSuccess(response));
         return;
@@ -40,7 +62,7 @@ export const createRawMaterialApi = async (
         const response = await ApiClient.post("/material/raw", data);
         dispatch(createRawMaterialSuccess(response));
         toast.success("Raw material created successfully");
-        return;
+        return response;
     } catch (error: any) {
         toast.error("Failed to create raw material", {
             description: error?.response?.data?.message || "Something went wrong",
@@ -61,5 +83,17 @@ export const deleteRawMaterialApi = async (id: string) => {
             description: error?.response?.data?.message || "Something went wrong",
         });
         throw error;
+    }
+};
+
+export const getEmployeesListApi = async () => {
+    try {
+        const response = await ApiClient.get<any>("/admin/get-all-employee");
+        return response;
+    } catch (error: any) {
+        toast.error("Failed to fetch employees list", {
+            description: error?.response?.data?.message || "Something went wrong",
+        });
+        return [];
     }
 };

@@ -9,15 +9,24 @@ import Table, { TableColumn } from "@/components/UI/Table";
 import NoDataState from "@/components/Common/NoDataState";
 import DeleteModal from "@/components/Common/DeleteModal";
 import PartModal from "./PartModal";
-import { usePartStateContext, usePartDispatchContext } from "@/context/admin/PartList/hooks";
+import {
+  usePartStateContext,
+  usePartDispatchContext,
+} from "@/context/admin/PartList/hooks";
 import { getPartsApi, deletePartApi } from "@/context/admin/PartList/api";
 import { setPage, setModal } from "@/context/admin/PartList/actions";
 import { PartItem } from "@/context/admin/PartList/type";
+import { toast } from "sonner";
+
 const PartListCompt = () => {
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  
-  const [deleteModalState, setDeleteModalState] = useState<{isOpen: boolean; id: string | null; name?: string}>({isOpen: false, id: null});
+
+  const [deleteModalState, setDeleteModalState] = useState<{
+    isOpen: boolean;
+    id: string | null;
+    name?: string;
+  }>({ isOpen: false, id: null });
   const [isDeleting, setIsDeleting] = useState(false);
 
   const { listData, listLoading, page } = usePartStateContext();
@@ -67,10 +76,17 @@ const PartListCompt = () => {
       fetchData(page, searchQuery);
       setDeleteModalState({ isOpen: false, id: null });
     } catch (error) {
-      // Handle error implicitly
+      toast.error("Failed to delete part", {
+        description: "Something went wrong",
+      });
     } finally {
       setIsDeleting(false);
     }
+  };
+
+  const handlePageChange = (newPage: number) => {
+    dispatch(setPage(newPage));
+    fetchData(newPage, searchQuery);
   };
 
   const columns: TableColumn<PartItem>[] = [
@@ -98,7 +114,7 @@ const PartListCompt = () => {
       header: "Added Date",
       accessor: "createdAt",
       className: "text-slate-600",
-      render: (item) => new Date(item.createdAt).toLocaleDateString()
+      render: (item) => new Date(item.createdAt).toLocaleDateString(),
     },
     {
       header: "Actions",
@@ -154,7 +170,7 @@ const PartListCompt = () => {
         <div className="flex flex-col md:flex-row gap-4 mb-6 justify-between items-start md:items-center">
           <div className="w-full md:w-96">
             <Input
-              placeholder="Search parts, part numbers..."
+              placeholder="Search by part, number, or company..."
               leftIcon={<Search size={18} />}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
@@ -164,8 +180,8 @@ const PartListCompt = () => {
         </div>
 
         {!listLoading && safeData.length === 0 ? (
-          <NoDataState 
-            title="No Parts Found" 
+          <NoDataState
+            title="No Parts Found"
             message="There are no parts available at the moment. Click 'Add Part' to create one."
           />
         ) : (
@@ -177,8 +193,8 @@ const PartListCompt = () => {
             paginationConfig={{
               currentPage: page,
               totalPages: listData?.totalPages || 1,
-              totalCount: listData?.total || 0,
-              onPageChange: (newPage) => dispatch(setPage(newPage)),
+              totalCount: listData?.totalCount || 0,
+              onPageChange: handlePageChange,
               itemsPerPage: 10,
             }}
             emptyMessage="No parts found."

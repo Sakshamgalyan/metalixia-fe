@@ -100,6 +100,8 @@ const CompanyModal = ({ onSuccess }: CompanyModalProps) => {
           onChange={handleInputChange}
           required
           fullWidth
+          hasError={!!errors.companyName}
+          errorMessage={errors.companyName}
         />
         <Input
           label="Contact Person"
