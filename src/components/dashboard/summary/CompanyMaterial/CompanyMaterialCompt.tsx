@@ -36,24 +36,36 @@ const CompanyMaterialCompt = () => {
 
   // ── Fetch Data ────────────────────────────────────────────────
   const fetchData = useCallback(
-    async (p = 1) => {
-      await getCompanyMaterialsApi(dispatch, p, 10);
+    async (p = 1, query = "") => {
+      await getCompanyMaterialsApi(dispatch, p, 10, query);
     },
     [dispatch],
   );
 
   useEffect(() => {
-    fetchData(page);
-  }, [page, fetchData]);
+    fetchData(page, searchQuery);
+  }, [page, searchQuery, fetchData]);
 
   useEffect(() => {
     getCompanyMaterialStatsApi(dispatch);
   }, [dispatch]);
 
   // ── Debounced Search ──────────────────────────────────────────
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchQuery !== searchInput) {
+        setSearchQuery(searchInput);
+        if (page !== 1) {
+          dispatch(setPage(1));
+        }
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchInput, searchQuery, page, dispatch]);
+
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
-    setSearchQuery(value);
   };
 
   // ── Modal openers (dispatch to context) ───────────────────────
@@ -161,13 +173,8 @@ const CompanyMaterialCompt = () => {
       : []),
   ];
 
-  // ── Filter Data ───────────────────────────────────────────────
+  // ── Data ───────────────────────────────────────────────
   const safeData = listData?.data || [];
-  const filteredData = safeData.filter(
-    (item) =>
-      item.materialName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.companyName.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
 
   // ── Render ────────────────────────────────────────────────────
   return (
@@ -215,8 +222,8 @@ const CompanyMaterialCompt = () => {
         </div>
 
         <Table
-          data={filteredData}
           columns={columns}
+          data={safeData}
           keyExtractor={(item) => item._id}
           paginationConfig={{
             currentPage: page,

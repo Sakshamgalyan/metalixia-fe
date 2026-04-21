@@ -2,13 +2,11 @@ import RawMaterialCompt from "@/components/dashboard/summary/RawMaterial/RawMate
 import RawMaterialContextProvider from "@/context/Summary/RawMaterial";
 
 const Page = () => {
-    return (
-        <RawMaterialContextProvider>
-            <div className="">
-                <RawMaterialCompt />
-            </div>
-        </RawMaterialContextProvider>
-    );
+  return (
+    <RawMaterialContextProvider>
+      <RawMaterialCompt />
+    </RawMaterialContextProvider>
+  );
 };
 
 export default Page;
