@@ -6,6 +6,7 @@ import Input from "@/components/UI/Input";
 import Modal from "@/components/UI/Modal";
 import Dropdown from "@/components/UI/DropDown";
 import DatePicker from "@/components/UI/DatePicker";
+import ApiClient from "@/lib/apiClient";
 import { useAppSelector } from "@/store/hooks";
 import {
   useCompanyMaterialStateContext,
@@ -56,6 +57,25 @@ const MaterialFormModal = () => {
   const isEditOrReceive = isEdit || isReceive;
 
   const [form, setForm] = useState(emptyForm);
+  const [companies, setCompanies] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const response: any = await ApiClient.get("/company", { params: { limit: 1000 } });
+        if (response.data?.data?.data) {
+          setCompanies(response.data.data.data);
+        } else if (response.data?.data) {
+          setCompanies(response.data.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch companies", err);
+      }
+    };
+    if (isOpen) {
+      fetchCompanies();
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen && isEditOrReceive && selectedItem) {
@@ -170,23 +190,32 @@ const MaterialFormModal = () => {
         </div>
       )}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input
+        <Dropdown
           label="Company Name"
-          placeholder="Enter company name"
+          placeholder="Select company name"
+          options={companies.map((c) => ({ value: c.companyName, label: c.companyName }))}
           value={form.companyName}
-          onChange={(e) => handleChange("companyName", e.target.value)}
-          isDisabled={isEditOrReceive}
-          fullWidth
-          required
+          onChange={(val) => {
+            handleChange("companyName", val as string);
+            handleChange("materialName", "");
+          }}
+          disabled={isEditOrReceive}
+          searchable
+          hasError={false}
         />
-        <Input
+        <Dropdown
           label="Part Name"
-          placeholder="Enter part/material name"
+          placeholder="Select part/material name"
+          options={
+            companies
+              .find((c) => c.companyName === form.companyName)
+              ?.parts?.map((p: any) => ({ value: p.partName, label: p.partName })) || []
+          }
           value={form.materialName}
-          onChange={(e) => handleChange("materialName", e.target.value)}
-          isDisabled={isEditOrReceive}
-          fullWidth
-          required
+          onChange={(val) => handleChange("materialName", val as string)}
+          disabled={isEditOrReceive || !form.companyName}
+          searchable
+          hasError={false}
         />
         <Input
           label="Quantity"

@@ -20,10 +20,10 @@ export const getCompaniesApi = async (
     const params: any = { page, limit };
     if (search) params.search = search;
 
-    const response = await ApiClient.get<CompanyListResponse>("/company", {
+    const response = await ApiClient.get<any>("/company", {
       params,
     });
-    dispatch(fetchCompanyListSuccess(response));
+    dispatch(fetchCompanyListSuccess(response.data));
     return;
   } catch (error: any) {
     toast.error("Failed to fetch companies", {
@@ -47,6 +47,47 @@ export const createCompanyApi = async (
     return response;
   } catch (error: any) {
     toast.error("Failed to create company", {
+      description: error?.response?.data?.message || "Something went wrong",
+    });
+    throw error;
+  } finally {
+    dispatch(actionLoading(false));
+  }
+};
+
+export const updateCompanyApi = async (
+  dispatch: Dispatch<CompanyAction>,
+  id: string,
+  data: any
+) => {
+  dispatch(actionLoading(true));
+  try {
+    const response = await ApiClient.put(`/company/${id}`, data);
+    dispatch(actionSuccess());
+    toast.success("Company updated successfully");
+    return response;
+  } catch (error: any) {
+    toast.error("Failed to update company", {
+      description: error?.response?.data?.message || "Something went wrong",
+    });
+    throw error;
+  } finally {
+    dispatch(actionLoading(false));
+  }
+};
+
+export const deleteCompanyApi = async (
+  dispatch: Dispatch<CompanyAction>,
+  id: string
+) => {
+  dispatch(actionLoading(true));
+  try {
+    const response = await ApiClient.delete(`/company/${id}`);
+    dispatch(actionSuccess());
+    toast.success("Company deleted successfully");
+    return response;
+  } catch (error: any) {
+    toast.error("Failed to delete company", {
       description: error?.response?.data?.message || "Something went wrong",
     });
     throw error;

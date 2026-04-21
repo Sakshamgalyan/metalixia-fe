@@ -6,34 +6,26 @@ import Typography from "@/components/UI/Typography";
 import Button from "@/components/UI/Button";
 import Input from "@/components/UI/Input";
 import Table, { TableColumn } from "@/components/UI/Table";
-import {
-  useCompanyStateContext,
-  useCompanyDispatchContext,
-} from "@/context/admin/Company/hooks";
-import { getCompaniesApi, deleteCompanyApi } from "@/context/admin/Company/api";
-import { setPage, setModal } from "@/context/admin/Company/actions";
-import { CompanyItem } from "@/context/admin/Company/type";
-import CompanyModal from "./CompanyModal";
 import NoDataState from "@/components/Common/NoDataState";
 import DeleteModal from "@/components/Common/DeleteModal";
-
-const CompaniesCompt = () => {
+import PartModal from "./PartModal";
+import { usePartStateContext, usePartDispatchContext } from "@/context/admin/PartList/hooks";
+import { getPartsApi, deletePartApi } from "@/context/admin/PartList/api";
+import { setPage, setModal } from "@/context/admin/PartList/actions";
+import { PartItem } from "@/context/admin/PartList/type";
+const PartListCompt = () => {
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-
-  const [deleteModalState, setDeleteModalState] = useState<{
-    isOpen: boolean;
-    id: string | null;
-    name?: string;
-  }>({ isOpen: false, id: null });
+  
+  const [deleteModalState, setDeleteModalState] = useState<{isOpen: boolean; id: string | null; name?: string}>({isOpen: false, id: null});
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const { listData, listLoading, page } = useCompanyStateContext();
-  const dispatch = useCompanyDispatchContext();
+  const { listData, listLoading, page } = usePartStateContext();
+  const dispatch = usePartDispatchContext();
 
   const fetchData = useCallback(
     async (p = 1, query = "") => {
-      await getCompaniesApi(dispatch, p, 10, query);
+      await getPartsApi(dispatch, p, 10, query);
     },
     [dispatch],
   );
@@ -59,19 +51,19 @@ const CompaniesCompt = () => {
     dispatch(setModal({ mode: "add", selectedItem: null }));
   };
 
-  const openEditModal = (item: CompanyItem) => {
+  const openEditModal = (item: PartItem) => {
     dispatch(setModal({ mode: "edit", selectedItem: item }));
   };
 
-  const promptDelete = (item: CompanyItem) => {
-    setDeleteModalState({ isOpen: true, id: item._id, name: item.companyName });
+  const promptDelete = (item: PartItem) => {
+    setDeleteModalState({ isOpen: true, id: item._id, name: item.partName });
   };
 
   const confirmDelete = async () => {
     if (!deleteModalState.id) return;
     setIsDeleting(true);
     try {
-      await deleteCompanyApi(dispatch, deleteModalState.id);
+      await deletePartApi(dispatch, deleteModalState.id);
       fetchData(page, searchQuery);
       setDeleteModalState({ isOpen: false, id: null });
     } catch (error) {
@@ -81,37 +73,38 @@ const CompaniesCompt = () => {
     }
   };
 
-  const columns: TableColumn<any>[] = [
+  const columns: TableColumn<PartItem>[] = [
     {
-      header: "Company Name",
+      header: "Company",
       accessor: "companyName",
+      className: "font-medium text-slate-800",
+    },
+    {
+      header: "Part Name",
+      accessor: "partName",
       className: "font-semibold text-slate-800",
     },
     {
-      header: "Contact Person",
-      accessor: "contactPerson",
+      header: "Part Number",
+      accessor: "partNumber",
       className: "text-slate-600",
     },
     {
-      header: "Email",
-      accessor: "email",
+      header: "Description",
+      accessor: "description",
       className: "text-slate-600",
     },
     {
-      header: "Phone",
-      accessor: "phone",
+      header: "Added Date",
+      accessor: "createdAt",
       className: "text-slate-600",
-    },
-    {
-      header: "Address",
-      accessor: "address",
-      className: "text-slate-600",
+      render: (item) => new Date(item.createdAt).toLocaleDateString()
     },
     {
       header: "Actions",
-      accessor: "actions",
+      accessor: "actions" as any,
       fixedColumn: "right",
-      render: (item: CompanyItem) => (
+      render: (item: PartItem) => (
         <div className="flex gap-2 justify-center">
           <Button
             variant="outline"
@@ -134,17 +127,17 @@ const CompaniesCompt = () => {
     },
   ];
 
-  const safeData = listData?.data || [];
+  const safeData = Array.isArray(listData?.data) ? listData.data : [];
 
   return (
     <div className="space-y-6 w-[95%] mx-auto py-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <Typography variant="h3" className="text-slate-900">
-            Companies
+            Part Configuration
           </Typography>
           <Typography variant="p" className="text-slate-500">
-            Manage your client companies and their details
+            Manage your parts and components inventory
           </Typography>
         </div>
         <div className="flex gap-3">
@@ -154,7 +147,7 @@ const CompaniesCompt = () => {
             leftIcon={<Plus size={16} />}
             onClick={openAddModal}
           >
-            Add Company
+            Add Part
           </Button>
         </div>
       </div>
@@ -163,7 +156,7 @@ const CompaniesCompt = () => {
         <div className="flex flex-col md:flex-row gap-4 mb-6 justify-between items-start md:items-center">
           <div className="w-full md:w-96">
             <Input
-              placeholder="Search companies, emails..."
+              placeholder="Search parts, part numbers..."
               leftIcon={<Search size={18} />}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
@@ -173,16 +166,16 @@ const CompaniesCompt = () => {
         </div>
 
         {!listLoading && safeData.length === 0 ? (
-          <NoDataState
-            title="No Companies Found"
-            message="There are no companies available at the moment. Click 'Add Company' to create one."
+          <NoDataState 
+            title="No Parts Found" 
+            message="There are no parts available at the moment. Click 'Add Part' to create one."
           />
         ) : (
           <Table
             columns={columns}
             data={safeData}
             isLoading={listLoading}
-            keyExtractor={(item: CompanyItem) => item._id}
+            keyExtractor={(item: PartItem) => item._id}
             paginationConfig={{
               currentPage: page,
               totalPages: listData?.totalPages || 1,
@@ -190,12 +183,12 @@ const CompaniesCompt = () => {
               onPageChange: (newPage) => dispatch(setPage(newPage)),
               itemsPerPage: 10,
             }}
-            emptyMessage="No companies found."
+            emptyMessage="No parts found."
           />
         )}
       </div>
 
-      <CompanyModal onSuccess={() => fetchData(page, searchQuery)} />
+      <PartModal onSuccess={() => fetchData(page, searchQuery)} />
 
       <DeleteModal
         isOpen={deleteModalState.isOpen}
@@ -208,4 +201,4 @@ const CompaniesCompt = () => {
   );
 };
 
-export default CompaniesCompt;
+export default PartListCompt;

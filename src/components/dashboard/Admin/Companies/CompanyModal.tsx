@@ -5,11 +5,12 @@ import Modal from "@/components/UI/Modal";
 import Input from "@/components/UI/Input";
 import Button from "@/components/UI/Button";
 import {
-  useCompanyStateContext,
   useCompanyDispatchContext,
-} from "@/context/Admin/Company/hooks";
-import { setModal } from "@/context/Admin/Company/actions";
-import { createCompanyApi } from "@/context/Admin/Company/api";
+  useCompanyStateContext,
+} from "@/context/admin/Company/hooks";
+import { setModal } from "@/context/admin/Company/actions";
+import { createCompanyApi, updateCompanyApi } from "@/context/admin/Company/api";
+import { useEffect } from "react";
 
 interface CompanyModalProps {
   onSuccess: () => void;
@@ -30,7 +31,19 @@ const CompanyModal = ({ onSuccess }: CompanyModalProps) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const isAddMode = modal.mode === "add";
-  const isOpen = isAddMode; // Update mode can be added later
+  const isOpen = modal.mode === "add" || modal.mode === "edit";
+
+  useEffect(() => {
+    if (modal.mode === "edit" && modal.selectedItem) {
+      setFormData({
+        companyName: modal.selectedItem.companyName || "",
+        email: modal.selectedItem.email || "",
+        phone: modal.selectedItem.phone || "",
+        address: modal.selectedItem.address || "",
+        contactPerson: modal.selectedItem.contactPerson || "",
+      });
+    }
+  }, [modal]);
 
   const closeModal = () => {
     dispatch(setModal({ mode: null, selectedItem: null }));
@@ -63,9 +76,13 @@ const CompanyModal = ({ onSuccess }: CompanyModalProps) => {
 
   const handleSubmit = async () => {
     if (!validate()) return;
-    
+
     try {
-      await createCompanyApi(dispatch, formData);
+      if (modal.mode === "edit" && modal.selectedItem) {
+        await updateCompanyApi(dispatch, modal.selectedItem._id, { ...formData, _id: modal.selectedItem._id });
+      } else {
+        await createCompanyApi(dispatch, formData);
+      }
       onSuccess();
       closeModal();
     } catch (err) {
@@ -74,11 +91,7 @@ const CompanyModal = ({ onSuccess }: CompanyModalProps) => {
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={closeModal}
-      title="Add New Company"
-    >
+    <Modal isOpen={isOpen} onClose={closeModal} title={modal.mode === "edit" ? "Edit Company" : "Add New Company"}>
       <div className="space-y-4">
         <Input
           label="Company Name"
@@ -120,11 +133,21 @@ const CompanyModal = ({ onSuccess }: CompanyModalProps) => {
       </div>
 
       <div className="mt-6 flex justify-end gap-3">
-        <Button variant="outline" onClick={closeModal} disabled={actionLoading}>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={closeModal}
+          disabled={actionLoading}
+        >
           Cancel
         </Button>
-        <Button variant="primary" onClick={handleSubmit} isLoading={actionLoading}>
-          Save Company
+        <Button
+          size="sm"
+          variant="primary"
+          onClick={handleSubmit}
+          isLoading={actionLoading}
+        >
+          {modal.mode === "edit" ? "Update Company" : "Save Company"}
         </Button>
       </div>
     </Modal>
