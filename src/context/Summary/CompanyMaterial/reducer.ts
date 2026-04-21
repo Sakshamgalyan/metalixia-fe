@@ -14,6 +14,10 @@ import {
     FETCH_COMPANYMATERIAL_STATS_SUCCESS,
     SET_PAGE,
     SET_MODAL,
+    FETCH_COMPANIES_LIST_LOADING,
+    FETCH_COMPANIES_LIST_SUCCESS,
+    FETCH_COMPANY_PARTS_LOADING,
+    FETCH_COMPANY_PARTS_SUCCESS,
 } from "./type";
 
 export const initialState: CompanyMaterialState = {
@@ -24,6 +28,10 @@ export const initialState: CompanyMaterialState = {
     updateLoading: false,
     statsLoading: false,
     statsData: null,
+    companiesListLoading: false,
+    companiesListData: [],
+    companyPartsLoading: false,
+    companyPartsData: [],
     page: 1,
     modal: {
         mode: null,
@@ -87,6 +95,26 @@ const reducer: Reducer<CompanyMaterialState, CompanyMaterialAction> = (
             return {
                 ...state,
                 page: action.payload,
+            };
+        case FETCH_COMPANIES_LIST_LOADING:
+            return {
+                ...state,
+                companiesListLoading: action.payload,
+            };
+        case FETCH_COMPANIES_LIST_SUCCESS:
+            return {
+                ...state,
+                companiesListData: action.payload,
+            };
+        case FETCH_COMPANY_PARTS_LOADING:
+            return {
+                ...state,
+                companyPartsLoading: action.payload,
+            };
+        case FETCH_COMPANY_PARTS_SUCCESS:
+            return {
+                ...state,
+                companyPartsData: action.payload,
             };
         case SET_MODAL:
             return {

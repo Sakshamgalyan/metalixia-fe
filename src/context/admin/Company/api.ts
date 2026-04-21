@@ -23,7 +23,7 @@ export const getCompaniesApi = async (
     const response = await ApiClient.get<any>("/company", {
       params,
     });
-    dispatch(fetchCompanyListSuccess(response.data));
+    dispatch(fetchCompanyListSuccess(response));
     return;
   } catch (error: any) {
     toast.error("Failed to fetch companies", {

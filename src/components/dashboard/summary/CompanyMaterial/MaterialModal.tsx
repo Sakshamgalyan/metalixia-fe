@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
 import Button from "@/components/UI/Button";
 import Input from "@/components/UI/Input";
 import Modal from "@/components/UI/Modal";
 import Dropdown from "@/components/UI/DropDown";
 import DatePicker from "@/components/UI/DatePicker";
-import ApiClient from "@/lib/apiClient";
 import { useAppSelector } from "@/store/hooks";
 import {
   useCompanyMaterialStateContext,
@@ -18,8 +18,11 @@ import {
   updateCompanyMaterialReceiverApi,
   getCompanyMaterialsApi,
   getCompanyMaterialStatsApi,
+  getCompaniesListApi,
+  getCompanyPartsApi,
 } from "@/context/Summary/CompanyMaterial/api";
 import { setModal } from "@/context/Summary/CompanyMaterial/actions";
+import { CompanyList, CompanyPart } from "@/context/Summary/CompanyMaterial/type";
 
 // ─── Constants ───────────────────────────────────────────────────
 const UNIT_OPTIONS = [
@@ -31,9 +34,21 @@ const UNIT_OPTIONS = [
   { value: "units", label: "Units" },
 ];
 
-const emptyForm = {
-  companyName: "",
-  materialName: "",
+type FormValues = {
+  companyId: string;
+  partId: string;
+  quantity: string;
+  unit: string;
+  expectedOn: string;
+  deliveryBy: string;
+  receivedOn: string;
+  inventoryLocation: string;
+  receivedBy: string;
+};
+
+const defaultValues: FormValues = {
+  companyId: "",
+  partId: "",
   quantity: "",
   unit: "pcs",
   expectedOn: "",
@@ -44,44 +59,61 @@ const emptyForm = {
 };
 
 const MaterialFormModal = () => {
-  const { modal, createLoading, updateLoading, updateReceiverLoading, page } =
-    useCompanyMaterialStateContext();
+  const {
+    modal,
+    createLoading,
+    updateLoading,
+    updateReceiverLoading,
+    page,
+    companiesListData,
+    companiesListLoading,
+    companyPartsData,
+    companyPartsLoading,
+  } = useCompanyMaterialStateContext();
+
   const dispatch = useCompanyMaterialDispatchContext();
   const { user } = useAppSelector((state) => state.auth);
-  const isSuperAdmin = user?.role === "superAdmin";
 
+  const isSuperAdmin = user?.role === "superAdmin";
   const { mode, selectedItem } = modal;
+
   const isEdit = mode === "edit";
   const isReceive = mode === "receive";
   const isOpen = mode === "add" || isEdit || isReceive;
   const isEditOrReceive = isEdit || isReceive;
 
-  const [form, setForm] = useState(emptyForm);
-  const [companies, setCompanies] = useState<any[]>([]);
+  const {
+    control,
+    handleSubmit,
+    watch,
+    reset,
+    setValue,
+  } = useForm<FormValues>({
+    defaultValues,
+  });
 
+  const companyId = watch("companyId");
+
+  // ─── Fetch companies on modal open ──────────────────────────────
   useEffect(() => {
-    const fetchCompanies = async () => {
-      try {
-        const response: any = await ApiClient.get("/company", { params: { limit: 1000 } });
-        if (response.data?.data?.data) {
-          setCompanies(response.data.data.data);
-        } else if (response.data?.data) {
-          setCompanies(response.data.data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch companies", err);
-      }
-    };
     if (isOpen) {
-      fetchCompanies();
+      getCompaniesListApi(dispatch);
     }
   }, [isOpen]);
 
+  // ─── Fetch parts when company changes ───────────────────────────
   useEffect(() => {
-    if (isOpen && isEditOrReceive && selectedItem) {
-      setForm({
-        companyName: selectedItem.companyName || "",
-        materialName: selectedItem.materialName || "",
+    if (companyId) {
+      getCompanyPartsApi(dispatch, companyId);
+    }
+  }, [companyId]);
+
+  // ─── Prefill form ───────────────────────────────────────────────
+  useEffect(() => {
+    if (isOpen && selectedItem && isEditOrReceive) {
+      reset({
+        companyId: selectedItem.companyId || "",
+        partId: selectedItem.partId || "",
         quantity: String(selectedItem.quantity || ""),
         unit: selectedItem.unit || "pcs",
         expectedOn: selectedItem.expectedOn
@@ -97,19 +129,16 @@ const MaterialFormModal = () => {
         receivedBy: selectedItem.receivedBy || "",
       });
     } else if (isOpen && mode === "add") {
-      setForm(emptyForm);
+      reset(defaultValues);
     }
-  }, [isOpen, mode, selectedItem, isEditOrReceive]);
+  }, [isOpen, mode, selectedItem]);
 
   const closeModal = () => {
     dispatch(setModal({ mode: null, selectedItem: null }));
   };
 
-  const handleChange = (field: string, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = async () => {
+  // ─── Submit ─────────────────────────────────────────────────────
+  const onSubmit = async (data: FormValues) => {
     if (isReceive && selectedItem && user) {
       await updateCompanyMaterialReceiverApi(dispatch, selectedItem._id, {
         receivedBy: user.name || user.email,
@@ -117,21 +146,20 @@ const MaterialFormModal = () => {
       });
     } else {
       const payload: any = {
-        companyName: form.companyName,
-        materialName: form.materialName,
-        quantity: Number(form.quantity),
-        unit: form.unit,
-        inventoryLocation: form.inventoryLocation,
+        companyId: data.companyId,
+        partId: data.partId,
+        quantity: Number(data.quantity),
+        unit: data.unit,
+        inventoryLocation: data.inventoryLocation,
       };
-      if (form.expectedOn) payload.expectedOn = form.expectedOn;
-      if (form.deliveryBy) payload.deliveryBy = form.deliveryBy;
-      if (form.receivedOn) payload.receivedOn = form.receivedOn;
+
+      if (data.expectedOn) payload.expectedOn = data.expectedOn;
+      if (data.deliveryBy) payload.deliveryBy = data.deliveryBy;
+      if (data.receivedOn) payload.receivedOn = data.receivedOn;
 
       if (isEdit && selectedItem) {
-        delete payload.companyName;
-        delete payload.materialName;
-        if (isSuperAdmin && form.receivedBy) {
-          payload.receivedBy = form.receivedBy;
+        if (isSuperAdmin && data.receivedBy) {
+          payload.receivedBy = data.receivedBy;
         }
         await updateCompanyMaterialApi(dispatch, selectedItem._id, payload);
       } else {
@@ -144,27 +172,23 @@ const MaterialFormModal = () => {
     getCompanyMaterialStatsApi(dispatch);
   };
 
-  const title = isReceive
-    ? "Confirm Material Receipt"
-    : isEdit
-      ? "Edit Material Entry"
-      : "Add Material Entry";
   const isSubmitting = isReceive
     ? updateReceiverLoading
     : isEdit
-      ? updateLoading
-      : createLoading;
-  const actionText = isReceive
-    ? "Confirm Receipt"
-    : isEdit
-      ? "Update"
-      : "Add Entry";
+    ? updateLoading
+    : createLoading;
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={closeModal}
-      title={title}
+      title={
+        isReceive
+          ? "Confirm Material Receipt"
+          : isEdit
+          ? "Edit Material Entry"
+          : "Add Material Entry"
+      }
       width="lg"
       footer={
         <>
@@ -174,105 +198,138 @@ const MaterialFormModal = () => {
           <Button
             variant="primary"
             size="sm"
-            onClick={handleSubmit}
+            onClick={handleSubmit(onSubmit)}
             isLoading={isSubmitting}
-            loadingText="Processing..."
+            disabled={isSubmitting || companiesListLoading || companyPartsLoading}
           >
-            {actionText}
+            {isReceive ? "Confirm Receipt" : isEdit ? "Update" : "Add Entry"}
           </Button>
         </>
       }
     >
-      {isReceive && (
-        <div className="mb-6 p-4 rounded-lg bg-blue-50 border border-blue-100 text-sm text-blue-800 font-medium">
-          Please review the details below. By confirming, your name will be
-          officially recorded as the receiver.
-        </div>
-      )}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Dropdown
-          label="Company Name"
-          placeholder="Select company name"
-          options={companies.map((c) => ({ value: c.companyName, label: c.companyName }))}
-          value={form.companyName}
-          onChange={(val) => {
-            handleChange("companyName", val as string);
-            handleChange("materialName", "");
-          }}
-          disabled={isEditOrReceive}
-          searchable
-          hasError={false}
-        />
-        <Dropdown
-          label="Part Name"
-          placeholder="Select part/material name"
-          options={
-            companies
-              .find((c) => c.companyName === form.companyName)
-              ?.parts?.map((p: any) => ({ value: p.partName, label: p.partName })) || []
-          }
-          value={form.materialName}
-          onChange={(val) => handleChange("materialName", val as string)}
-          disabled={isEditOrReceive || !form.companyName}
-          searchable
-          hasError={false}
-        />
-        <Input
-          label="Quantity"
-          placeholder="Enter quantity"
-          type="number"
-          value={form.quantity}
-          onChange={(e) => handleChange("quantity", e.target.value)}
-          fullWidth
-          required
-        />
-        <Dropdown
-          label="Unit"
-          options={UNIT_OPTIONS}
-          value={form.unit}
-          onChange={(val) => handleChange("unit", val as string)}
-          placeholder="Select unit"
-        />
-        <DatePicker
-          label="Expected On"
-          value={form.expectedOn}
-          onChange={(val) => handleChange("expectedOn", val)}
-          fullWidth
-        />
-        <DatePicker
-          label="Delivery By"
-          value={form.deliveryBy}
-          onChange={(val) => handleChange("deliveryBy", val)}
-          fullWidth
-        />
-        <DatePicker
-          label="Received On"
-          value={form.receivedOn}
-          onChange={(val) => handleChange("receivedOn", val)}
-          fullWidth
-        />
-        <Input
-          label="Inventory Location"
-          placeholder="Enter location"
-          value={form.inventoryLocation}
-          onChange={(e) => handleChange("inventoryLocation", e.target.value)}
-          fullWidth
-          required
-        />
-        {(isEdit && isSuperAdmin) || isReceive ? (
-          <div className="md:col-span-2">
-            <Input
-              label="Received By"
-              placeholder="Receiver name"
-              value={
-                isReceive ? user?.name || user?.email || "" : form.receivedBy
-              }
-              onChange={(e) => handleChange("receivedBy", e.target.value)}
-              isDisabled={isReceive}
-              fullWidth
+
+        {/* Company */}
+        <Controller
+          control={control}
+          name="companyId"
+          render={({ field }) => (
+            <Dropdown
+              label="Company Name"
+              options={companiesListData.map((c: CompanyList) => ({
+                value: c.value,
+                label: c.label,
+              }))}
+              value={field.value}
+              onChange={(val) => {
+                field.onChange(val);
+                setValue("partId", "");
+              }}
+              placeholder="Select Company"
+              disabled={isEditOrReceive || companiesListLoading}
+              searchable
             />
-          </div>
-        ) : null}
+          )}
+        />
+
+        {/* Part */}
+        <Controller
+          control={control}
+          name="partId"
+          render={({ field }) => (
+            <Dropdown
+              label="Part Name"
+              options={companyPartsData.map((p: CompanyPart) => ({
+                value: p.value,
+                label: p.label,
+              }))}
+              value={field.value}
+              onChange={field.onChange}
+              placeholder="Select Part"
+              disabled={isEditOrReceive || !companyId || companyPartsLoading}
+              searchable
+            />
+          )}
+        />
+
+        {/* Quantity */}
+        <Controller
+          control={control}
+          name="quantity"
+          render={({ field }) => (
+            <Input 
+              label="Quantity" 
+              type="number" 
+              placeholder="Enter Quantity" 
+              {...field} 
+              required 
+            />
+          )}
+        />
+
+        {/* Unit */}
+        <Controller
+          control={control}
+          name="unit"
+          render={({ field }) => (
+            <Dropdown 
+              label="Unit" 
+              placeholder="Select Unit"
+              options={UNIT_OPTIONS} 
+              {...field} 
+            />
+          )}
+        />
+
+        <Controller
+            control={control}
+            name="expectedOn"
+            render={({ field }) => (
+              <DatePicker 
+                label="Expected On" 
+                placeholder="dd/mm/yyyy" 
+                {...field} 
+              />
+            )}
+          />
+
+        <Controller
+            control={control}
+            name="deliveryBy"
+            render={({ field }) => (
+              <DatePicker 
+                label="Delivery By" 
+                placeholder="dd/mm/yyyy" 
+                {...field} 
+              />
+            )}
+          />
+
+        <Controller
+            control={control}
+            name="receivedOn"
+            render={({ field }) => (
+              <DatePicker 
+                label="Received On" 
+                placeholder="dd/mm/yyyy" 
+                {...field} 
+              />
+            )}
+          />
+
+        {/* Location */}
+        <Controller
+          control={control}
+          name="inventoryLocation"
+          render={({ field }) => (
+            <Input 
+              label="Inventory Location" 
+              placeholder="Enter Inventory Location" 
+              {...field} 
+              required 
+            />
+          )}
+        />
       </div>
     </Modal>
   );

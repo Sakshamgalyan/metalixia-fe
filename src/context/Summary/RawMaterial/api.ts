@@ -50,3 +50,16 @@ export const createRawMaterialApi = async (
         dispatch(createRawMaterialLoading(false));
     }
 };
+
+export const deleteRawMaterialApi = async (id: string) => {
+    try {
+        const response = await ApiClient.delete(`/material/raw/${id}`);
+        toast.success("Raw material deleted successfully");
+        return response;
+    } catch (error: any) {
+        toast.error("Failed to delete raw material", {
+            description: error?.response?.data?.message || "Something went wrong",
+        });
+        throw error;
+    }
+};

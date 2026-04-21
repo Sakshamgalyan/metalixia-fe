@@ -8,6 +8,10 @@ export const UPDATE_COMPANYMATERIAL_LOADING = "UPDATE_COMPANYMATERIAL_LOADING";
 export const UPDATE_COMPANYMATERIAL_SUCCESS = "UPDATE_COMPANYMATERIAL_SUCCESS";
 export const FETCH_COMPANYMATERIAL_STATS_LOADING = "FETCH_COMPANYMATERIAL_STATS_LOADING";
 export const FETCH_COMPANYMATERIAL_STATS_SUCCESS = "FETCH_COMPANYMATERIAL_STATS_SUCCESS";
+export const FETCH_COMPANIES_LIST_LOADING = "FETCH_COMPANIES_LIST_LOADING";
+export const FETCH_COMPANIES_LIST_SUCCESS = "FETCH_COMPANIES_LIST_SUCCESS";
+export const FETCH_COMPANY_PARTS_LOADING = "FETCH_COMPANY_PARTS_LOADING";
+export const FETCH_COMPANY_PARTS_SUCCESS = "FETCH_COMPANY_PARTS_SUCCESS";
 export const SET_PAGE = "SET_PAGE";
 export const SET_MODAL = "SET_MODAL";
 
@@ -61,6 +65,26 @@ export interface FETCH_COMPANYMATERIAL_STATS_SUCCESS_ACTION {
     payload: CompanyMaterialStats;
 }
 
+export interface FETCH_COMPANIES_LIST_LOADING_ACTION {
+    type: typeof FETCH_COMPANIES_LIST_LOADING;
+    payload: boolean;
+}
+
+export interface FETCH_COMPANIES_LIST_SUCCESS_ACTION {
+    type: typeof FETCH_COMPANIES_LIST_SUCCESS;
+    payload: any;
+}
+
+export interface FETCH_COMPANY_PARTS_LOADING_ACTION {
+    type: typeof FETCH_COMPANY_PARTS_LOADING;
+    payload: boolean;
+}
+
+export interface FETCH_COMPANY_PARTS_SUCCESS_ACTION {
+    type: typeof FETCH_COMPANY_PARTS_SUCCESS;
+    payload: any;
+}
+
 export interface SET_PAGE_ACTION {
     type: typeof SET_PAGE;
     payload: number;
@@ -78,6 +102,7 @@ export interface SET_MODAL_ACTION {
     payload: ModalState;
 }
 
+
 export type CompanyMaterialState = {
     listLoading: boolean;
     listData: CompanyMaterialListResponse | null;
@@ -87,6 +112,10 @@ export type CompanyMaterialState = {
     statsLoading: boolean;
     statsData: CompanyMaterialStats | null;
     page: number;
+    companiesListLoading: boolean;
+    companiesListData: CompanyList[];
+    companyPartsLoading: boolean;
+    companyPartsData: CompanyPart[];
     modal: ModalState;
 };
 
@@ -102,12 +131,19 @@ export type CompanyMaterialAction =
     | FETCH_COMPANYMATERIAL_STATS_LOADING_ACTION
     | FETCH_COMPANYMATERIAL_STATS_SUCCESS_ACTION
     | SET_PAGE_ACTION
+    | FETCH_COMPANY_PARTS_LOADING_ACTION
+    | FETCH_COMPANY_PARTS_SUCCESS_ACTION
+    | FETCH_COMPANIES_LIST_LOADING_ACTION
+    | FETCH_COMPANIES_LIST_SUCCESS_ACTION
     | SET_MODAL_ACTION;
 
 export interface CompanyMaterialItem {
     _id: string;
-    materialName: string;
+    partName: string;
+    partNumber: string;
     companyName: string;
+    companyId: string;
+    partId: string;
     quantity: number;
     unit: string;
     receivedBy: string;
@@ -139,4 +175,14 @@ export interface CompanyMaterialStats {
     totalThisWeek: number;
     totalQuantityThisWeek: number;
     activeCompanies: number;
+}
+
+export interface CompanyList {
+    value: string;
+    label: string;
+}
+
+export interface CompanyPart {
+    value: string;
+    label: string;
 }

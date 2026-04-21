@@ -109,19 +109,17 @@ const PartListCompt = () => {
           <Button
             variant="outline"
             size="sm"
+            leftIcon={<Pencil size={16} className="text-blue-600" />}
             onClick={() => openEditModal(item)}
             className="p-1.5 min-w-0"
-          >
-            <Pencil size={16} className="text-blue-600" />
-          </Button>
+          />
           <Button
             variant="outline"
             size="sm"
+            leftIcon={<Trash2 size={16} className="text-red-600" />}
             onClick={() => promptDelete(item)}
             className="p-1.5 min-w-0"
-          >
-            <Trash2 size={16} className="text-red-600" />
-          </Button>
+          />
         </div>
       ),
     },

@@ -1,7 +1,14 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { Search, Plus, Archive, Edit, CheckCircle } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import {
+  Search,
+  Plus,
+  Archive,
+  CheckCircle,
+  Trash2,
+  Pencil,
+} from "lucide-react";
 import Typography from "@/components/UI/Typography";
 import Button from "@/components/UI/Button";
 import Input from "@/components/UI/Input";
@@ -15,16 +22,22 @@ import {
 import {
   getCompanyMaterialsApi,
   getCompanyMaterialStatsApi,
+  deleteCompanyMaterialApi,
 } from "@/context/Summary/CompanyMaterial/api";
 import { setPage, setModal } from "@/context/Summary/CompanyMaterial/actions";
 import { CompanyMaterialItem } from "@/context/Summary/CompanyMaterial/type";
 import { StatsCards } from "./StatsCards";
 import { formatDate } from "./Constants";
+import DeleteModal from "@/components/Common/DeleteModal";
 
 const CompanyMaterialCompt = () => {
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<CompanyMaterialItem | null>(
+    null,
+  );
+  const [isDeleting, setIsDeleting] = useState(false);
   // Context
   const { listData, listLoading, page, statsData, statsLoading } =
     useCompanyMaterialStateContext();
@@ -81,17 +94,45 @@ const CompanyMaterialCompt = () => {
     dispatch(setModal({ mode: "receive", selectedItem: item }));
   };
 
+  const openDeleteModal = (item: CompanyMaterialItem) => {
+    setSelectedItem(item);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!selectedItem) return;
+
+    try {
+      setIsDeleting(true);
+      await deleteCompanyMaterialApi(selectedItem._id);
+
+      setDeleteModalOpen(false);
+      setSelectedItem(null);
+
+      fetchData(page, searchQuery);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   // ── Table Columns ─────────────────────────────────────────────
   const columns: TableColumn<CompanyMaterialItem>[] = [
     {
       header: "Company Name",
       accessor: "companyName",
-      className: "font-semibold text-slate-800",
+      headerClassName: "text-left",
+      className: "font-semibold text-slate-800 text-left",
     },
     {
       header: "Part Name",
-      accessor: "materialName",
-      className: "text-slate-600",
+      accessor: "partName",
+      headerClassName: "text-left",
+      className: "text-slate-600 text-left",
+      render: (row) => (
+        <span className="font-medium text-slate-700">
+          {row.partNumber} - {row.partName}
+        </span>
+      ),
     },
     {
       header: "Quantity",
@@ -142,9 +183,10 @@ const CompanyMaterialCompt = () => {
                 bgColor="#16a34a"
                 textColor="#ffffff"
                 size="sm"
+                leftIcon={<CheckCircle size={14} />}
                 onClick={() => openReceiveModal(row)}
               >
-                <CheckCircle size={14} />
+                Receive
               </Button>
             </div>
           )}
@@ -158,14 +200,20 @@ const CompanyMaterialCompt = () => {
             fixedColumn: "right",
             render: (row: CompanyMaterialItem) => (
               <div className="flex items-center gap-2">
-                <button
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-indigo-600 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 transition-colors"
+                <Button
+                  variant="outline"
+                  size="sm"
+                  leftIcon={<Pencil size={16} className="text-blue-600" />}
                   onClick={() => openEditModal(row)}
                   title="Edit"
-                >
-                  <Edit size={13} />
-                  <span>Edit</span>
-                </button>
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  leftIcon={<Trash2 size={16} className="text-red-600" />}
+                  onClick={() => openDeleteModal(row)}
+                  title="Delete"
+                />
               </div>
             ),
           } as TableColumn<CompanyMaterialItem>,
@@ -242,6 +290,23 @@ const CompanyMaterialCompt = () => {
 
       {/* All Modals (reads state from context) */}
       <MaterialModals />
+
+      <DeleteModal
+        itemName={
+          selectedItem
+            ? `${selectedItem.partNumber} - ${selectedItem.partName}`
+            : ""
+        }
+        isLoading={isDeleting}
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          setDeleteModalOpen(false);
+          setSelectedItem(null);
+        }}
+        onConfirm={handleDelete}
+        title="Delete Company Material"
+        message="Are you sure you want to delete this company material?"
+      />
     </div>
   );
 };
