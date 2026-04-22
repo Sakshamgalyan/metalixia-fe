@@ -10,11 +10,14 @@ import {
     useRawMaterialDispatchContext,
 } from "@/context/Summary/RawMaterial/hooks";
 import { setModal } from "@/context/Summary/RawMaterial/actions";
+import { useAppSelector } from "@/store/hooks";
 
 const ExportModal = () => {
     const { modalState, listData } = useRawMaterialStateContext();
     const dispatch = useRawMaterialDispatchContext();
     const [exporting, setExporting] = useState(false);
+    const { user } = useAppSelector((state) => state.auth);
+    const isSuperAdmin = user?.role === "superAdmin";
 
     const isOpen = modalState.isOpen && modalState.type === "export";
 
@@ -28,7 +31,16 @@ const ExportModal = () => {
         setExporting(true);
         try {
             const data = listData.data;
-            const headers = ["Material Name", "Source", "Quantity", "Unit", "Price ($)", "Received At", "Expected On", "Received By"];
+            const headers = [
+                "Material Name", 
+                "Source", 
+                "Quantity", 
+                "Unit", 
+                ...(isSuperAdmin ? ["Price (₹)"] : []),
+                "Received At", 
+                "Expected On", 
+                "Received By"
+            ];
             
             const csvRows = [
                 headers.join(","),
@@ -37,7 +49,7 @@ const ExportModal = () => {
                     `"${item.source}"`,
                     item.quantity,
                     `"${item.unit}"`,
-                    item.price,
+                    ...(isSuperAdmin ? [item.price] : []),
                     `"${new Date(item.receivedAt).toLocaleString()}"`,
                     `"${new Date(item.expectedOn).toLocaleString()}"`,
                     `"${item.receivedBy}"`

@@ -16,6 +16,7 @@ import {
   getEmployeesListApi,
 } from "@/context/Summary/RawMaterial/api";
 import DatePicker from "@/components/UI/DatePicker";
+import { useAppSelector } from "@/store/hooks";
 
 interface AddRawMaterialFormData {
   materialName: string;
@@ -23,6 +24,8 @@ interface AddRawMaterialFormData {
   unit: string;
   price: number;
   source: string;
+  inventoryLocation: string;
+  invoiceNumber: string;
   receivedBy: string;
   receivedById: string;
   expectedOn: string;
@@ -35,6 +38,8 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
     { value: string; label: string }[]
   >([]);
   const [loadingEmployees, setLoadingEmployees] = useState(false);
+  const { user } = useAppSelector((state) => state.auth);
+  const isSuperAdmin = user?.role === "superAdmin";
 
   const {
     register,
@@ -106,6 +111,7 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
         <>
           <Button
             variant="outline"
+            size="sm"
             onClick={handleClose}
             disabled={createLoading}
           >
@@ -113,6 +119,7 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
           </Button>
           <Button
             variant="primary"
+            size="sm"
             onClick={handleSubmit(onSubmit)}
             isLoading={createLoading}
           >
@@ -143,7 +150,34 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Input
+            label="Inventory Location"
+            placeholder="Enter inventory location"
+            {...register("inventoryLocation", {
+              required: "Inventory location is required",
+            })}
+            hasError={!!errors.inventoryLocation?.message}
+            errorMessage={errors.inventoryLocation?.message}
+            fullWidth
+          />
+          <Input
+            label="Invoice Number"
+            placeholder="Enter invoice number"
+            {...register("invoiceNumber", {
+              required: "Invoice number is required",
+            })}
+            hasError={!!errors.invoiceNumber?.message}
+            errorMessage={errors.invoiceNumber?.message}
+            fullWidth
+          />
+        </div>
+
+        <div
+          className={`grid grid-cols-1 ${
+            isSuperAdmin ? "md:grid-cols-3" : "md:grid-cols-2"
+          } gap-4`}
+        >
           <Input
             label="Quantity"
             type="number"
@@ -165,19 +199,21 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
             errorMessage={errors.unit?.message}
             fullWidth
           />
-          <Input
-            label="Price ($)"
-            type="number"
-            placeholder="0"
-            {...register("price", {
-              required: "Price is required",
-              valueAsNumber: true,
-              min: { value: 0, message: "Price cannot be negative" },
-            })}
-            hasError={!!errors.price?.message}
-            errorMessage={errors.price?.message}
-            fullWidth
-          />
+          {isSuperAdmin && (
+            <Input
+              label="Price (₹)"
+              type="number"
+              placeholder="0"
+              {...register("price", {
+                required: "Price is required",
+                valueAsNumber: true,
+                min: { value: 0, message: "Price cannot be negative" },
+              })}
+              hasError={!!errors.price?.message}
+              errorMessage={errors.price?.message}
+              fullWidth
+            />
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -91,6 +91,8 @@ export interface RawMaterialItem {
     unit: string;
     price: number;
     source: string;
+    invoiceNumber: string;
+    inventoryLocation: string;
     receivedBy: string;
     receivedById: string;
     receivedAt: string;
