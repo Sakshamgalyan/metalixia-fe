@@ -9,9 +9,10 @@ import { motion } from "framer-motion";
 interface RawStatsCardsProps {
     statsData: any;
     statsLoading: boolean;
+    isSuperAdmin: boolean;
 }
 
-export const RawStatsCards: React.FC<RawStatsCardsProps> = ({ statsData, statsLoading }) => {
+export const RawStatsCards: React.FC<RawStatsCardsProps> = ({ statsData, statsLoading, isSuperAdmin }) => {
     const dailyCounts = statsData?.dailyCounts || [];
     const chartLabels = dailyCounts.map((d: any) => {
         const date = new Date(d.date);
@@ -106,54 +107,56 @@ export const RawStatsCards: React.FC<RawStatsCardsProps> = ({ statsData, statsLo
             </motion.div>
 
             {/* Card 2: Total Investment */}
-            <motion.div 
-                variants={cardVariants}
-                whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                className="relative bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] hover:shadow-xl transition-all duration-300"
-            >
-                <div className="p-6">
-                    <div className="flex items-start justify-between">
-                        <div className="space-y-1">
-                            <Typography variant="p" className="text-slate-400 text-[11px] font-bold uppercase tracking-widest">
-                                Capital Flow
-                            </Typography>
-                            <Typography variant="h4" className="text-slate-800 font-extrabold text-xl">
-                                Investment
-                            </Typography>
+            {isSuperAdmin && (
+                <motion.div 
+                    variants={cardVariants}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                    className="relative bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] hover:shadow-xl transition-all duration-300"
+                >
+                    <div className="p-6">
+                        <div className="flex items-start justify-between">
+                            <div className="space-y-1">
+                                <Typography variant="p" className="text-slate-400 text-[11px] font-bold uppercase tracking-widest">
+                                    Capital Flow
+                                </Typography>
+                                <Typography variant="h4" className="text-slate-800 font-extrabold text-xl">
+                                    Investment
+                                </Typography>
+                            </div>
+                            <div className="w-12 h-12 rounded-2xl bg-rose-600 flex items-center justify-center text-white shadow-[0_8px_20px_rgba(225,29,72,0.3)]">
+                                <IndianRupee size={22} className="stroke-[2.5px]" />
+                            </div>
                         </div>
-                        <div className="w-12 h-12 rounded-2xl bg-rose-600 flex items-center justify-center text-white shadow-[0_8px_20px_rgba(225,29,72,0.3)]">
-                            <IndianRupee size={22} className="stroke-[2.5px]" />
+
+                        <div className="mt-8">
+                            <Typography className="text-3xl font-black text-slate-900 tracking-tight leading-tight">
+                                {statsLoading ? "..." : formatCurrency(statsData?.totalInvestmentThisWeek ?? 0)}
+                            </Typography>
+                            <div className="flex items-center gap-1.5 mt-2">
+                                <div className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Live Market Value</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="mt-8">
-                        <Typography className="text-3xl font-black text-slate-900 tracking-tight leading-tight">
-                            {statsLoading ? "..." : formatCurrency(statsData?.totalInvestmentThisWeek ?? 0)}
-                        </Typography>
-                        <div className="flex items-center gap-1.5 mt-2">
-                             <div className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                             <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Live Market Value</span>
-                        </div>
+                    <div className="h-16 mt-2 relative">
+                        {!statsLoading && dailyCounts.length > 0 ? (
+                            <div className="absolute inset-0 opacity-40">
+                                <Chart
+                                    data={dailyCounts.map((d: any) => d.totalValue)}
+                                    height={64}
+                                    type="line"
+                                    color="#e11d48"
+                                    showXAxis={false}
+                                    showTooltip={false}
+                                />
+                            </div>
+                        ) : (
+                            <div className="absolute inset-0 flex items-center justify-center text-[10px] text-slate-300 uppercase tracking-widest">Analyzing value...</div>
+                        )}
                     </div>
-                </div>
-
-                <div className="h-16 mt-2 relative">
-                    {!statsLoading && dailyCounts.length > 0 ? (
-                        <div className="absolute inset-0 opacity-40">
-                             <Chart
-                                data={dailyCounts.map((d: any) => d.totalValue)}
-                                height={64}
-                                type="line"
-                                color="#e11d48"
-                                showXAxis={false}
-                                showTooltip={false}
-                            />
-                        </div>
-                    ) : (
-                        <div className="absolute inset-0 flex items-center justify-center text-[10px] text-slate-300 uppercase tracking-widest">Analyzing value...</div>
-                    )}
-                </div>
-            </motion.div>
+                </motion.div>
+            )}
 
             {/* Card 3: Vendor Network */}
             <motion.div 

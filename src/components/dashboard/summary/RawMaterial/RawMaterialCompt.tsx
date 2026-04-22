@@ -102,15 +102,37 @@ const RawMaterialCompt = () => {
                 </span>
             ),
         },
+        ...(isSuperAdmin
+            ? [
+                {
+                    header: "Price",
+                    accessor: "price",
+                    render: (row) => (
+                        <span className="font-medium text-slate-700">
+                            ₹{row.price.toLocaleString("en-US")}
+                        </span>
+                    ),
+                } as TableColumn<RawMaterialItem>,
+            ]
+            : []),
         {
-            header: "Price",
-            accessor: "price",
+            header: "Inventory Location",
+            accessor: "inventoryLocation",
             render: (row) => (
                 <span className="font-medium text-slate-700">
-                    ₹{row.price.toLocaleString("en-US")}
+                    {row.inventoryLocation}
                 </span>
             ),
         },
+        {
+            header: "Invoice Number",
+            accessor: "invoiceNumber",
+            render: (row) => (
+                <span className="font-medium text-slate-700">
+                    {row.invoiceNumber}
+                </span>
+            ),
+        },  
         {
             header: "Received Time",
             accessor: "receivedAt",
@@ -186,7 +208,7 @@ const RawMaterialCompt = () => {
                 </div>
             </div>
 
-            <RawStatsCards statsData={statsData} statsLoading={statsLoading} />
+            <RawStatsCards statsData={statsData} statsLoading={statsLoading} isSuperAdmin={isSuperAdmin} />
 
             <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">
                 <div className="flex flex-col md:flex-row gap-4 mb-6 justify-between items-start md:items-center">
