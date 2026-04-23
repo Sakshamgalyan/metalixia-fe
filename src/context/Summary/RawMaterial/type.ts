@@ -99,10 +99,6 @@ export interface RawMaterialItem {
     expectedOn: string;
 }
 
-export interface RawMaterialListResponse {
-    data: RawMaterialItem[];
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-}
+import { PaginatedResponse } from "@/types/common";
+
+export interface RawMaterialListResponse extends PaginatedResponse<RawMaterialItem> {}

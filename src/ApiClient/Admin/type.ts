@@ -5,18 +5,15 @@ export interface EmployeeListPayload {
   post?: string[];
 }
 
-export interface EmployeeListResponse {
-  pagination: {
-    total: number;
-    page: number;
-    totalPages: number;
-  }
-  data: {
-    id: string;
-    name: string;
-    email: string;
-    mobileNo: string;
-    post: string;
-    role: string;
-  }[];
+import { PaginatedResponse } from "@/types/common";
+
+export interface EmployeeData {
+  id: string;
+  name: string;
+  email: string;
+  mobileNo: string;
+  post: string;
+  role: string;
 }
+
+export interface EmployeeListResponse extends PaginatedResponse<EmployeeData> {}

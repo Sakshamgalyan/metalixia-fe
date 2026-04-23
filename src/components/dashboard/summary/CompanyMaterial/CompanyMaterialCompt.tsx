@@ -27,7 +27,8 @@ import {
 import { setPage, setModal } from "@/context/Summary/CompanyMaterial/actions";
 import { CompanyMaterialItem } from "@/context/Summary/CompanyMaterial/type";
 import { StatsCards } from "./StatsCards";
-import { formatDate } from "./Constants";
+import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
+import { formatDate } from "@/utils/date";
 import DeleteModal from "@/components/Common/DeleteModal";
 
 const CompanyMaterialCompt = () => {
@@ -230,7 +231,7 @@ const CompanyMaterialCompt = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <Typography variant="h3" className="text-slate-900">
+          <Typography variant="h3" className="text-slate-900 font-bold tracking-tight">
             Company Material
           </Typography>
           <Typography variant="p" className="text-slate-500">
@@ -254,39 +255,25 @@ const CompanyMaterialCompt = () => {
 
       {/* Stats Cards */}
       <StatsCards statsData={statsData} statsLoading={statsLoading} />
-
-      {/* Table Card */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">
-        <div className="flex flex-col md:flex-row gap-4 mb-6 justify-between items-start md:items-center">
-          <div className="w-full md:w-96">
-            <Input
-              placeholder="Search materials or companies..."
-              leftIcon={<Search size={18} />}
-              value={searchInput}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              fullWidth
-            />
-          </div>
-        </div>
-
-        <Table
-          columns={columns}
-          data={safeData}
-          keyExtractor={(item) => item._id}
-          paginationConfig={{
-            currentPage: page,
-            totalPages: listData?.totalPages || 1,
-            totalCount: listData?.total || 0,
-            onPageChange: (newPage) => dispatch(setPage(newPage)),
-            itemsPerPage: 10,
-          }}
-          emptyMessage={
-            listLoading
-              ? "Loading entries..."
-              : "No company material entries found."
-          }
-        />
-      </div>
+      <SummaryTableWrapper
+        data={safeData}
+        columns={columns}
+        isLoading={listLoading}
+        keyExtractor={(item) => item._id}
+        searchValue={searchInput}
+        onSearchChange={handleSearchChange}
+        searchQuery={searchQuery}
+        searchPlaceholder="Search materials or companies..."
+        paginationConfig={{
+          currentPage: page,
+          totalPages: listData?.totalPages || 1,
+          totalCount: listData?.totalCount || 0,
+          onPageChange: (newPage) => dispatch(setPage(newPage)),
+          itemsPerPage: 10,
+        }}
+        emptyTitle="No Company Materials Found"
+        emptyMessage="There are no company material entries available. Click 'Add Entry' to create one."
+      />
 
       {/* All Modals (reads state from context) */}
       <MaterialModals />

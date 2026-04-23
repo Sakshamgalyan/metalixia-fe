@@ -62,20 +62,16 @@ export type UploadedReportAction =
 
 // api
 
-export interface ReportList {
-  status: string;
-  meta: {
-    total: number;
-    page: number;
-    totalPages: number;
-  };
-  data: {
-    id: string;
-    name: string;
-    date: number;
-    fileType: string;
-  }[];
+import { PaginatedResponse } from "@/types/common";
+
+export interface ReportItem {
+  id: string;
+  name: string;
+  date: number;
+  fileType: string;
 }
+
+export interface ReportList extends PaginatedResponse<ReportItem> {}
 
 export interface ReportUpload {
   message: string;

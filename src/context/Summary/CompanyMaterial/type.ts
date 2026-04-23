@@ -156,13 +156,9 @@ export interface CompanyMaterialItem {
     updatedAt: string;
 }
 
-export interface CompanyMaterialListResponse {
-    data: CompanyMaterialItem[];
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-}
+import { PaginatedResponse } from "@/types/common";
+
+export interface CompanyMaterialListResponse extends PaginatedResponse<CompanyMaterialItem> {}
 
 export interface DailyCount {
     date: string;

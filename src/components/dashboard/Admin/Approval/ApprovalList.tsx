@@ -9,7 +9,7 @@ import {
   updateEmployee,
   deleteEmployee,
 } from "@/ApiClient/Admin/admin";
-import NoDataState from "@/components/Common/NoDataState";
+import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
 import { columns } from "@/components/dashboard/Admin/Approval/Constants";
 import { EmployeeListResponse } from "@/ApiClient/Admin/type";
 
@@ -17,8 +17,8 @@ const ApprovalList = () => {
   const [users, setUsers] = useState<EmployeeListResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchInput, setSearchInput] = useState("");
 
-  console.log(users);
   const fetchUsers = async (payload?: any) => {
     setLoading(true);
     try {
@@ -37,15 +37,16 @@ const ApprovalList = () => {
       page: currentPage,
       limit: 10,
       role: ["user"],
+      search: searchInput || undefined
     };
     fetchUsers(payload);
-  }, [currentPage]);
+  }, [currentPage, searchInput]);
 
   const handleApprove = async (user: any) => {
     try {
       const { password, confirmPassword, ...userData } = user;
       await updateEmployee({ ...userData, role: "employee" });
-      fetchUsers();
+      fetchUsers({ page: currentPage, limit: 10, role: ["user"] });
     } catch (error) {
       console.error("Failed to approve user", error);
     }
@@ -54,12 +55,7 @@ const ApprovalList = () => {
   const handleDelete = async (user: any) => {
     try {
       await deleteEmployee(user.id);
-      const payload = {
-        page: currentPage,  
-        limit: 10,
-        role: ["user"],
-      };
-      fetchUsers(payload);
+      fetchUsers({ page: currentPage, limit: 10, role: ["user"] });
     } catch (error) {
       console.error("Failed to delete user", error);
     }
@@ -67,47 +63,35 @@ const ApprovalList = () => {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    const payload = {
-      page: currentPage,
-      limit: 10,
-      role: ["user"],
-    };
-    fetchUsers(payload);
   };
 
   return (
     <div className="px-6 py-10">
       <div className="flex flex-col gap-1 mb-6">
-        <Typography variant="h2">Pending Approvals</Typography>
+        <Typography variant="h2" className="font-bold tracking-tight">Pending Approvals</Typography>
         <Typography variant="p" className="text-slate-500">
           Approve or reject new user registrations
         </Typography>
       </div>
 
-      {loading ? (
-        <Table
-          data={[]}
-          columns={columns(handleApprove, handleDelete)}
-          isLoading
-          headerAlign="center"
-          keyExtractor={(item: any) => item.id}
-        />
-      ) : users?.data && users.data.length > 0 ? (
-        <Table
-          data={users.data}
-          columns={columns(handleApprove, handleDelete)}
-          headerAlign="center"
-          keyExtractor={(item: any) => item.id}
-          paginationConfig={{
-            totalPages: users.pagination.totalPages,
-            currentPage: currentPage,
-            totalCount: users.pagination.total,
-            onPageChange: handlePageChange,
-          }}
-        />
-      ) : (
-        <NoDataState message="No pending approvals found" />
-      )}
+      <SummaryTableWrapper
+        data={users?.data || []}
+        columns={columns(handleApprove, handleDelete)}
+        isLoading={loading}
+        keyExtractor={(item: any) => item.id}
+        searchValue={searchInput}
+        onSearchChange={setSearchInput}
+        searchPlaceholder="Search by name or email..."
+        paginationConfig={{
+          totalPages: users?.totalPages || 1,
+          currentPage: currentPage,
+          totalCount: users?.totalCount || 0,
+          onPageChange: handlePageChange,
+          itemsPerPage: 10,
+        }}
+        emptyTitle="No Pending Approvals"
+        emptyMessage="No pending user approval requests found at the moment."
+      />
     </div>
   );
 };

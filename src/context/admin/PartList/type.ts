@@ -74,13 +74,9 @@ export interface PartItem {
   updatedAt: string;
 }
 
-export interface PartListResponse {
-  data: PartItem[];
-  totalCount: number;
-  currentPage: number;
-  limit: number;
-  totalPages: number;
-}
+import { PaginatedResponse } from "@/types/common";
+
+export interface PartListResponse extends PaginatedResponse<PartItem> {}
 
 export interface PartState {
   listData: PartListResponse | null;

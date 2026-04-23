@@ -20,9 +20,10 @@ import { setPage, setModal } from "@/context/Summary/RawMaterial/actions";
 import { RawMaterialItem } from "@/context/Summary/RawMaterial/type";
 import AddModal from "./AddModal";
 import ExportModal from "./ExportModal";
-import NoDataState from "@/components/Common/NoDataState";
 import DeleteModal from "@/components/Common/DeleteModal";
 import { RawStatsCards } from "./RawStatsCards";
+import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
+import { formatDate, formatDateTime } from "@/utils/date";
 
 const RawMaterialCompt = () => {
     const [searchInput, setSearchInput] = useState("");
@@ -136,12 +137,12 @@ const RawMaterialCompt = () => {
         {
             header: "Received Time",
             accessor: "receivedAt",
-            render: (row) => new Date(row.receivedAt).toLocaleString(),
+            render: (row) => formatDateTime(row.receivedAt),
         },
         {
             header: "Expected On",
             accessor: "expectedOn",
-            render: (row) => new Date(row.expectedOn).toLocaleDateString(),
+            render: (row) => formatDate(row.expectedOn),
         },
         {
             header: "Received By",
@@ -180,7 +181,7 @@ const RawMaterialCompt = () => {
         <div className="space-y-6 w-[95%] mx-auto py-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <Typography variant="h3" className="text-slate-900">
+                    <Typography variant="h3" className="text-slate-900 font-bold tracking-tight">
                         Raw Material
                     </Typography>
                     <Typography variant="p" className="text-slate-500">
@@ -210,41 +211,25 @@ const RawMaterialCompt = () => {
 
             <RawStatsCards statsData={statsData} statsLoading={statsLoading} isSuperAdmin={isSuperAdmin} />
 
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">
-                <div className="flex flex-col md:flex-row gap-4 mb-6 justify-between items-start md:items-center">
-                    <div className="w-full md:w-96">
-                        <Input
-                            placeholder="Search by material or source..."
-                            leftIcon={<Search size={18} />}
-                            value={searchInput}
-                            onChange={(e) => setSearchInput(e.target.value)}
-                            fullWidth
-                        />
-                    </div>
-                </div>
-
-                {!listLoading && safeData.length === 0 ? (
-                    <NoDataState
-                        title="No Raw Materials Found"
-                        message={searchQuery ? `No results for "${searchQuery}"` : "There are no raw material entries available. Click 'Add Entry' to create one."}
-                    />
-                ) : (
-                    <Table
-                        data={safeData}
-                        columns={columns}
-                        isLoading={listLoading}
-                        keyExtractor={(item) => item._id}
-                        paginationConfig={{
-                            currentPage: page,
-                            totalPages: listData?.totalPages || 1,
-                            totalCount: listData?.total || 0,
-                            onPageChange: (newPage) => dispatch(setPage(newPage)),
-                            itemsPerPage: 10,
-                        }}
-                        emptyMessage="No raw material entries found."
-                    />
-                )}
-            </div>
+            <SummaryTableWrapper
+                data={safeData}
+                columns={columns}
+                isLoading={listLoading}
+                keyExtractor={(item) => item._id}
+                searchValue={searchInput}
+                onSearchChange={setSearchInput}
+                searchQuery={searchQuery}
+                searchPlaceholder="Search by material or source..."
+                paginationConfig={{
+                    currentPage: page,
+                    totalPages: listData?.totalPages || 1,
+                    totalCount: listData?.totalCount || 0,
+                    onPageChange: (newPage) => dispatch(setPage(newPage)),
+                    itemsPerPage: 10,
+                }}
+                emptyTitle="No Raw Materials Found"
+                emptyMessage="There are no raw material entries available. Click 'Add Entry' to create one."
+            />
 
             <AddModal onSuccess={() => fetchData(page, searchQuery)} />
             <ExportModal />

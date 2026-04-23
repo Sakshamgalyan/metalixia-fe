@@ -15,8 +15,8 @@ export const initialState: EmailState = {
   templatesLoading: false,
   history: {
     data: [],
-    total: 0,
-    page: 1,
+    totalCount: 0,
+    currentPage: 1,
     totalPages: 1,
   },
   templates: [],
@@ -36,12 +36,7 @@ export const emailReducer = (
     case FETCH_EMAIL_HISTORY_SUCCESS:
       return {
         ...state,
-        history: {
-          data: action.payload.data,
-          total: action.payload.meta.total,
-          page: action.payload.meta.page,
-          totalPages: action.payload.meta.totalPages,
-        },
+        history: action.payload,
         historyLoading: false,
       };
     case FETCH_TEMPLATES_LOADING:

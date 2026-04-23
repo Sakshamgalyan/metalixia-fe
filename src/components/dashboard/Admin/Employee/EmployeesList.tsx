@@ -20,6 +20,7 @@ import FilterModal from "./FilterModal";
 import { getColumns } from "./Constants";
 import EmployeeModal from "./EmployeeModal";
 import DeleteModal from "./DeleteModal";
+import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
 
 const EmployeesList = () => {
   const { loading, filterData, page, filterPayload } =
@@ -103,31 +104,23 @@ const EmployeesList = () => {
         </div>
       </div>
 
-      {loading ? (
-        <Table
-          data={[]}
-          columns={columns}
-          isLoading
-          headerAlign="center"
-          keyExtractor={(item: any) => item.id}
-        />
-      ) : (filterData?.data?.length ?? 0) > 0 ? (
-        <Table
-          data={filterData?.data || []}
-          columns={columns}
-          headerAlign="center"
-          isLoading={loading}
-          keyExtractor={(item) => item.id}
-          paginationConfig={{
-            totalPages: filterData?.pagination?.totalPages || 0,
-            currentPage: page,
-            totalCount: filterData?.pagination?.total || 0,
-            onPageChange: handlePageChange,
-          }}
-        />
-      ) : (
-        <NoDataState />
-      )}
+      <SummaryTableWrapper
+        data={filterData?.data || []}
+        columns={columns}
+        isLoading={loading}
+        keyExtractor={(item: any) => item.id}
+        searchValue={""} // Search is handled by filter modal for now
+        onSearchChange={() => {}} 
+        paginationConfig={{
+          totalPages: filterData?.totalPages || 0,
+          currentPage: page,
+          totalCount: filterData?.totalCount || 0,
+          onPageChange: handlePageChange,
+          itemsPerPage: 10,
+        }}
+        emptyTitle="No Employees Found"
+        emptyMessage="There are no employees available at the moment. Click 'Add Employee' to create one."
+      />
 
       <EmployeeModal
         isOpen={isModalOpen}
