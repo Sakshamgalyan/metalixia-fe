@@ -357,7 +357,7 @@ const Dropdown = ({
       )}
 
       {/* Options list */}
-      <div className={`overflow-y-auto flex-1 ${size === 'xs' ? '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]' : 'custom-scrollbar'}`}>
+      <div className="overflow-y-auto flex-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {filteredOptions.length === 0 ? (
           <div className="px-4 py-8 text-center text-sm text-slate-500">
             No options found
@@ -371,7 +371,7 @@ const Dropdown = ({
                 type="button"
                 onClick={() => handleOptionClick(option)}
                 disabled={option.disabled}
-                className={`w-full text-left flex items-center gap-2 transition-colors ${
+                className={`w-full text-left flex items-center gap-2 border-b border-slate-200 rounded-md transition-colors ${
                   size === "xs" ? "px-2 py-1.5 text-sm" : "px-4 py-2.5"
                 } ${
                   option.disabled
