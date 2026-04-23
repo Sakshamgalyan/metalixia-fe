@@ -233,6 +233,7 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
             label="Received By"
             options={employees}
             value={selectedEmployeeId}
+            searchable
             onChange={handleReceivedByChange}
             placeholder={
               loadingEmployees ? "Loading employees..." : "Select employee"
