@@ -7,7 +7,10 @@ interface StatsCardsProps {
   statsLoading: boolean;
 }
 
-export const StatsCards: React.FC<StatsCardsProps> = ({ statsData, statsLoading }) => {
+export const StatsCards: React.FC<StatsCardsProps> = ({
+  statsData,
+  statsLoading,
+}) => {
   const dailyCounts = statsData?.dailyCounts || [];
   const chartData = dailyCounts.map((d: any) => d.count);
   const chartLabels = dailyCounts.map((d: any) => {
