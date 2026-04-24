@@ -48,7 +48,7 @@ const SearchEmployeeView = () => {
         setTotalPages(1);
       } else if (result && result.data) {
         setEmployees(result.data || []);
-        setTotalPages(result.pagination?.totalPages || 1);
+        setTotalPages(result.totalPages || 1);
       } else {
         setEmployees([]);
         setTotalPages(1);

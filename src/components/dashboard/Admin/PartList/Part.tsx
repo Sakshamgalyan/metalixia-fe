@@ -17,6 +17,7 @@ import { getPartsApi, deletePartApi } from "@/context/admin/PartList/api";
 import { setPage, setModal } from "@/context/admin/PartList/actions";
 import { PartItem } from "@/context/admin/PartList/type";
 import { toast } from "sonner";
+import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
 
 const PartListCompt = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -179,27 +180,22 @@ const PartListCompt = () => {
           </div>
         </div>
 
-        {!listLoading && safeData.length === 0 ? (
-          <NoDataState
-            title="No Parts Found"
-            message="There are no parts available at the moment. Click 'Add Part' to create one."
-          />
-        ) : (
-          <Table
-            columns={columns}
-            data={safeData}
-            isLoading={listLoading}
-            keyExtractor={(item: PartItem) => item._id}
-            paginationConfig={{
-              currentPage: page,
-              totalPages: listData?.totalPages || 1,
-              totalCount: listData?.totalCount || 0,
-              onPageChange: handlePageChange,
-              itemsPerPage: 10,
-            }}
-            emptyMessage="No parts found."
-          />
-        )}
+        <SummaryTableWrapper
+          data={safeData}
+          columns={columns}
+          isLoading={listLoading}
+          keyExtractor={(item: PartItem) => item._id}
+          searchQuery={searchQuery}
+          paginationConfig={{
+            currentPage: page,
+            totalPages: listData?.totalPages || 1,
+            totalCount: listData?.totalCount || 0,
+            onPageChange: handlePageChange,
+            itemsPerPage: 10,
+          }}
+          emptyTitle="No Parts Found"
+          emptyMessage="There are no parts available at the moment. Click 'Add Part' to create one."
+        />
       </div>
 
       <PartModal onSuccess={() => fetchData(page, searchQuery)} />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Search,
   Plus,
@@ -12,7 +12,7 @@ import {
 import Typography from "@/components/UI/Typography";
 import Button from "@/components/UI/Button";
 import Input from "@/components/UI/Input";
-import Table, { TableColumn } from "@/components/UI/Table";
+import { TableColumn } from "@/components/UI/Table";
 import MaterialModals from "./MaterialModal";
 import { useAppSelector } from "@/store/hooks";
 import {
@@ -29,6 +29,8 @@ import { CompanyMaterialItem } from "@/context/Summary/CompanyMaterial/type";
 import { StatsCards } from "./StatsCards";
 import { formatDate } from "./Constants";
 import DeleteModal from "@/components/Common/DeleteModal";
+import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
+import debounce from "lodash/debounce";
 
 const CompanyMaterialCompt = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -64,21 +66,26 @@ const CompanyMaterialCompt = () => {
   }, [dispatch]);
 
   // ── Debounced Search ──────────────────────────────────────────
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (searchQuery !== searchInput) {
-        setSearchQuery(searchInput);
-        if (page !== 1) {
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((value: string, currentPage: number) => {
+        setSearchQuery(value);
+        if (currentPage !== 1) {
           dispatch(setPage(1));
         }
-      }
-    }, 500);
+      }, 500),
+    [dispatch],
+  );
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchInput, searchQuery, page, dispatch]);
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
 
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
+    debouncedSearch(value, page);
   };
 
   // ── Modal openers (dispatch to context) ───────────────────────
@@ -269,22 +276,21 @@ const CompanyMaterialCompt = () => {
           </div>
         </div>
 
-        <Table
-          columns={columns}
+        <SummaryTableWrapper
           data={safeData}
+          columns={columns}
+          isLoading={listLoading}
           keyExtractor={(item) => item._id}
+          searchQuery={searchQuery}
           paginationConfig={{
             currentPage: page,
             totalPages: listData?.totalPages || 1,
-            totalCount: listData?.total || 0,
+            totalCount: listData?.totalCount || 0,
             onPageChange: (newPage) => dispatch(setPage(newPage)),
             itemsPerPage: 10,
           }}
-          emptyMessage={
-            listLoading
-              ? "Loading entries..."
-              : "No company material entries found."
-          }
+          emptyTitle="No Company Materials Found"
+          emptyMessage="There are no company material entries available. Click 'Add Entry' to create one."
         />
       </div>
 

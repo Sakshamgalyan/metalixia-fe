@@ -16,6 +16,7 @@ import { CompanyItem } from "@/context/admin/Company/type";
 import CompanyModal from "./CompanyModal";
 import NoDataState from "@/components/Common/NoDataState";
 import DeleteModal from "@/components/Common/DeleteModal";
+import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
 
 const CompaniesCompt = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -79,6 +80,11 @@ const CompaniesCompt = () => {
     } finally {
       setIsDeleting(false);
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    dispatch(setPage(page));
+    fetchData(page, searchQuery);
   };
 
   const columns: TableColumn<any>[] = [
@@ -170,27 +176,22 @@ const CompaniesCompt = () => {
           </div>
         </div>
 
-        {!listLoading && safeData.length === 0 ? (
-          <NoDataState
-            title="No Companies Found"
-            message="There are no companies available at the moment. Click 'Add Company' to create one."
-          />
-        ) : (
-          <Table
-            columns={columns}
-            data={safeData}
-            isLoading={listLoading}
-            keyExtractor={(item: CompanyItem) => item._id}
-            paginationConfig={{
-              currentPage: page,
-              totalPages: listData?.totalPages || 1,
-              totalCount: listData?.total || 0,
-              onPageChange: (newPage) => dispatch(setPage(newPage)),
-              itemsPerPage: 10,
-            }}
-            emptyMessage="No companies found."
-          />
-        )}
+        <SummaryTableWrapper
+          data={safeData}
+          columns={columns}
+          isLoading={listLoading}
+          keyExtractor={(item: CompanyItem) => item._id}
+          searchQuery={searchQuery}
+          paginationConfig={{
+            currentPage: page,
+            totalPages: listData?.totalPages || 1,
+            totalCount: listData?.totalCount || 0,
+            onPageChange: handlePageChange,
+            itemsPerPage: 10,
+          }}
+          emptyTitle="No Companies Found"
+          emptyMessage="There are no companies available at the moment. Click 'Add Company' to create one."
+        />
       </div>
 
       <CompanyModal onSuccess={() => fetchData(page, searchQuery)} />

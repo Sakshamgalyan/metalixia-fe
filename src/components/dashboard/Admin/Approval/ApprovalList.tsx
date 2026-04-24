@@ -12,6 +12,7 @@ import {
 import NoDataState from "@/components/Common/NoDataState";
 import { columns } from "@/components/dashboard/Admin/Approval/Constants";
 import { EmployeeListResponse } from "@/ApiClient/Admin/type";
+import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
 
 const ApprovalList = () => {
   const [users, setUsers] = useState<EmployeeListResponse | null>(null);
@@ -55,7 +56,7 @@ const ApprovalList = () => {
     try {
       await deleteEmployee(user.id);
       const payload = {
-        page: currentPage,  
+        page: currentPage,
         limit: 10,
         role: ["user"],
       };
@@ -84,30 +85,21 @@ const ApprovalList = () => {
         </Typography>
       </div>
 
-      {loading ? (
-        <Table
-          data={[]}
-          columns={columns(handleApprove, handleDelete)}
-          isLoading
-          headerAlign="center"
-          keyExtractor={(item: any) => item.id}
-        />
-      ) : users?.data && users.data.length > 0 ? (
-        <Table
-          data={users.data}
-          columns={columns(handleApprove, handleDelete)}
-          headerAlign="center"
-          keyExtractor={(item: any) => item.id}
-          paginationConfig={{
-            totalPages: users.pagination.totalPages,
-            currentPage: currentPage,
-            totalCount: users.pagination.total,
-            onPageChange: handlePageChange,
-          }}
-        />
-      ) : (
-        <NoDataState message="No pending approvals found" />
-      )}
+      <SummaryTableWrapper
+        data={users?.data || []}
+        columns={columns(handleApprove, handleDelete)}
+        isLoading={loading}
+        keyExtractor={(item: any) => item.id}
+        paginationConfig={{
+          totalPages: users?.totalPages || 1,
+          currentPage: currentPage,
+          totalCount: users?.totalCount || 0,
+          onPageChange: handlePageChange,
+          itemsPerPage: 10,
+        }}
+        emptyTitle="No Pending Approvals"
+        emptyMessage="No pending user approval requests found at the moment."
+      />
     </div>
   );
 };

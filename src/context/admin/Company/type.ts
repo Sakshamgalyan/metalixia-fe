@@ -9,13 +9,9 @@ export interface CompanyItem {
   updatedAt: string;
 }
 
-export interface CompanyListResponse {
-  data: CompanyItem[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
+import { PaginatedResponse } from "@/types/common";
+
+export interface CompanyListResponse extends PaginatedResponse<CompanyItem> {}
 
 export interface CompanyState {
   listData: CompanyListResponse | null;

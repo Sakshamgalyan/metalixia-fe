@@ -21,16 +21,13 @@ export interface EmailTemplateItem {
   body: string;
 }
 
+import { PaginatedResponse } from "@/types/common";
+
 export interface EmailState {
   sendLoading: boolean;
   historyLoading: boolean;
   templatesLoading: boolean;
-  history: {
-    data: EmailHistoryItem[];
-    total: number;
-    page: number;
-    totalPages: number;
-  };
+  history: PaginatedResponse<EmailHistoryItem>;
   templates: EmailTemplateItem[];
 }
 

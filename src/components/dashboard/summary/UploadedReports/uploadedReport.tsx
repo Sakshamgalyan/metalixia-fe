@@ -18,6 +18,7 @@ import {
 import { Report } from "@/components/dashboard/Employees/Report/Constants";
 import { mailedReportsApi } from "@/context/Employee/ReportUpload/api";
 import Button from "@/components/UI/Button";
+import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
 
 const UploadedReport = () => {
   const dispatch = useUploadedReportDispatchContext();
@@ -82,22 +83,13 @@ const UploadedReport = () => {
         </div>
       </div>
 
-      {listLoading ? (
-        <Table
-          data={[]}
-          columns={columns(handleApprove, handleReject, handleDownload)}
-          isLoading
-          keyExtractor={(item: any) => item.id}
-        />
-      ) : (listData?.data?.length ?? 0) > 0 ? (
-        <Table
-          data={listData?.data || []}
-          columns={columns(handleApprove, handleReject, handleDownload)}
-          keyExtractor={(item: any) => item.id}
-        />
-      ) : (
-        <NoDataState message="No uploaded reports found" />
-      )}
+      <SummaryTableWrapper
+        data={listData?.data || []}
+        columns={columns(handleApprove, handleReject, handleDownload)}
+        keyExtractor={(item: any) => item.id}
+        isLoading={listLoading}
+        emptyTitle="No uploaded reports found"
+      />
     </div>
   );
 };

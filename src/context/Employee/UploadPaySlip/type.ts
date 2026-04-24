@@ -56,16 +56,9 @@ export interface Payslip {
   uploadedBy: string;
 }
 
-export interface ReportList {
-  status: string;
-  meta: {
-    total: number;
-    page: number;
-    totalPages: number;
-    limit: number;
-  };
-  data: Payslip[];
-}
+import { PaginatedResponse } from "@/types/common";
+
+export interface ReportList extends PaginatedResponse<Payslip> {}
 
 import { Dispatch } from "react";
 export type UploadPaySlipDispatch = Dispatch<UploadPaySlipAction>;
