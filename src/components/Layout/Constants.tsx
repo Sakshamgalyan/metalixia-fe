@@ -2,6 +2,7 @@ import {
   CalendarCheck,
   Camera,
   CheckSquare,
+  ClipboardCheck,
   DollarSign,
   Factory,
   FileText,
@@ -104,6 +105,12 @@ export const menuItems: MenuItem[] = [
         label: "Production",
         href: "/summary/production",
         visible: ["superAdmin", "reportAdmin", "hr", "quality", "manager", "maintenance"],
+      },
+      {
+        icon: <ClipboardCheck className="w-5 h-5" />,
+        label: "Quality Control",
+        href: "/summary/quality",
+        visible: ["superAdmin", "reportAdmin", "quality", "manager"],
       },
       {
         icon: <ShoppingCart className="w-5 h-5" />,
