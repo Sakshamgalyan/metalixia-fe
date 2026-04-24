@@ -23,7 +23,8 @@ import NoDataState from "@/components/Common/NoDataState";
 import { fetchReportUploadLoading } from "@/context/Employee/ReportUpload/actions";
 import { useAppSelector } from "@/store/hooks";
 import Card from "@/components/UI/Card";
-import DeleteModal from "./DeleteModal";
+import DeleteModal from "@/components/Common/DeleteModal";
+import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
 
 const ReportUpload = () => {
   const [reportName, setReportName] = useState<string>("");
@@ -35,6 +36,7 @@ const ReportUpload = () => {
     useReportUploadStateContext();
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Report | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (employeeId) {
@@ -76,6 +78,23 @@ const ReportUpload = () => {
   const handleDelete = async (item: Report) => {
     setSelectedItem(item);
     setDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedItem?.id) return;
+    setIsDeleting(true);
+    try {
+      await deleteReportApi(dispatch, selectedItem.id);
+      setDeleteModal(false);
+      setSelectedItem(null);
+      if (employeeId) {
+        getMyReports(dispatch, 1, 10, employeeId);
+      }
+    } catch (error) {
+      console.error("Delete failed", error);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const handleDownload = async (item: Report) => {
@@ -151,34 +170,21 @@ const ReportUpload = () => {
             <Typography variant="h4">Submission History</Typography>
           </div>
 
-          {listLoading ? (
-            <Table
-              columns={columns(handleDownload, handleDelete)}
-              data={[]}
-              isLoading={listLoading}
-              emptyMessage="No reports uploaded yet"
-              keyExtractor={(item) => item.id}
-            />
-          ) : (listData?.data?.length ?? 0) > 0 ? (
-            <Table
-              data={listData?.data ?? []}
-              columns={columns(handleDownload, handleDelete)}
-              isLoading={listLoading}
-              emptyMessage="No reports uploaded yet"
-              keyExtractor={(item) => item.id}
-            />
-          ) : (
-            <NoDataState
-              title="No reports uploaded yet"
-              message="You have not uploaded any reports yet."
-            />
-          )}
+          <SummaryTableWrapper
+            data={listData?.data ?? []}
+            columns={columns(handleDownload, handleDelete)}
+            isLoading={listLoading}
+            emptyMessage="No reports uploaded yet"
+            keyExtractor={(item) => item.id}
+          />
         </div>
 
         <DeleteModal
           isOpen={deleteModal}
           onClose={() => setDeleteModal(false)}
-          item={selectedItem}
+          onConfirm={handleConfirmDelete}
+          itemName={selectedItem?.name}
+          isLoading={isDeleting}
         />
       </div>
     </div>

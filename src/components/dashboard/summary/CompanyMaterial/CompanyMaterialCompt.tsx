@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Search,
   Plus,
@@ -12,7 +12,7 @@ import {
 import Typography from "@/components/UI/Typography";
 import Button from "@/components/UI/Button";
 import Input from "@/components/UI/Input";
-import Table, { TableColumn } from "@/components/UI/Table";
+import { TableColumn } from "@/components/UI/Table";
 import MaterialModals from "./MaterialModal";
 import { useAppSelector } from "@/store/hooks";
 import {
@@ -27,9 +27,10 @@ import {
 import { setPage, setModal } from "@/context/Summary/CompanyMaterial/actions";
 import { CompanyMaterialItem } from "@/context/Summary/CompanyMaterial/type";
 import { StatsCards } from "./StatsCards";
-import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
-import { formatDate } from "@/utils/date";
+import { formatDate } from "./Constants";
 import DeleteModal from "@/components/Common/DeleteModal";
+import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
+import debounce from "lodash/debounce";
 
 const CompanyMaterialCompt = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -65,21 +66,26 @@ const CompanyMaterialCompt = () => {
   }, [dispatch]);
 
   // ── Debounced Search ──────────────────────────────────────────
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (searchQuery !== searchInput) {
-        setSearchQuery(searchInput);
-        if (page !== 1) {
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((value: string, currentPage: number) => {
+        setSearchQuery(value);
+        if (currentPage !== 1) {
           dispatch(setPage(1));
         }
-      }
-    }, 500);
+      }, 500),
+    [dispatch],
+  );
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchInput, searchQuery, page, dispatch]);
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
 
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
+    debouncedSearch(value, page);
   };
 
   // ── Modal openers (dispatch to context) ───────────────────────
@@ -231,7 +237,7 @@ const CompanyMaterialCompt = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <Typography variant="h3" className="text-slate-900 font-bold tracking-tight">
+          <Typography variant="h3" className="text-slate-900">
             Company Material
           </Typography>
           <Typography variant="p" className="text-slate-500">
@@ -255,25 +261,38 @@ const CompanyMaterialCompt = () => {
 
       {/* Stats Cards */}
       <StatsCards statsData={statsData} statsLoading={statsLoading} />
-      <SummaryTableWrapper
-        data={safeData}
-        columns={columns}
-        isLoading={listLoading}
-        keyExtractor={(item) => item._id}
-        searchValue={searchInput}
-        onSearchChange={handleSearchChange}
-        searchQuery={searchQuery}
-        searchPlaceholder="Search materials or companies..."
-        paginationConfig={{
-          currentPage: page,
-          totalPages: listData?.totalPages || 1,
-          totalCount: listData?.totalCount || 0,
-          onPageChange: (newPage) => dispatch(setPage(newPage)),
-          itemsPerPage: 10,
-        }}
-        emptyTitle="No Company Materials Found"
-        emptyMessage="There are no company material entries available. Click 'Add Entry' to create one."
-      />
+
+      {/* Table Card */}
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">
+        <div className="flex flex-col md:flex-row gap-4 mb-6 justify-between items-start md:items-center">
+          <div className="w-full md:w-96">
+            <Input
+              placeholder="Search materials or companies..."
+              leftIcon={<Search size={18} />}
+              value={searchInput}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              fullWidth
+            />
+          </div>
+        </div>
+
+        <SummaryTableWrapper
+          data={safeData}
+          columns={columns}
+          isLoading={listLoading}
+          keyExtractor={(item) => item._id}
+          searchQuery={searchQuery}
+          paginationConfig={{
+            currentPage: page,
+            totalPages: listData?.totalPages || 1,
+            totalCount: listData?.totalCount || 0,
+            onPageChange: (newPage) => dispatch(setPage(newPage)),
+            itemsPerPage: 10,
+          }}
+          emptyTitle="No Company Materials Found"
+          emptyMessage="There are no company material entries available. Click 'Add Entry' to create one."
+        />
+      </div>
 
       {/* All Modals (reads state from context) */}
       <MaterialModals />

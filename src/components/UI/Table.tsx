@@ -242,7 +242,7 @@ const Table = <T,>({
       </div>
 
       {paginationConfig && !isLoading && paginationConfig.totalCount > 0 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-2 bg-slate-100">
           <Typography variant="small" className="text-slate-500">
             Showing{" "}
             {Math.min(

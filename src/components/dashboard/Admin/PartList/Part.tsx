@@ -16,9 +16,8 @@ import {
 import { getPartsApi, deletePartApi } from "@/context/admin/PartList/api";
 import { setPage, setModal } from "@/context/admin/PartList/actions";
 import { PartItem } from "@/context/admin/PartList/type";
-import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
-import { formatDate } from "@/utils/date";
 import { toast } from "sonner";
+import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
 
 const PartListCompt = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -116,7 +115,7 @@ const PartListCompt = () => {
       header: "Added Date",
       accessor: "createdAt",
       className: "text-slate-600",
-      render: (item) => formatDate(item.createdAt),
+      render: (item) => new Date(item.createdAt).toLocaleDateString(),
     },
     {
       header: "Actions",
@@ -149,7 +148,7 @@ const PartListCompt = () => {
     <div className="space-y-6 w-[95%] mx-auto py-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <Typography variant="h3" className="text-slate-900 font-bold tracking-tight">
+          <Typography variant="h3" className="text-slate-900">
             Part Configuration
           </Typography>
           <Typography variant="p" className="text-slate-500">
@@ -168,25 +167,36 @@ const PartListCompt = () => {
         </div>
       </div>
 
-      <SummaryTableWrapper
-        data={safeData}
-        columns={columns}
-        isLoading={listLoading}
-        keyExtractor={(item: PartItem) => item._id}
-        searchValue={searchInput}
-        onSearchChange={setSearchInput}
-        searchQuery={searchQuery}
-        searchPlaceholder="Search by part, number, or company..."
-        paginationConfig={{
-          currentPage: page,
-          totalPages: listData?.totalPages || 1,
-          totalCount: listData?.totalCount || 0,
-          onPageChange: handlePageChange,
-          itemsPerPage: 10,
-        }}
-        emptyTitle="No Parts Found"
-        emptyMessage="There are no parts available at the moment. Click 'Add Part' to create one."
-      />
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">
+        <div className="flex flex-col md:flex-row gap-4 mb-6 justify-between items-start md:items-center">
+          <div className="w-full md:w-96">
+            <Input
+              placeholder="Search by part, number, or company..."
+              leftIcon={<Search size={18} />}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              fullWidth
+            />
+          </div>
+        </div>
+
+        <SummaryTableWrapper
+          data={safeData}
+          columns={columns}
+          isLoading={listLoading}
+          keyExtractor={(item: PartItem) => item._id}
+          searchQuery={searchQuery}
+          paginationConfig={{
+            currentPage: page,
+            totalPages: listData?.totalPages || 1,
+            totalCount: listData?.totalCount || 0,
+            onPageChange: handlePageChange,
+            itemsPerPage: 10,
+          }}
+          emptyTitle="No Parts Found"
+          emptyMessage="There are no parts available at the moment. Click 'Add Part' to create one."
+        />
+      </div>
 
       <PartModal onSuccess={() => fetchData(page, searchQuery)} />
 
@@ -200,4 +210,5 @@ const PartListCompt = () => {
     </div>
   );
 };
+
 export default PartListCompt;

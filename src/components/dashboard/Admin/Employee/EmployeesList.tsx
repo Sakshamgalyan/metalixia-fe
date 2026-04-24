@@ -109,8 +109,6 @@ const EmployeesList = () => {
         columns={columns}
         isLoading={loading}
         keyExtractor={(item: any) => item.id}
-        searchValue={""} // Search is handled by filter modal for now
-        onSearchChange={() => {}} 
         paginationConfig={{
           totalPages: filterData?.totalPages || 0,
           currentPage: page,

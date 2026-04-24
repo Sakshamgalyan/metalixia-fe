@@ -14,8 +14,9 @@ import { getCompaniesApi, deleteCompanyApi } from "@/context/admin/Company/api";
 import { setPage, setModal } from "@/context/admin/Company/actions";
 import { CompanyItem } from "@/context/admin/Company/type";
 import CompanyModal from "./CompanyModal";
-import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
+import NoDataState from "@/components/Common/NoDataState";
 import DeleteModal from "@/components/Common/DeleteModal";
+import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
 
 const CompaniesCompt = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -81,6 +82,11 @@ const CompaniesCompt = () => {
     }
   };
 
+  const handlePageChange = (page: number) => {
+    dispatch(setPage(page));
+    fetchData(page, searchQuery);
+  };
+
   const columns: TableColumn<any>[] = [
     {
       header: "Company Name",
@@ -138,7 +144,7 @@ const CompaniesCompt = () => {
     <div className="space-y-6 w-[95%] mx-auto py-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <Typography variant="h3" className="text-slate-900 font-bold tracking-tight">
+          <Typography variant="h3" className="text-slate-900">
             Companies
           </Typography>
           <Typography variant="p" className="text-slate-500">
@@ -157,25 +163,36 @@ const CompaniesCompt = () => {
         </div>
       </div>
 
-      <SummaryTableWrapper
-        data={safeData}
-        columns={columns}
-        isLoading={listLoading}
-        keyExtractor={(item: CompanyItem) => item._id}
-        searchValue={searchInput}
-        onSearchChange={setSearchInput}
-        searchQuery={searchQuery}
-        searchPlaceholder="Search companies, emails..."
-        paginationConfig={{
-          currentPage: page,
-          totalPages: listData?.totalPages || 1,
-          totalCount: listData?.totalCount || 0,
-          onPageChange: (newPage) => dispatch(setPage(newPage)),
-          itemsPerPage: 10,
-        }}
-        emptyTitle="No Companies Found"
-        emptyMessage="There are no companies available at the moment. Click 'Add Company' to create one."
-      />
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">
+        <div className="flex flex-col md:flex-row gap-4 mb-6 justify-between items-start md:items-center">
+          <div className="w-full md:w-96">
+            <Input
+              placeholder="Search companies, emails..."
+              leftIcon={<Search size={18} />}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              fullWidth
+            />
+          </div>
+        </div>
+
+        <SummaryTableWrapper
+          data={safeData}
+          columns={columns}
+          isLoading={listLoading}
+          keyExtractor={(item: CompanyItem) => item._id}
+          searchQuery={searchQuery}
+          paginationConfig={{
+            currentPage: page,
+            totalPages: listData?.totalPages || 1,
+            totalCount: listData?.totalCount || 0,
+            onPageChange: handlePageChange,
+            itemsPerPage: 10,
+          }}
+          emptyTitle="No Companies Found"
+          emptyMessage="There are no companies available at the moment. Click 'Add Company' to create one."
+        />
+      </div>
 
       <CompanyModal onSuccess={() => fetchData(page, searchQuery)} />
 
@@ -190,4 +207,4 @@ const CompaniesCompt = () => {
   );
 };
 
-export default CompaniesCompt;
+export default CompaniesCompt;

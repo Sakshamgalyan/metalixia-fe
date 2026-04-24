@@ -9,16 +9,17 @@ import {
   updateEmployee,
   deleteEmployee,
 } from "@/ApiClient/Admin/admin";
-import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
+import NoDataState from "@/components/Common/NoDataState";
 import { columns } from "@/components/dashboard/Admin/Approval/Constants";
 import { EmployeeListResponse } from "@/ApiClient/Admin/type";
+import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
 
 const ApprovalList = () => {
   const [users, setUsers] = useState<EmployeeListResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [searchInput, setSearchInput] = useState("");
 
+  console.log(users);
   const fetchUsers = async (payload?: any) => {
     setLoading(true);
     try {
@@ -37,16 +38,15 @@ const ApprovalList = () => {
       page: currentPage,
       limit: 10,
       role: ["user"],
-      search: searchInput || undefined
     };
     fetchUsers(payload);
-  }, [currentPage, searchInput]);
+  }, [currentPage]);
 
   const handleApprove = async (user: any) => {
     try {
       const { password, confirmPassword, ...userData } = user;
       await updateEmployee({ ...userData, role: "employee" });
-      fetchUsers({ page: currentPage, limit: 10, role: ["user"] });
+      fetchUsers();
     } catch (error) {
       console.error("Failed to approve user", error);
     }
@@ -55,7 +55,12 @@ const ApprovalList = () => {
   const handleDelete = async (user: any) => {
     try {
       await deleteEmployee(user.id);
-      fetchUsers({ page: currentPage, limit: 10, role: ["user"] });
+      const payload = {
+        page: currentPage,
+        limit: 10,
+        role: ["user"],
+      };
+      fetchUsers(payload);
     } catch (error) {
       console.error("Failed to delete user", error);
     }
@@ -63,12 +68,18 @@ const ApprovalList = () => {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    const payload = {
+      page: currentPage,
+      limit: 10,
+      role: ["user"],
+    };
+    fetchUsers(payload);
   };
 
   return (
     <div className="px-6 py-10">
       <div className="flex flex-col gap-1 mb-6">
-        <Typography variant="h2" className="font-bold tracking-tight">Pending Approvals</Typography>
+        <Typography variant="h2">Pending Approvals</Typography>
         <Typography variant="p" className="text-slate-500">
           Approve or reject new user registrations
         </Typography>
@@ -79,9 +90,6 @@ const ApprovalList = () => {
         columns={columns(handleApprove, handleDelete)}
         isLoading={loading}
         keyExtractor={(item: any) => item.id}
-        searchValue={searchInput}
-        onSearchChange={setSearchInput}
-        searchPlaceholder="Search by name or email..."
         paginationConfig={{
           totalPages: users?.totalPages || 1,
           currentPage: currentPage,
