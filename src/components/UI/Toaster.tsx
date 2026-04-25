@@ -21,10 +21,6 @@ export interface Toast {
   duration?: number;
 }
 
-interface ToastContainerProps {
-  // Option to clear all toasts
-}
-
 let toastCount = 0;
 let observers: ((toasts: Toast[]) => void)[] = [];
 let toasts: Toast[] = [];
@@ -37,7 +33,7 @@ export type ToastTitle = string | React.ReactNode;
 export type ToastOptions = string | { description?: string; duration?: number };
 
 export const toast = {
-  success: (title: ToastTitle, options?: ToastOptions, duration = 5000) => {
+  success: (title: ToastTitle, options?: ToastOptions, duration = 2000) => {
     const id = `toast-${toastCount++}`;
     const desc = typeof options === 'string' ? options : options?.description;
     const dur =
@@ -143,6 +139,54 @@ const colors = {
   default: 'border-slate-100 bg-slate-50/80',
 };
 
+const ToastItem = ({
+  t,
+  onRemove,
+}: {
+  t: Toast;
+  onRemove: (id: string) => void;
+}) => {
+  useEffect(() => {
+    if (t.duration === Infinity) return;
+
+    const timer = setTimeout(() => {
+      onRemove(t.id);
+    }, t.duration || 5000);
+
+    return () => clearTimeout(timer);
+  }, [t.id, t.duration, onRemove]);
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, x: 50, scale: 0.9 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+      className={`pointer-events-auto relative flex w-full max-w-sm gap-4 p-4 rounded-2xl border backdrop-blur-xl shadow-lg transition-all ${colors[t.type || 'default']}`}
+    >
+      <div className="shrink-0">{icons[t.type || 'default']}</div>
+
+      <div className="flex-1 flex flex-col gap-1 min-w-0">
+        <h4 className="text-sm font-semibold text-slate-900 truncate">
+          {t.title}
+        </h4>
+        {t.description && (
+          <p className="text-xs text-slate-600 leading-relaxed break-words">
+            {t.description}
+          </p>
+        )}
+      </div>
+
+      <button
+        onClick={() => onRemove(t.id)}
+        className="shrink-0 p-1 rounded-lg hover:bg-black/5 text-slate-400 hover:text-slate-600 transition-colors h-fit"
+      >
+        <X className="w-4 h-4" />
+      </button>
+    </motion.div>
+  );
+};
+
 const CustomToaster = () => {
   const [activeToasts, setActiveToasts] = useState<Toast[]>([]);
 
@@ -156,9 +200,9 @@ const CustomToaster = () => {
     };
   }, []);
 
-  const removeToast = (id: string) => {
+  const removeToast = useCallback((id: string) => {
     toast.dismiss(id);
-  };
+  }, []);
 
   return (
     <div className="fixed top-6 right-6 z-[9999] flex flex-col items-end gap-3 pointer-events-none w-full max-w-sm">
@@ -178,36 +222,7 @@ const CustomToaster = () => {
         )}
 
         {activeToasts.map((t) => (
-          <motion.div
-            key={t.id}
-            layout
-            initial={{ opacity: 0, x: 50, scale: 0.9 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-            className={`pointer-events-auto relative flex w-full max-w-sm gap-4 p-4 rounded-2xl border backdrop-blur-xl shadow-lg transition-all ${colors[t.type || 'default']}`}
-          >
-            <div className="shrink-0">{icons[t.type || 'default']}</div>
-
-            <div className="flex-1 flex flex-col gap-1 min-w-0">
-              <h4 className="text-sm font-semibold text-slate-900 truncate">
-                {t.title}
-              </h4>
-              {t.description && (
-                <p className="text-xs text-slate-600 leading-relaxed break-words">
-                  {t.description}
-                </p>
-              )}
-            </div>
-
-            <button
-              onClick={() => removeToast(t.id)}
-              className="shrink-0 p-1 rounded-lg hover:bg-black/5 text-slate-400 hover:text-slate-600 transition-colors h-fit"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            {/* Countdown bar if needed in future */}
-          </motion.div>
+          <ToastItem key={t.id} t={t} onRemove={removeToast} />
         ))}
       </AnimatePresence>
     </div>
