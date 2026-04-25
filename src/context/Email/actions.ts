@@ -8,7 +8,7 @@ import {
   EmailHistoryItem,
   EmailTemplateItem,
   EmailAction,
-} from "./types";
+} from './types';
 
 export const sendEmailLoading = (isLoading: boolean): EmailAction => ({
   type: SEND_EMAIL_LOADING,

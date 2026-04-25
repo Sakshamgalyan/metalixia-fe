@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Typography from "@/components/UI/Typography";
-import Input from "@/components/UI/Input";
+import Typography from '@/components/UI/Typography';
+import Input from '@/components/UI/Input';
 import {
   BookOpen,
   Search,
@@ -11,31 +11,31 @@ import {
   ChevronRight,
   FileText,
   ToolCase,
-} from "lucide-react";
-import { useState } from "react";
+} from 'lucide-react';
+import { useState } from 'react';
 
 const EmployeeProcedure = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
 
   const categories = [
     {
-      id: "safety",
-      name: "Safety Protocols",
+      id: 'safety',
+      name: 'Safety Protocols',
       icon: <Shield size={20} className="text-emerald-500" />,
     },
     {
-      id: "operation",
-      name: "Machine Operation",
+      id: 'operation',
+      name: 'Machine Operation',
       icon: <ToolCase size={20} className="text-blue-500" />,
     },
     {
-      id: "hr",
-      name: "HR Policies",
+      id: 'hr',
+      name: 'HR Policies',
       icon: <Users size={20} className="text-purple-500" />,
     },
     {
-      id: "emergency",
-      name: "Emergency Response",
+      id: 'emergency',
+      name: 'Emergency Response',
       icon: <AlertTriangle size={20} className="text-red-500" />,
     },
   ];
@@ -43,59 +43,59 @@ const EmployeeProcedure = () => {
   const procedures = [
     {
       id: 1,
-      category: "safety",
-      title: "Personal Protective Equipment (PPE) Guidelines",
-      date: "Updated 2 days ago",
-      readTime: "5 min read",
+      category: 'safety',
+      title: 'Personal Protective Equipment (PPE) Guidelines',
+      date: 'Updated 2 days ago',
+      readTime: '5 min read',
     },
     {
       id: 2,
-      category: "safety",
-      title: "Hazardous Material Handling",
-      date: "Updated 1 week ago",
-      readTime: "10 min read",
+      category: 'safety',
+      title: 'Hazardous Material Handling',
+      date: 'Updated 1 week ago',
+      readTime: '10 min read',
     },
     {
       id: 3,
-      category: "operation",
-      title: "CNC Machine Startup Sequence",
-      date: "Updated 3 days ago",
-      readTime: "8 min read",
+      category: 'operation',
+      title: 'CNC Machine Startup Sequence',
+      date: 'Updated 3 days ago',
+      readTime: '8 min read',
     },
     {
       id: 4,
-      category: "operation",
-      title: "Daily Maintenance Checklist",
-      date: "Updated 2 weeks ago",
-      readTime: "15 min read",
+      category: 'operation',
+      title: 'Daily Maintenance Checklist',
+      date: 'Updated 2 weeks ago',
+      readTime: '15 min read',
     },
     {
       id: 5,
-      category: "hr",
-      title: "Leave Application Process",
-      date: "Updated 1 month ago",
-      readTime: "3 min read",
+      category: 'hr',
+      title: 'Leave Application Process',
+      date: 'Updated 1 month ago',
+      readTime: '3 min read',
     },
     {
       id: 6,
-      category: "hr",
-      title: "Code of Conduct",
-      date: "Updated 6 months ago",
-      readTime: "12 min read",
+      category: 'hr',
+      title: 'Code of Conduct',
+      date: 'Updated 6 months ago',
+      readTime: '12 min read',
     },
     {
       id: 7,
-      category: "emergency",
-      title: "Fire Evacuation Plan",
-      date: "Updated 1 year ago",
-      readTime: "5 min read",
+      category: 'emergency',
+      title: 'Fire Evacuation Plan',
+      date: 'Updated 1 year ago',
+      readTime: '5 min read',
     },
     {
       id: 8,
-      category: "emergency",
-      title: "First Aid Basics",
-      date: "Updated 6 months ago",
-      readTime: "20 min read",
+      category: 'emergency',
+      title: 'First Aid Basics',
+      date: 'Updated 6 months ago',
+      readTime: '20 min read',
     },
   ];
 
@@ -157,13 +157,13 @@ const EmployeeProcedure = () => {
             <div className="flex justify-between items-start mb-4">
               <div
                 className={`p-2 rounded-lg ${
-                  proc.category === "safety"
-                    ? "bg-emerald-50"
-                    : proc.category === "operation"
-                      ? "bg-blue-50"
-                      : proc.category === "hr"
-                        ? "bg-purple-50"
-                        : "bg-red-50"
+                  proc.category === 'safety'
+                    ? 'bg-emerald-50'
+                    : proc.category === 'operation'
+                      ? 'bg-blue-50'
+                      : proc.category === 'hr'
+                        ? 'bg-purple-50'
+                        : 'bg-red-50'
                 }`}
               >
                 {categories.find((c) => c.id === proc.category)?.icon}

@@ -1,26 +1,26 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback } from "react";
-import { Search, Plus, Pencil, Trash2 } from "lucide-react";
-import Typography from "@/components/UI/Typography";
-import Button from "@/components/UI/Button";
-import Input from "@/components/UI/Input";
-import Table, { TableColumn } from "@/components/UI/Table";
+import { useState, useEffect, useCallback } from 'react';
+import { Search, Plus, Pencil, Trash2 } from 'lucide-react';
+import Typography from '@/components/UI/Typography';
+import Button from '@/components/UI/Button';
+import Input from '@/components/UI/Input';
+import Table, { TableColumn } from '@/components/UI/Table';
 import {
   useCompanyStateContext,
   useCompanyDispatchContext,
-} from "@/context/admin/Company/hooks";
-import { getCompaniesApi, deleteCompanyApi } from "@/context/admin/Company/api";
-import { setPage, setModal } from "@/context/admin/Company/actions";
-import { CompanyItem } from "@/context/admin/Company/type";
-import CompanyModal from "./CompanyModal";
-import NoDataState from "@/components/Common/NoDataState";
-import DeleteModal from "@/components/Common/DeleteModal";
-import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
+} from '@/context/admin/Company/hooks';
+import { getCompaniesApi, deleteCompanyApi } from '@/context/admin/Company/api';
+import { setPage, setModal } from '@/context/admin/Company/actions';
+import { CompanyItem } from '@/context/admin/Company/type';
+import CompanyModal from './CompanyModal';
+import NoDataState from '@/components/Common/NoDataState';
+import DeleteModal from '@/components/Common/DeleteModal';
+import SummaryTableWrapper from '@/components/Common/SummaryTableWrapper';
 
 const CompaniesCompt = () => {
-  const [searchInput, setSearchInput] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchInput, setSearchInput] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const [deleteModalState, setDeleteModalState] = useState<{
     isOpen: boolean;
@@ -33,7 +33,7 @@ const CompaniesCompt = () => {
   const dispatch = useCompanyDispatchContext();
 
   const fetchData = useCallback(
-    async (p = 1, query = "") => {
+    async (p = 1, query = '') => {
       await getCompaniesApi(dispatch, p, 10, query);
     },
     [dispatch],
@@ -57,11 +57,11 @@ const CompaniesCompt = () => {
   }, [searchInput, searchQuery, page, dispatch]);
 
   const openAddModal = () => {
-    dispatch(setModal({ mode: "add", selectedItem: null }));
+    dispatch(setModal({ mode: 'add', selectedItem: null }));
   };
 
   const openEditModal = (item: CompanyItem) => {
-    dispatch(setModal({ mode: "edit", selectedItem: item }));
+    dispatch(setModal({ mode: 'edit', selectedItem: item }));
   };
 
   const promptDelete = (item: CompanyItem) => {
@@ -89,34 +89,34 @@ const CompaniesCompt = () => {
 
   const columns: TableColumn<any>[] = [
     {
-      header: "Company Name",
-      accessor: "companyName",
-      className: "font-semibold text-slate-800",
+      header: 'Company Name',
+      accessor: 'companyName',
+      className: 'font-semibold text-slate-800',
     },
     {
-      header: "Contact Person",
-      accessor: "contactPerson",
-      className: "text-slate-600",
+      header: 'Contact Person',
+      accessor: 'contactPerson',
+      className: 'text-slate-600',
     },
     {
-      header: "Email",
-      accessor: "email",
-      className: "text-slate-600",
+      header: 'Email',
+      accessor: 'email',
+      className: 'text-slate-600',
     },
     {
-      header: "Phone",
-      accessor: "phone",
-      className: "text-slate-600",
+      header: 'Phone',
+      accessor: 'phone',
+      className: 'text-slate-600',
     },
     {
-      header: "Address",
-      accessor: "address",
-      className: "text-slate-600",
+      header: 'Address',
+      accessor: 'address',
+      className: 'text-slate-600',
     },
     {
-      header: "Actions",
-      accessor: "actions",
-      fixedColumn: "right",
+      header: 'Actions',
+      accessor: 'actions',
+      fixedColumn: 'right',
       render: (item: CompanyItem) => (
         <div className="flex gap-2 justify-center">
           <Button

@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle, RefreshCcw } from "lucide-react";
-import Typography from "@/components/UI/Typography";
-import Button from "@/components/UI/Button";
-import { verifyOtpApi, sendOtpApi } from "@/ApiClient/Auth/auth";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/store";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useAuthContext } from "./AuthContext";
+import { useState, useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { ArrowRight, CheckCircle, RefreshCcw } from 'lucide-react';
+import Typography from '@/components/UI/Typography';
+import Button from '@/components/UI/Button';
+import { verifyOtpApi, sendOtpApi } from '@/ApiClient/Auth/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/store';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { useAuthContext } from './AuthContext';
 
 const VerificationForm = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,7 +18,7 @@ const VerificationForm = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const { setActiveTab } = useAuthContext();
 
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [isLoading, setIsLoading] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [timer, setTimer] = useState(30);
@@ -57,14 +57,14 @@ const VerificationForm = () => {
     index: number,
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData("text").slice(0, 6).split("");
+    const pastedData = e.clipboardData.getData('text').slice(0, 6).split('');
     if (pastedData.every((char) => !isNaN(Number(char)))) {
       const newOtp = [...otp];
       pastedData.forEach((char, index) => {
@@ -76,14 +76,14 @@ const VerificationForm = () => {
   };
 
   const handleVerify = async () => {
-    const otpString = otp.join("");
+    const otpString = otp.join('');
     if (otpString.length !== 6) {
-      toast.error("Please enter a valid 6-digit OTP");
+      toast.error('Please enter a valid 6-digit OTP');
       return;
     }
 
     if (!user?.email) {
-      toast.error("User email not found. Please login again.");
+      toast.error('User email not found. Please login again.');
       return;
     }
 
@@ -94,12 +94,12 @@ const VerificationForm = () => {
         otp: otpString,
       });
 
-      if ((response as any).status === "success") {
-        sessionStorage.setItem("reset_otp", otpString);
-        setActiveTab("reset-password");
+      if ((response as any).status === 'success') {
+        sessionStorage.setItem('reset_otp', otpString);
+        setActiveTab('reset-password');
       }
     } catch (error: any) {
-      console.error("Verification error:", error);
+      console.error('Verification error:', error);
       // Error is handled by the API client toast
     } finally {
       setIsLoading(false);
@@ -113,10 +113,10 @@ const VerificationForm = () => {
     try {
       await sendOtpApi({ email: user.email });
       setTimer(30);
-      setOtp(["", "", "", "", "", ""]);
+      setOtp(['', '', '', '', '', '']);
       inputRefs.current[0]?.focus();
     } catch (error) {
-      console.error("Resend error:", error);
+      console.error('Resend error:', error);
     } finally {
       setIsResending(false);
     }
@@ -144,7 +144,7 @@ const VerificationForm = () => {
         >
           We've sent a 6-digit code to
           <span className="font-semibold text-slate-700">
-            {user?.email || "your email"}
+            {user?.email || 'your email'}
           </span>
         </Typography>
       </div>
@@ -171,7 +171,7 @@ const VerificationForm = () => {
         <div className="flex items-center justify-center">
           {timer > 0 ? (
             <p className="text-sm text-slate-500">
-              Resend code in{" "}
+              Resend code in{' '}
               <span className="font-medium text-slate-700">{timer}s</span>
             </p>
           ) : (
@@ -184,7 +184,7 @@ const VerificationForm = () => {
               className="text-sm"
               leftIcon={
                 <RefreshCcw
-                  className={`w-3 h-3 ${isResending ? "animate-spin" : ""}`}
+                  className={`w-3 h-3 ${isResending ? 'animate-spin' : ''}`}
                 />
               }
             >
@@ -198,7 +198,7 @@ const VerificationForm = () => {
           size="md"
           fullWidth
           onClick={handleVerify}
-          disabled={isLoading || otp.join("").length !== 6}
+          disabled={isLoading || otp.join('').length !== 6}
           isLoading={isLoading}
           loadingText="Verifying..."
         >
@@ -211,7 +211,7 @@ const VerificationForm = () => {
             variant="link"
             size="sm"
             type="button"
-            onClick={() => setActiveTab("login")}
+            onClick={() => setActiveTab('login')}
             className="text-slate-500 hover:text-slate-700"
           >
             Back to Login

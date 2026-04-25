@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
-import { PanelLeft } from "lucide-react";
-import Skeleton from "../UI/Skeleton";
-import Button from "../UI/Button";
-import Typography from "../UI/Typography";
-import { menuItems } from "./Constants";
-import { useAppSelector } from "@/store/hooks";
-import Link from "next/link";
+import { useState, useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { PanelLeft } from 'lucide-react';
+import Skeleton from '../UI/Skeleton';
+import Button from '../UI/Button';
+import Typography from '../UI/Typography';
+import { menuItems } from './Constants';
+import { useAppSelector } from '@/store/hooks';
+import Link from 'next/link';
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -26,14 +26,14 @@ const Sidebar = () => {
       }
     };
     handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   if (loading || !user) {
     return (
       <div
-        className={`h-screen bg-slate-50 border-r border-slate-200 p-4 transition-all duration-300 ${isCollapsed ? "w-20" : "w-64"}`}
+        className={`h-screen bg-slate-50 border-r border-slate-200 p-4 transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'}`}
       >
         <div className="mb-8 flex items-center gap-3">
           <Skeleton width="40px" height="40px" variant="circular" />
@@ -73,12 +73,12 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`h-screen bg-slate-50 border-r border-slate-200 p-4 transition-all duration-300 flex flex-col ${isCollapsed ? "w-22" : "w-64"}`}
+      className={`h-screen bg-slate-50 border-r border-slate-200 p-4 transition-all duration-300 flex flex-col ${isCollapsed ? 'w-22' : 'w-64'}`}
     >
-      <Link href={"/"}>
+      <Link href={'/'}>
         <div className="mb-6 flex items-center justify-between flex-shrink-0">
           <div
-            className={`flex items-center gap-3 ${isCollapsed ? "justify-center w-full" : ""}`}
+            className={`flex items-center gap-3 ${isCollapsed ? 'justify-center w-full' : ''}`}
           >
             <div className="w-10 h-10 rounded-full bg-[#5a67ba] flex items-center justify-center text-white font-semibold">
               M
@@ -142,7 +142,7 @@ const Sidebar = () => {
                       leftIcon={
                         <span
                           className={
-                            isActive ? "text-[#5a67ba]" : "text-slate-400"
+                            isActive ? 'text-[#5a67ba]' : 'text-slate-400'
                           }
                         >
                           {item.icon}
@@ -150,10 +150,10 @@ const Sidebar = () => {
                       }
                       className={`${
                         isActive
-                          ? "!bg-[#a3adf3ff]/20 !text-[#5a67ba] hover:!bg-[#a3adf3ff]/30"
-                          : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
-                      } ${isCollapsed ? "justify-center pr-9 mr-1" : ""}`}
-                      title={isCollapsed ? item.label : ""}
+                          ? '!bg-[#a3adf3ff]/20 !text-[#5a67ba] hover:!bg-[#a3adf3ff]/30'
+                          : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
+                      } ${isCollapsed ? 'justify-center pr-9 mr-1' : ''}`}
+                      title={isCollapsed ? item.label : ''}
                       onClick={() => router.push(item.href)}
                     >
                       {!isCollapsed && item.label}

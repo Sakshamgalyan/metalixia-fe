@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Search,
   Truck,
@@ -9,30 +9,30 @@ import {
   CheckCircle,
   ArrowUpRight,
   Send,
-} from "lucide-react";
-import Typography from "@/components/UI/Typography";
-import Button from "@/components/UI/Button";
-import Input from "@/components/UI/Input";
-import Dropdown from "@/components/UI/DropDown";
-import Chips from "@/components/UI/Chips";
-import Card from "@/components/UI/Card";
-import Chart from "@/components/UI/Chart";
-import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
-import { TableColumn } from "@/components/UI/Table";
-import debounce from "lodash/debounce";
+} from 'lucide-react';
+import Typography from '@/components/UI/Typography';
+import Button from '@/components/UI/Button';
+import Input from '@/components/UI/Input';
+import Dropdown from '@/components/UI/DropDown';
+import Chips from '@/components/UI/Chips';
+import Card from '@/components/UI/Card';
+import Chart from '@/components/UI/Chart';
+import SummaryTableWrapper from '@/components/Common/SummaryTableWrapper';
+import { TableColumn } from '@/components/UI/Table';
+import debounce from 'lodash/debounce';
 import {
   useInventoryStateContext,
   useInventoryDispatchContext,
-} from "@/context/Summary/Inventory/hooks";
+} from '@/context/Summary/Inventory/hooks';
 import {
   getInventoryItemsApi,
   getInventoryStatsApi,
   updateMaterialStatusApi,
-} from "@/context/Summary/Inventory/api";
-import { setInventoryPage } from "@/context/Summary/Inventory/actions";
-import { InventoryItem } from "@/context/Summary/Inventory/type";
-import ApiClient from "@/lib/apiClient";
-import { toast } from "sonner";
+} from '@/context/Summary/Inventory/api';
+import { setInventoryPage } from '@/context/Summary/Inventory/actions';
+import { InventoryItem } from '@/context/Summary/Inventory/type';
+import ApiClient from '@/lib/apiClient';
+import { toast } from 'sonner';
 
 interface DispatchStats {
   readyForDispatch: number;
@@ -41,34 +41,45 @@ interface DispatchStats {
 }
 
 const statusLabels: Record<string, string> = {
-  ready_for_dispatch: "Ready for Dispatch",
-  dispatched: "Dispatched",
+  ready_for_dispatch: 'Ready for Dispatch',
+  dispatched: 'Dispatched',
 };
 
-const statusColors: Record<string, "success" | "warning" | "danger" | "default" | "primary"> = {
-  ready_for_dispatch: "warning",
-  dispatched: "success",
+const statusColors: Record<
+  string,
+  'success' | 'warning' | 'danger' | 'default' | 'primary'
+> = {
+  ready_for_dispatch: 'warning',
+  dispatched: 'success',
 };
 
 const DispatchCompt = () => {
-  const [searchInput, setSearchInput] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [dispatchStats, setDispatchStats] = useState<DispatchStats | null>(null);
+  const [searchInput, setSearchInput] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [dispatchStats, setDispatchStats] = useState<DispatchStats | null>(
+    null,
+  );
   const [page, setPage] = useState(1);
-  const [listData, setListData] = useState<{ data: any[]; totalPages: number; totalCount: number } | null>(null);
+  const [listData, setListData] = useState<{
+    data: any[];
+    totalPages: number;
+    totalCount: number;
+  } | null>(null);
   const [listLoading, setListLoading] = useState(false);
 
-  const fetchData = useCallback(async (p = 1, query = "", status = "all") => {
+  const fetchData = useCallback(async (p = 1, query = '', status = 'all') => {
     setListLoading(true);
     try {
       const params: Record<string, any> = { page: p, limit: 10 };
       if (query) params.search = query;
-      if (status !== "all") params.status = status;
-      const response = await ApiClient.get<any>("/material/dispatch", { params });
+      if (status !== 'all') params.status = status;
+      const response = await ApiClient.get<any>('/material/dispatch', {
+        params,
+      });
       setListData(response);
     } catch {
-      toast.error("Failed to fetch dispatch items");
+      toast.error('Failed to fetch dispatch items');
     } finally {
       setListLoading(false);
     }
@@ -76,7 +87,9 @@ const DispatchCompt = () => {
 
   const fetchStats = useCallback(async () => {
     try {
-      const resp = await ApiClient.get<DispatchStats>("/material/dispatch/stats");
+      const resp = await ApiClient.get<DispatchStats>(
+        '/material/dispatch/stats',
+      );
       setDispatchStats(resp);
     } catch {
       // ignore
@@ -104,27 +117,29 @@ const DispatchCompt = () => {
 
   const handleMarkDispatched = async (id: string) => {
     try {
-      await updateMaterialStatusApi("company", id, "dispatched");
+      await updateMaterialStatusApi('company', id, 'dispatched');
       fetchData(page, searchQuery, statusFilter);
       fetchStats();
-    } catch { /* handled */ }
+    } catch {
+      /* handled */
+    }
   };
 
   const formatDate = (date: string | null) => {
-    if (!date) return "—";
-    return new Date(date).toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
+    if (!date) return '—';
+    return new Date(date).toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
     });
   };
 
   const columns: TableColumn<any>[] = [
     {
-      header: "Part",
-      accessor: "partName",
-      headerClassName: "text-left",
-      className: "text-left",
+      header: 'Part',
+      accessor: 'partName',
+      headerClassName: 'text-left',
+      className: 'text-left',
       render: (row: any) => (
         <div className="flex flex-col">
           <span className="font-semibold text-slate-900">
@@ -135,8 +150,8 @@ const DispatchCompt = () => {
       ),
     },
     {
-      header: "Quantity",
-      accessor: "quantity",
+      header: 'Quantity',
+      accessor: 'quantity',
       render: (row: any) => (
         <span className="font-medium text-slate-700">
           {row.quantity} {row.unit}
@@ -144,16 +159,16 @@ const DispatchCompt = () => {
       ),
     },
     {
-      header: "Location",
-      accessor: "inventoryLocation",
-      className: "text-slate-600",
+      header: 'Location',
+      accessor: 'inventoryLocation',
+      className: 'text-slate-600',
     },
     {
-      header: "Status",
-      accessor: "status",
+      header: 'Status',
+      accessor: 'status',
       render: (row: any) => (
         <Chips
-          colorScheme={statusColors[row.status] || "default"}
+          colorScheme={statusColors[row.status] || 'default'}
           variant="soft"
           label={statusLabels[row.status] || row.status}
           size="sm"
@@ -161,18 +176,20 @@ const DispatchCompt = () => {
       ),
     },
     {
-      header: "Updated",
-      accessor: "updatedAt",
+      header: 'Updated',
+      accessor: 'updatedAt',
       render: (row: any) => (
-        <span className="text-sm text-slate-600">{formatDate(row.updatedAt)}</span>
+        <span className="text-sm text-slate-600">
+          {formatDate(row.updatedAt)}
+        </span>
       ),
     },
     {
-      header: "Actions",
-      accessor: "_id",
-      fixedColumn: "right",
+      header: 'Actions',
+      accessor: '_id',
+      fixedColumn: 'right',
       render: (row: any) =>
-        row.status === "ready_for_dispatch" ? (
+        row.status === 'ready_for_dispatch' ? (
           <Button
             size="sm"
             bgColor="#059669"
@@ -192,37 +209,41 @@ const DispatchCompt = () => {
 
   const stats = [
     {
-      label: "Ready for Dispatch",
+      label: 'Ready for Dispatch',
       value: dispatchStats?.readyForDispatch ?? 0,
       icon: <Package size={20} className="text-amber-500" />,
-      color: "bg-amber-50",
+      color: 'bg-amber-50',
     },
     {
-      label: "Dispatched",
+      label: 'Dispatched',
       value: dispatchStats?.dispatched ?? 0,
       icon: <Truck size={20} className="text-emerald-500" />,
-      color: "bg-emerald-50",
+      color: 'bg-emerald-50',
     },
     {
-      label: "Today Dispatched",
+      label: 'Today Dispatched',
       value: dispatchStats?.dailyCounts?.[6]?.count ?? 0,
       icon: <Send size={20} className="text-blue-500" />,
-      color: "bg-blue-50",
+      color: 'bg-blue-50',
     },
   ];
 
   const chartData = dispatchStats?.dailyCounts?.map((d) => d.count) || [];
-  const chartLabels = dispatchStats?.dailyCounts?.map((d) => {
-    const date = new Date(d.date);
-    return date.toLocaleDateString("en-IN", { weekday: "short" });
-  }) || [];
+  const chartLabels =
+    dispatchStats?.dailyCounts?.map((d) => {
+      const date = new Date(d.date);
+      return date.toLocaleDateString('en-IN', { weekday: 'short' });
+    }) || [];
 
   return (
     <div className="space-y-6 w-[95%] mx-auto py-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <Typography variant="h3" className="text-slate-900 flex items-center gap-3">
+          <Typography
+            variant="h3"
+            className="text-slate-900 flex items-center gap-3"
+          >
             <Truck size={28} className="text-slate-700" /> Material Dispatch
           </Typography>
           <Typography variant="p" className="text-slate-500">
@@ -237,14 +258,19 @@ const DispatchCompt = () => {
           <Card key={i} padding="md" className="border-slate-200">
             <div className="flex items-start justify-between">
               <div>
-                <Typography variant="small" className="font-medium text-slate-500">
+                <Typography
+                  variant="small"
+                  className="font-medium text-slate-500"
+                >
                   {stat.label}
                 </Typography>
                 <Typography variant="h4" className="text-slate-900 mt-2">
                   {stat.value}
                 </Typography>
               </div>
-              <div className={`p-2.5 rounded-lg ${stat.color}`}>{stat.icon}</div>
+              <div className={`p-2.5 rounded-lg ${stat.color}`}>
+                {stat.icon}
+              </div>
             </div>
           </Card>
         ))}
@@ -265,7 +291,11 @@ const DispatchCompt = () => {
           gradientFrom="from-blue-600"
           gradientTo="to-blue-400"
           labelColor="text-blue-400"
-          labels={chartLabels.length ? chartLabels : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
+          labels={
+            chartLabels.length
+              ? chartLabels
+              : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          }
           showXAxis
         />
       </div>
@@ -288,9 +318,9 @@ const DispatchCompt = () => {
           <div className="w-44">
             <Dropdown
               options={[
-                { label: "All Status", value: "all" },
-                { label: "Ready", value: "ready_for_dispatch" },
-                { label: "Dispatched", value: "dispatched" },
+                { label: 'All Status', value: 'all' },
+                { label: 'Ready', value: 'ready_for_dispatch' },
+                { label: 'Dispatched', value: 'dispatched' },
               ]}
               value={statusFilter}
               onChange={(val) => {

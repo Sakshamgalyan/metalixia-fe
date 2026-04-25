@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import Table from "@/components/UI/Table";
-import Typography from "@/components/UI/Typography";
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import Table from '@/components/UI/Table';
+import Typography from '@/components/UI/Typography';
 import {
   getAllEmployees,
   updateEmployee,
   deleteEmployee,
-} from "@/ApiClient/Admin/admin";
-import NoDataState from "@/components/Common/NoDataState";
-import { columns } from "@/components/dashboard/Admin/Approval/Constants";
-import { EmployeeListResponse } from "@/ApiClient/Admin/type";
-import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
+} from '@/ApiClient/Admin/admin';
+import NoDataState from '@/components/Common/NoDataState';
+import { columns } from '@/components/dashboard/Admin/Approval/Constants';
+import { EmployeeListResponse } from '@/ApiClient/Admin/type';
+import SummaryTableWrapper from '@/components/Common/SummaryTableWrapper';
 
 const ApprovalList = () => {
   const [users, setUsers] = useState<EmployeeListResponse | null>(null);
@@ -26,8 +26,8 @@ const ApprovalList = () => {
       const response = await getAllEmployees(payload);
       setUsers(response || null);
     } catch (error) {
-      console.error("Failed to fetch users", error);
-      toast.error("Failed to fetch approval list");
+      console.error('Failed to fetch users', error);
+      toast.error('Failed to fetch approval list');
     } finally {
       setLoading(false);
     }
@@ -37,7 +37,7 @@ const ApprovalList = () => {
     const payload = {
       page: currentPage,
       limit: 10,
-      role: ["user"],
+      role: ['user'],
     };
     fetchUsers(payload);
   }, [currentPage]);
@@ -45,10 +45,10 @@ const ApprovalList = () => {
   const handleApprove = async (user: any) => {
     try {
       const { password, confirmPassword, ...userData } = user;
-      await updateEmployee({ ...userData, role: "employee" });
+      await updateEmployee({ ...userData, role: 'employee' });
       fetchUsers();
     } catch (error) {
-      console.error("Failed to approve user", error);
+      console.error('Failed to approve user', error);
     }
   };
 
@@ -58,11 +58,11 @@ const ApprovalList = () => {
       const payload = {
         page: currentPage,
         limit: 10,
-        role: ["user"],
+        role: ['user'],
       };
       fetchUsers(payload);
     } catch (error) {
-      console.error("Failed to delete user", error);
+      console.error('Failed to delete user', error);
     }
   };
 
@@ -71,7 +71,7 @@ const ApprovalList = () => {
     const payload = {
       page: currentPage,
       limit: 10,
-      role: ["user"],
+      role: ['user'],
     };
     fetchUsers(payload);
   };

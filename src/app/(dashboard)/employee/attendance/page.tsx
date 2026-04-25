@@ -1,4 +1,4 @@
-import Attendance from "@/components/dashboard/Employees/Attendance/Attendance";
+import Attendance from '@/components/dashboard/Employees/Attendance/Attendance';
 
 const page = () => {
   return <Attendance />;

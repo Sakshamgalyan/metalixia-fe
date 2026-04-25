@@ -1,4 +1,4 @@
-import type { Reducer } from "react";
+import type { Reducer } from 'react';
 import {
   FETCH_REPORT_LIST_LOADING,
   FETCH_REPORT_UPLOAD_LOADING,
@@ -6,7 +6,7 @@ import {
   DELETE_REPORT_LOADING,
   UploadPaySlipState,
   UploadPaySlipAction,
-} from "./type";
+} from './type';
 
 export const initialState: UploadPaySlipState = {
   listLoading: false,

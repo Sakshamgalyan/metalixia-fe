@@ -1,8 +1,8 @@
-"use client"
-import React, { createContext, useReducer, useCallback } from "react";
-import type { Dispatch, ReactNode } from "react";
-import { UploadedReportState, UploadedReportAction } from "./type";
-import reducer, { initialState } from "./reducer";
+'use client';
+import React, { createContext, useReducer, useCallback } from 'react';
+import type { Dispatch, ReactNode } from 'react';
+import { UploadedReportState, UploadedReportAction } from './type';
+import reducer, { initialState } from './reducer';
 
 type StateContext = {
   state: UploadedReportState;

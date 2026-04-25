@@ -1,4 +1,4 @@
-import type { Reducer } from "react";
+import type { Reducer } from 'react';
 import {
   PartState,
   PartAction,
@@ -10,7 +10,7 @@ import {
   ACTION_SUCCESS,
   FETCH_COMPANIES_LIST_SUCCESS,
   FETCH_COMPANIES_LIST_LOADING,
-} from "./type";
+} from './type';
 
 export const initialState: PartState = {
   listData: null,

@@ -1,14 +1,14 @@
-import { useContext } from "react";
+import { useContext } from 'react';
 import {
   UploadPaySlipStateContext,
   UploadPaySlipDispatchContext,
-} from "./index";
+} from './index';
 
 export const useUploadPaySlipStateContext = () => {
   const context = useContext(UploadPaySlipStateContext);
   if (!context) {
     throw new Error(
-      "useUploadPaySlipStateContext should be wrap under UploadPaySlipContextProvider",
+      'useUploadPaySlipStateContext should be wrap under UploadPaySlipContextProvider',
     );
   }
   const { state } = context;
@@ -19,7 +19,7 @@ export const useUploadPaySlipDispatchContext = () => {
   const dispatchContext = useContext(UploadPaySlipDispatchContext);
   if (!dispatchContext) {
     throw new Error(
-      "useUploadPaySlipDispatchContext should be wrap under UploadPaySlipContextProvider",
+      'useUploadPaySlipDispatchContext should be wrap under UploadPaySlipContextProvider',
     );
   }
   const { dispatch } = dispatchContext;

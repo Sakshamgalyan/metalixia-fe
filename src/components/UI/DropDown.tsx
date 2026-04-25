@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState, useRef, useEffect, useMemo } from "react";
-import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, X, Search, Check, Loader2 } from "lucide-react";
+import { useState, useRef, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown, X, Search, Check, Loader2 } from 'lucide-react';
 
 export interface DropdownOption {
   value: string;
@@ -22,8 +22,8 @@ export interface DropdownProps {
   label?: React.ReactNode;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
-  size?: "xs" | "sm" | "md" | "lg";
-  variant?: "default" | "ghost" | "inline";
+  size?: 'xs' | 'sm' | 'md' | 'lg';
+  variant?: 'default' | 'ghost' | 'inline';
   disabled?: boolean;
   multiple?: boolean;
   searchable?: boolean;
@@ -35,8 +35,8 @@ export interface DropdownProps {
   helperText?: string;
   className?: string;
   maxTagCount?: number;
-  placement?: "bottom" | "top";
-  alignment?: "left" | "right";
+  placement?: 'bottom' | 'top';
+  alignment?: 'left' | 'right';
   showSelectAll?: boolean;
   dropdownWidth?: string | number;
 }
@@ -47,49 +47,50 @@ const Dropdown = ({
   onChange,
   onOpen,
   onClose,
-  placeholder = "Select an option",
+  placeholder = 'Select an option',
   label,
   leftIcon,
   rightIcon,
-  size = "sm",
-  variant = "default",
+  size = 'sm',
+  variant = 'default',
   disabled = false,
   multiple = false,
   searchable = false,
-  searchPlaceholder = "Search...",
+  searchPlaceholder = 'Search...',
   clearable = false,
   loading = false,
   hasError = false,
   errorMessage,
   helperText,
-  className = "",
+  className = '',
   maxTagCount = 3,
-  placement = "bottom",
-  alignment = "left",
+  placement = 'bottom',
+  alignment = 'left',
   showSelectAll = false,
-  dropdownWidth = "100%",
+  dropdownWidth = '100%',
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Size variants
   const sizeClasses = {
-    xs: "text-xs py-1 px-1.5 min-h-[28px]",
-    sm: "text-sm py-2 px-3",
-    md: "text-base py-3 px-4",
-    lg: "text-lg py-4 px-5",
+    xs: 'text-xs py-1 px-1.5 min-h-[28px]',
+    sm: 'text-sm py-2 px-3',
+    md: 'text-base py-3 px-4',
+    lg: 'text-lg py-4 px-5',
   };
 
   // Style variants
   const variantClasses = {
     default: hasError
-      ? "bg-white border rounded-lg border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200"
-      : "bg-white border rounded-lg border-slate-300 focus:border-slate-500 focus:ring-2 focus:ring-slate-200 hover:border-slate-400",
-    ghost: "bg-transparent border-transparent hover:bg-slate-100 rounded-lg",
-    inline: "bg-transparent border-none outline-none appearance-none cursor-pointer",
+      ? 'bg-white border rounded-lg border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200'
+      : 'bg-white border rounded-lg border-slate-300 focus:border-slate-500 focus:ring-2 focus:ring-slate-200 hover:border-slate-400',
+    ghost: 'bg-transparent border-transparent hover:bg-slate-100 rounded-lg',
+    inline:
+      'bg-transparent border-none outline-none appearance-none cursor-pointer',
   };
 
   // Get selected options
@@ -116,7 +117,7 @@ const Dropdown = ({
     } else {
       setIsOpen(false);
       onClose?.();
-      setSearchQuery("");
+      setSearchQuery('');
     }
   };
 
@@ -133,7 +134,7 @@ const Dropdown = ({
       onChange?.(option.value);
       setIsOpen(false);
       onClose?.();
-      setSearchQuery("");
+      setSearchQuery('');
     }
   };
 
@@ -151,7 +152,7 @@ const Dropdown = ({
   // Handle clear
   const handleClear = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onChange?.(multiple ? [] : "");
+    onChange?.(multiple ? [] : '');
   };
 
   // Handle remove tag
@@ -173,15 +174,15 @@ const Dropdown = ({
         if (isOpen) {
           setIsOpen(false);
           onClose?.();
-          setSearchQuery("");
+          setSearchQuery('');
         }
       }
     };
 
     if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
       return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
+        document.removeEventListener('mousedown', handleClickOutside);
     }
   }, [isOpen, onClose]);
 
@@ -208,7 +209,7 @@ const Dropdown = ({
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium text-white"
-              style={{ backgroundColor: "#707FDD" }}
+              style={{ backgroundColor: '#707FDD' }}
             >
               {option.label}
               <button
@@ -230,7 +231,7 @@ const Dropdown = ({
     }
 
     return (
-      <span className="truncate" style={{ color: "#707FDD" }}>
+      <span className="truncate" style={{ color: '#707FDD' }}>
         {selectedOptions[0].icon && (
           <span className="mr-2 inline-flex">{selectedOptions[0].icon}</span>
         )}
@@ -244,7 +245,7 @@ const Dropdown = ({
     top: 0,
     left: 0,
     width: 0,
-    placement: "bottom",
+    placement: 'bottom',
   });
 
   const updatePosition = () => {
@@ -257,15 +258,15 @@ const Dropdown = ({
 
       // Default to bottom: Anchor to Container Bottom
       let newTop = rect.bottom + 4;
-      let newPlacement = "bottom";
+      let newPlacement = 'bottom';
 
       // If not enough space below AND enough space above, flip it
       if (spaceBelow < menuHeight && spaceAbove > menuHeight) {
         newTop = rect.top - 4; // Anchor to Container Top (Above Label)
-        newPlacement = "top";
+        newPlacement = 'top';
       } else if (spaceBelow < menuHeight && spaceAbove > spaceBelow) {
         newTop = rect.top - 4;
-        newPlacement = "top";
+        newPlacement = 'top';
       }
 
       setMenuPosition({
@@ -280,12 +281,12 @@ const Dropdown = ({
   useEffect(() => {
     if (isOpen) {
       updatePosition();
-      window.addEventListener("resize", updatePosition);
-      window.addEventListener("scroll", updatePosition, true);
+      window.addEventListener('resize', updatePosition);
+      window.addEventListener('scroll', updatePosition, true);
     }
     return () => {
-      window.removeEventListener("resize", updatePosition);
-      window.removeEventListener("scroll", updatePosition, true);
+      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener('scroll', updatePosition, true);
     };
   }, [isOpen]);
 
@@ -294,21 +295,21 @@ const Dropdown = ({
       ref={menuRef}
       initial={{
         opacity: 0,
-        y: menuPosition.placement === "bottom" ? -10 : 10,
+        y: menuPosition.placement === 'bottom' ? -10 : 10,
       }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: menuPosition.placement === "bottom" ? -10 : 10 }}
+      exit={{ opacity: 0, y: menuPosition.placement === 'bottom' ? -10 : 10 }}
       transition={{ duration: 0.2 }}
       className="bg-white border border-slate-300 rounded-lg shadow-xl overflow-hidden flex flex-col fixed"
       style={{
-        top: menuPosition.placement === "bottom" ? menuPosition.top : undefined,
+        top: menuPosition.placement === 'bottom' ? menuPosition.top : undefined,
         bottom:
-          menuPosition.placement === "top"
+          menuPosition.placement === 'top'
             ? window.innerHeight - menuPosition.top
             : undefined,
         left: menuPosition.left,
-        width: dropdownWidth === "100%" ? menuPosition.width : dropdownWidth,
-        maxHeight: "300px",
+        width: dropdownWidth === '100%' ? menuPosition.width : dropdownWidth,
+        maxHeight: '300px',
         zIndex: 9999999, // Extremely high z-index to ensure it renders above datepickers and modals
       }}
       onMouseDown={(e) => e.stopPropagation()}
@@ -343,8 +344,8 @@ const Dropdown = ({
             <div
               className={`w-4 h-4 border-2 rounded flex items-center justify-center ${
                 selectedValues.length === options.length
-                  ? "border-[#707FDD] bg-[#707FDD]"
-                  : "border-slate-300"
+                  ? 'border-[#707FDD] bg-[#707FDD]'
+                  : 'border-slate-300'
               }`}
             >
               {selectedValues.length === options.length && (
@@ -372,19 +373,19 @@ const Dropdown = ({
                 onClick={() => handleOptionClick(option)}
                 disabled={option.disabled}
                 className={`w-full text-left flex items-center gap-2 border-b border-slate-200 rounded-md transition-colors ${
-                  size === "xs" ? "px-2 py-1.5 text-sm" : "px-4 py-2.5"
+                  size === 'xs' ? 'px-2 py-1.5 text-sm' : 'px-4 py-2.5'
                 } ${
                   option.disabled
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-slate-50 cursor-pointer"
-                } ${isSelected ? "bg-slate-50" : ""}`}
+                    ? 'opacity-50 cursor-not-allowed'
+                    : 'hover:bg-slate-50 cursor-pointer'
+                } ${isSelected ? 'bg-slate-50' : ''}`}
               >
                 {multiple && (
                   <div
                     className={`w-4 h-4 border-2 rounded flex items-center justify-center flex-shrink-0 ${
                       isSelected
-                        ? "border-[#707FDD] bg-[#707FDD]"
-                        : "border-slate-300"
+                        ? 'border-[#707FDD] bg-[#707FDD]'
+                        : 'border-slate-300'
                     }`}
                   >
                     {isSelected && <Check className="w-3 h-3 text-white" />}
@@ -395,16 +396,16 @@ const Dropdown = ({
                 )}
                 <span
                   className={`flex-1 truncate ${
-                    isSelected ? "font-medium" : ""
+                    isSelected ? 'font-medium' : ''
                   }`}
-                  style={isSelected ? { color: "#707FDD" } : {}}
+                  style={isSelected ? { color: '#707FDD' } : {}}
                 >
                   {option.label}
                 </span>
                 {!multiple && isSelected && (
                   <Check
                     className="w-4 h-4 flex-shrink-0"
-                    style={{ color: "#707FDD" }}
+                    style={{ color: '#707FDD' }}
                   />
                 )}
               </button>
@@ -430,7 +431,7 @@ const Dropdown = ({
         aria-disabled={disabled || loading}
         onClick={toggleDropdown}
         onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
+          if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             toggleDropdown();
           }
@@ -440,7 +441,7 @@ const Dropdown = ({
                     ${sizeClasses[size]}
                     ${variantClasses[variant]}
                     transition-all duration-200 outline-none
-                    ${disabled || loading ? "opacity-50 cursor-not-allowed bg-slate-50" : "cursor-pointer"}
+                    ${disabled || loading ? 'opacity-50 cursor-not-allowed bg-slate-50' : 'cursor-pointer'}
                 `}
       >
         <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -462,7 +463,7 @@ const Dropdown = ({
               tabIndex={0}
               onClick={handleClear}
               onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
+                if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
                   e.stopPropagation();
                   handleClear(e as any);
@@ -478,7 +479,7 @@ const Dropdown = ({
           ) : (
             <ChevronDown
               className={`w-4 h-4 text-slate-400 transition-transform ${
-                isOpen ? "rotate-180" : ""
+                isOpen ? 'rotate-180' : ''
               }`}
             />
           )}
@@ -489,7 +490,7 @@ const Dropdown = ({
       {(helperText || errorMessage) && (
         <p
           className={`text-xs mt-1.5 ml-1 ${
-            hasError ? "text-red-600" : "text-slate-500"
+            hasError ? 'text-red-600' : 'text-slate-500'
           }`}
         >
           {hasError ? errorMessage : helperText}
@@ -497,7 +498,7 @@ const Dropdown = ({
       )}
 
       {/* Dropdown Menu Portal */}
-      {typeof document !== "undefined" &&
+      {typeof document !== 'undefined' &&
         createPortal(
           <AnimatePresence>
             {isOpen && !disabled && MenuContent}

@@ -1,4 +1,4 @@
-import type { Reducer } from "react";
+import type { Reducer } from 'react';
 import {
   ReportUploadState,
   ReportUploadAction,
@@ -8,7 +8,7 @@ import {
   FETCH_REPORT_UPLOAD_SUCCESS,
   SET_PAGE,
   DELETE_REPORT_LOADING,
-} from "./type";
+} from './type';
 
 export const initialState: ReportUploadState = {
   listLoading: false,

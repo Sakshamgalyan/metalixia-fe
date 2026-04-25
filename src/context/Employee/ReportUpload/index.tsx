@@ -1,8 +1,8 @@
-"use client"
-import React, { createContext, useReducer, useCallback } from "react";
-import type { Dispatch, ReactNode } from "react";
-import { ReportUploadState, ReportUploadAction } from "./type";
-import reducer, { initialState } from "./reducer";
+'use client';
+import React, { createContext, useReducer, useCallback } from 'react';
+import type { Dispatch, ReactNode } from 'react';
+import { ReportUploadState, ReportUploadAction } from './type';
+import reducer, { initialState } from './reducer';
 
 type StateContext = {
   state: ReportUploadState;
@@ -16,9 +16,9 @@ const ReportUploadStateContext = createContext<StateContext | undefined>(
   undefined,
 );
 
-const ReportUploadDispatchContext = createContext<
-  DispatchContext | undefined
->(undefined);
+const ReportUploadDispatchContext = createContext<DispatchContext | undefined>(
+  undefined,
+);
 
 const ReportUploadContextProvider: React.FC<{ children: ReactNode }> = ({
   children,

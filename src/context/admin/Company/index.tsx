@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { useReducer, ReactNode } from "react";
-import { CompanyStateContext, CompanyDispatchContext } from "./hooks";
-import { companyReducer, initialCompanyState } from "./reducer";
+import React, { useReducer, ReactNode } from 'react';
+import { CompanyStateContext, CompanyDispatchContext } from './hooks';
+import { companyReducer, initialCompanyState } from './reducer';
 
 interface Props {
   children: ReactNode;

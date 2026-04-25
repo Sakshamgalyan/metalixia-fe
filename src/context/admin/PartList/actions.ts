@@ -11,7 +11,7 @@ import {
   FETCH_COMPANIES_LIST_LOADING,
   FETCH_COMPANIES_LIST_SUCCESS,
   CompanyItem,
-} from "./type";
+} from './type';
 
 export const fetchPartListLoading = (loading: boolean): PartAction => ({
   type: FETCH_PART_LIST_LOADING,

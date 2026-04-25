@@ -1,4 +1,4 @@
-import type { Reducer } from "react";
+import type { Reducer } from 'react';
 import {
   UploadedReportState,
   UploadedReportAction,
@@ -9,7 +9,7 @@ import {
   SET_PAGE,
   DELETE_REPORT_LOADING,
   APPROVE_REPORT_LOADING,
-} from "./type";
+} from './type';
 
 export const initialState: UploadedReportState = {
   listLoading: false,

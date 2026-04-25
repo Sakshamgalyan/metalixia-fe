@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { AnimatePresence } from "framer-motion";
-import DecorativePanel from "./DecorativePanel";
-import FormPanel from "./FormPanel";
-import { AuthProvider, useAuthContext } from "./AuthContext";
+import { AnimatePresence } from 'framer-motion';
+import DecorativePanel from './DecorativePanel';
+import FormPanel from './FormPanel';
+import { AuthProvider, useAuthContext } from './AuthContext';
 
 const AuthContent = () => {
   const { activeTab } = useAuthContext();
@@ -13,7 +13,9 @@ const AuthContent = () => {
       <div className="min-h-screen w-full grid grid-cols-1 lg:grid-cols-2">
         <div className="hidden lg:block relative overflow-hidden">
           <AnimatePresence mode="wait">
-            {activeTab === "login" || activeTab === "verification" || activeTab === "reset-password" ? (
+            {activeTab === 'login' ||
+            activeTab === 'verification' ||
+            activeTab === 'reset-password' ? (
               <DecorativePanel side="login" />
             ) : (
               <FormPanel />
@@ -24,7 +26,9 @@ const AuthContent = () => {
         {/* Right side - FormPanel on mobile, switches content on desktop */}
         <div className="relative overflow-hidden min-h-screen">
           <AnimatePresence mode="wait">
-            {activeTab === "login" || activeTab === "verification" || activeTab === "reset-password" ? (
+            {activeTab === 'login' ||
+            activeTab === 'verification' ||
+            activeTab === 'reset-password' ? (
               <FormPanel />
             ) : (
               <>

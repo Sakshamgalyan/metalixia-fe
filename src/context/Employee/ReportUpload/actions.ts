@@ -13,7 +13,7 @@ import {
   ReportUpload,
   SET_PAGE,
   SET_PAGE_ACTION,
-} from "./type";
+} from './type';
 
 export const fetchReportListLoading = (
   loading: boolean,

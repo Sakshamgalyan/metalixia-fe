@@ -1,11 +1,11 @@
-import { PaginatedResponse } from "@/types/common";
+import { PaginatedResponse } from '@/types/common';
 
 // ── Action Types ──────────────────────────────────────────────
-export const FETCH_INVENTORY_LIST_LOADING = "FETCH_INVENTORY_LIST_LOADING";
-export const FETCH_INVENTORY_LIST_SUCCESS = "FETCH_INVENTORY_LIST_SUCCESS";
-export const FETCH_INVENTORY_STATS_LOADING = "FETCH_INVENTORY_STATS_LOADING";
-export const FETCH_INVENTORY_STATS_SUCCESS = "FETCH_INVENTORY_STATS_SUCCESS";
-export const SET_INVENTORY_PAGE = "SET_INVENTORY_PAGE";
+export const FETCH_INVENTORY_LIST_LOADING = 'FETCH_INVENTORY_LIST_LOADING';
+export const FETCH_INVENTORY_LIST_SUCCESS = 'FETCH_INVENTORY_LIST_SUCCESS';
+export const FETCH_INVENTORY_STATS_LOADING = 'FETCH_INVENTORY_STATS_LOADING';
+export const FETCH_INVENTORY_STATS_SUCCESS = 'FETCH_INVENTORY_STATS_SUCCESS';
+export const SET_INVENTORY_PAGE = 'SET_INVENTORY_PAGE';
 
 // ── Action Interfaces ─────────────────────────────────────────
 export interface FETCH_INVENTORY_LIST_LOADING_ACTION {
@@ -42,7 +42,7 @@ export interface InventoryItem {
   name: string;
   partName: string;
   partNumber: string;
-  type: "company" | "raw";
+  type: 'company' | 'raw';
   companyName: string;
   quantity: number;
   unit: string;

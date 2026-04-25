@@ -1,7 +1,7 @@
-import { EmailTemplateItem } from "@/context/Email/types";
-import Typography from "@/components/UI/Typography";
-import Card from "@/components/UI/Card";
-import { Loader2 } from "lucide-react";
+import { EmailTemplateItem } from '@/context/Email/types';
+import Typography from '@/components/UI/Typography';
+import Card from '@/components/UI/Card';
+import { Loader2 } from 'lucide-react';
 
 interface EmailTemplateListProps {
   templates: EmailTemplateItem[];

@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback } from "react";
-import { Search, Plus, Pencil, Trash2 } from "lucide-react";
-import Typography from "@/components/UI/Typography";
-import Button from "@/components/UI/Button";
-import Input from "@/components/UI/Input";
-import Table, { TableColumn } from "@/components/UI/Table";
-import NoDataState from "@/components/Common/NoDataState";
-import DeleteModal from "@/components/Common/DeleteModal";
-import PartModal from "./PartModal";
+import { useState, useEffect, useCallback } from 'react';
+import { Search, Plus, Pencil, Trash2 } from 'lucide-react';
+import Typography from '@/components/UI/Typography';
+import Button from '@/components/UI/Button';
+import Input from '@/components/UI/Input';
+import Table, { TableColumn } from '@/components/UI/Table';
+import NoDataState from '@/components/Common/NoDataState';
+import DeleteModal from '@/components/Common/DeleteModal';
+import PartModal from './PartModal';
 import {
   usePartStateContext,
   usePartDispatchContext,
-} from "@/context/admin/PartList/hooks";
-import { getPartsApi, deletePartApi } from "@/context/admin/PartList/api";
-import { setPage, setModal } from "@/context/admin/PartList/actions";
-import { PartItem } from "@/context/admin/PartList/type";
-import { toast } from "sonner";
-import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
+} from '@/context/admin/PartList/hooks';
+import { getPartsApi, deletePartApi } from '@/context/admin/PartList/api';
+import { setPage, setModal } from '@/context/admin/PartList/actions';
+import { PartItem } from '@/context/admin/PartList/type';
+import { toast } from 'sonner';
+import SummaryTableWrapper from '@/components/Common/SummaryTableWrapper';
 
 const PartListCompt = () => {
-  const [searchInput, setSearchInput] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchInput, setSearchInput] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const [deleteModalState, setDeleteModalState] = useState<{
     isOpen: boolean;
@@ -34,7 +34,7 @@ const PartListCompt = () => {
   const dispatch = usePartDispatchContext();
 
   const fetchData = useCallback(
-    async (p = 1, query = "") => {
+    async (p = 1, query = '') => {
       await getPartsApi(dispatch, p, 10, query);
     },
     [dispatch],
@@ -58,11 +58,11 @@ const PartListCompt = () => {
   }, [searchInput, searchQuery, page, dispatch]);
 
   const openAddModal = () => {
-    dispatch(setModal({ mode: "add", selectedItem: null }));
+    dispatch(setModal({ mode: 'add', selectedItem: null }));
   };
 
   const openEditModal = (item: PartItem) => {
-    dispatch(setModal({ mode: "edit", selectedItem: item }));
+    dispatch(setModal({ mode: 'edit', selectedItem: item }));
   };
 
   const promptDelete = (item: PartItem) => {
@@ -77,8 +77,8 @@ const PartListCompt = () => {
       fetchData(page, searchQuery);
       setDeleteModalState({ isOpen: false, id: null });
     } catch (error) {
-      toast.error("Failed to delete part", {
-        description: "Something went wrong",
+      toast.error('Failed to delete part', {
+        description: 'Something went wrong',
       });
     } finally {
       setIsDeleting(false);
@@ -92,35 +92,35 @@ const PartListCompt = () => {
 
   const columns: TableColumn<PartItem>[] = [
     {
-      header: "Company",
-      accessor: "companyName",
-      className: "font-medium text-slate-800",
+      header: 'Company',
+      accessor: 'companyName',
+      className: 'font-medium text-slate-800',
     },
     {
-      header: "Part Name",
-      accessor: "partName",
-      className: "font-semibold text-slate-800",
+      header: 'Part Name',
+      accessor: 'partName',
+      className: 'font-semibold text-slate-800',
     },
     {
-      header: "Part Number",
-      accessor: "partNumber",
-      className: "text-slate-600",
+      header: 'Part Number',
+      accessor: 'partNumber',
+      className: 'text-slate-600',
     },
     {
-      header: "Description",
-      accessor: "description",
-      className: "text-slate-600",
+      header: 'Description',
+      accessor: 'description',
+      className: 'text-slate-600',
     },
     {
-      header: "Added Date",
-      accessor: "createdAt",
-      className: "text-slate-600",
+      header: 'Added Date',
+      accessor: 'createdAt',
+      className: 'text-slate-600',
       render: (item) => new Date(item.createdAt).toLocaleDateString(),
     },
     {
-      header: "Actions",
-      accessor: "actions" as any,
-      fixedColumn: "right",
+      header: 'Actions',
+      accessor: 'actions' as any,
+      fixedColumn: 'right',
       render: (item: PartItem) => (
         <div className="flex gap-2 justify-center">
           <Button

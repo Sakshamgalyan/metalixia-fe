@@ -1,19 +1,19 @@
-import Button from "@/components/UI/Button";
-import { Download, Trash2 } from "lucide-react";
+import Button from '@/components/UI/Button';
+import { Download, Trash2 } from 'lucide-react';
 
 export const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 export const columns = (
@@ -21,20 +21,20 @@ export const columns = (
   handleDelete: (id: string) => void,
 ) => [
   {
-    header: "Employee Name",
-    accessor: "firstName",
+    header: 'Employee Name',
+    accessor: 'firstName',
   },
   {
-    header: "Month",
-    accessor: "month",
+    header: 'Month',
+    accessor: 'month',
   },
   {
-    header: "Year",
-    accessor: "year",
+    header: 'Year',
+    accessor: 'year',
   },
   {
-    header: "Uploaded At",
-    accessor: "uploadedAt",
+    header: 'Uploaded At',
+    accessor: 'uploadedAt',
     render: (item: any) => (
       <span className="text-slate-500 text-sm">
         {new Date(item.uploadedAt).toLocaleString()}
@@ -42,12 +42,12 @@ export const columns = (
     ),
   },
   {
-    header: "Uploaded By",
-    accessor: "uploadedBy",
+    header: 'Uploaded By',
+    accessor: 'uploadedBy',
   },
   {
-    header: "Actions",
-    accessor: "action",
+    header: 'Actions',
+    accessor: 'action',
     render: (item: any) => (
       <div className="flex flex-row gap-2">
         <Button

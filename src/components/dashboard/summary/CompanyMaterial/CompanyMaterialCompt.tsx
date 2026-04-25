@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Search,
   Plus,
@@ -8,33 +8,33 @@ import {
   CheckCircle,
   Trash2,
   Pencil,
-} from "lucide-react";
-import Typography from "@/components/UI/Typography";
-import Button from "@/components/UI/Button";
-import Input from "@/components/UI/Input";
-import { TableColumn } from "@/components/UI/Table";
-import MaterialModals from "./MaterialModal";
-import { useAppSelector } from "@/store/hooks";
+} from 'lucide-react';
+import Typography from '@/components/UI/Typography';
+import Button from '@/components/UI/Button';
+import Input from '@/components/UI/Input';
+import { TableColumn } from '@/components/UI/Table';
+import MaterialModals from './MaterialModal';
+import { useAppSelector } from '@/store/hooks';
 import {
   useCompanyMaterialStateContext,
   useCompanyMaterialDispatchContext,
-} from "@/context/Summary/CompanyMaterial/hooks";
+} from '@/context/Summary/CompanyMaterial/hooks';
 import {
   getCompanyMaterialsApi,
   getCompanyMaterialStatsApi,
   deleteCompanyMaterialApi,
-} from "@/context/Summary/CompanyMaterial/api";
-import { setPage, setModal } from "@/context/Summary/CompanyMaterial/actions";
-import { CompanyMaterialItem } from "@/context/Summary/CompanyMaterial/type";
-import { StatsCards } from "./StatsCards";
-import { formatDate } from "./Constants";
-import DeleteModal from "@/components/Common/DeleteModal";
-import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
-import debounce from "lodash/debounce";
+} from '@/context/Summary/CompanyMaterial/api';
+import { setPage, setModal } from '@/context/Summary/CompanyMaterial/actions';
+import { CompanyMaterialItem } from '@/context/Summary/CompanyMaterial/type';
+import { StatsCards } from './StatsCards';
+import { formatDate } from './Constants';
+import DeleteModal from '@/components/Common/DeleteModal';
+import SummaryTableWrapper from '@/components/Common/SummaryTableWrapper';
+import debounce from 'lodash/debounce';
 
 const CompanyMaterialCompt = () => {
-  const [searchInput, setSearchInput] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchInput, setSearchInput] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<CompanyMaterialItem | null>(
     null,
@@ -47,11 +47,11 @@ const CompanyMaterialCompt = () => {
 
   // Auth
   const { user } = useAppSelector((state) => state.auth);
-  const isSuperAdmin = user?.role === "superAdmin";
+  const isSuperAdmin = user?.role === 'superAdmin';
 
   // ── Fetch Data ────────────────────────────────────────────────
   const fetchData = useCallback(
-    async (p = 1, query = "") => {
+    async (p = 1, query = '') => {
       await getCompanyMaterialsApi(dispatch, p, 10, query);
     },
     [dispatch],
@@ -90,15 +90,15 @@ const CompanyMaterialCompt = () => {
 
   // ── Modal openers (dispatch to context) ───────────────────────
   const openAddModal = () => {
-    dispatch(setModal({ mode: "add", selectedItem: null }));
+    dispatch(setModal({ mode: 'add', selectedItem: null }));
   };
 
   const openEditModal = (item: CompanyMaterialItem) => {
-    dispatch(setModal({ mode: "edit", selectedItem: item }));
+    dispatch(setModal({ mode: 'edit', selectedItem: item }));
   };
 
   const openReceiveModal = (item: CompanyMaterialItem) => {
-    dispatch(setModal({ mode: "receive", selectedItem: item }));
+    dispatch(setModal({ mode: 'receive', selectedItem: item }));
   };
 
   const openDeleteModal = (item: CompanyMaterialItem) => {
@@ -125,16 +125,16 @@ const CompanyMaterialCompt = () => {
   // ── Table Columns ─────────────────────────────────────────────
   const columns: TableColumn<CompanyMaterialItem>[] = [
     {
-      header: "Company Name",
-      accessor: "companyName",
-      headerClassName: "text-left",
-      className: "font-semibold text-slate-800 text-left",
+      header: 'Company Name',
+      accessor: 'companyName',
+      headerClassName: 'text-left',
+      className: 'font-semibold text-slate-800 text-left',
     },
     {
-      header: "Part Name",
-      accessor: "partName",
-      headerClassName: "text-left",
-      className: "text-slate-600 text-left",
+      header: 'Part Name',
+      accessor: 'partName',
+      headerClassName: 'text-left',
+      className: 'text-slate-600 text-left',
       render: (row) => (
         <span className="font-medium text-slate-700">
           {row.partNumber} - {row.partName}
@@ -142,8 +142,8 @@ const CompanyMaterialCompt = () => {
       ),
     },
     {
-      header: "Quantity",
-      accessor: "quantity",
+      header: 'Quantity',
+      accessor: 'quantity',
       render: (row) => (
         <span className="font-medium text-slate-700">
           {row.quantity} {row.unit}
@@ -151,35 +151,35 @@ const CompanyMaterialCompt = () => {
       ),
     },
     {
-      header: "Expected On",
-      accessor: "expectedOn",
+      header: 'Expected On',
+      accessor: 'expectedOn',
       render: (row) => (
         <span className="text-slate-600">{formatDate(row.expectedOn)}</span>
       ),
     },
     {
-      header: "Delivery By",
-      accessor: "deliveryBy",
+      header: 'Delivery By',
+      accessor: 'deliveryBy',
       render: (row) => (
         <span className="text-slate-600">{formatDate(row.deliveryBy)}</span>
       ),
     },
     {
-      header: "Received On",
-      accessor: "receivedOn",
+      header: 'Received On',
+      accessor: 'receivedOn',
       render: (row) => (
         <span className="text-slate-600">{formatDate(row.receivedOn)}</span>
       ),
     },
     {
-      header: "Inventory Location",
-      accessor: "inventoryLocation",
-      className: "text-slate-600",
+      header: 'Inventory Location',
+      accessor: 'inventoryLocation',
+      className: 'text-slate-600',
     },
     {
-      header: "Received By",
-      accessor: "receivedBy",
-      fixedColumn: "right",
+      header: 'Received By',
+      accessor: 'receivedBy',
+      fixedColumn: 'right',
       render: (row) => (
         <div className="flex items-center gap-2">
           {row.receivedBy ? (
@@ -203,8 +203,8 @@ const CompanyMaterialCompt = () => {
     ...(isSuperAdmin
       ? [
           {
-            header: "Actions",
-            fixedColumn: "right",
+            header: 'Actions',
+            fixedColumn: 'right',
             render: (row: CompanyMaterialItem) => (
               <div className="flex items-center gap-2">
                 <Button
@@ -301,7 +301,7 @@ const CompanyMaterialCompt = () => {
         itemName={
           selectedItem
             ? `${selectedItem.partNumber} - ${selectedItem.partName}`
-            : ""
+            : ''
         }
         isLoading={isDeleting}
         isOpen={deleteModalOpen}

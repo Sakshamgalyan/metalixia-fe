@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 
 export interface ProgressBarProps {
   /** Current progress value (0-100) */
   progress: number;
   /** Height of the progress bar */
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   /** Color variant */
-  variant?: "primary" | "success" | "warning" | "danger" | "info" | "gradient";
+  variant?: 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'gradient';
   /** Whether to show the percentage label */
   showLabel?: boolean;
   /** Custom label text to show above the bar */
@@ -23,33 +23,33 @@ export interface ProgressBarProps {
 
 const ProgressBar = ({
   progress,
-  size = "md",
-  variant = "primary",
+  size = 'md',
+  variant = 'primary',
   showLabel = false,
   label,
   showValue = false,
-  className = "",
-  barClassName = "",
+  className = '',
+  barClassName = '',
 }: ProgressBarProps) => {
   // Clamp progress between 0 and 100
   const clampedProgress = Math.min(100, Math.max(0, progress));
 
   // Size definition
   const sizeClasses = {
-    sm: "h-1.5",
-    md: "h-2.5",
-    lg: "h-4",
-    xl: "h-6",
+    sm: 'h-1.5',
+    md: 'h-2.5',
+    lg: 'h-4',
+    xl: 'h-6',
   };
 
   // Variant definition
   const variantClasses = {
-    primary: "bg-[#707FDD]",
-    success: "bg-emerald-500",
-    warning: "bg-amber-500",
-    danger: "bg-red-500",
-    info: "bg-sky-500",
-    gradient: "bg-gradient-to-r from-[#707FDD] to-[#5a67c4]",
+    primary: 'bg-[#707FDD]',
+    success: 'bg-emerald-500',
+    warning: 'bg-amber-500',
+    danger: 'bg-red-500',
+    info: 'bg-sky-500',
+    gradient: 'bg-gradient-to-r from-[#707FDD] to-[#5a67c4]',
   };
 
   return (
@@ -63,7 +63,7 @@ const ProgressBar = ({
           )}
           {(showValue || showLabel) && (
             <span
-              className={`text-sm font-medium text-slate-700 dark:text-slate-200 ${!label ? "ml-auto" : ""}`}
+              className={`text-sm font-medium text-slate-700 dark:text-slate-200 ${!label ? 'ml-auto' : ''}`}
             >
               {Math.round(clampedProgress)}%
             </span>

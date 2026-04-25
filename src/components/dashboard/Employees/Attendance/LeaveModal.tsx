@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { toast } from "sonner";
-import Modal from "@/components/UI/Modal";
-import Input from "@/components/UI/Input";
-import TextArea from "@/components/UI/TextArea";
-import Dropdown from "@/components/UI/DropDown";
-import Button from "@/components/UI/Button";
-import ApiClient from "@/lib/apiClient";
-import { useAppSelector } from "@/store/hooks";
+import React, { useState } from 'react';
+import { toast } from 'sonner';
+import Modal from '@/components/UI/Modal';
+import Input from '@/components/UI/Input';
+import TextArea from '@/components/UI/TextArea';
+import Dropdown from '@/components/UI/DropDown';
+import Button from '@/components/UI/Button';
+import ApiClient from '@/lib/apiClient';
+import { useAppSelector } from '@/store/hooks';
 
 interface LeaveModalProps {
   isOpen: boolean;
@@ -19,10 +19,10 @@ interface LeaveModalProps {
 }
 
 const leaveTypes = [
-  { label: "Sick Leave", value: "Sick Leave" },
-  { label: "Casual Leave", value: "Casual Leave" },
-  { label: "Privilege Leave", value: "Privilege Leave" },
-  { label: "Unpaid Leave", value: "Unpaid Leave" },
+  { label: 'Sick Leave', value: 'Sick Leave' },
+  { label: 'Casual Leave', value: 'Casual Leave' },
+  { label: 'Privilege Leave', value: 'Privilege Leave' },
+  { label: 'Unpaid Leave', value: 'Unpaid Leave' },
 ];
 
 const LeaveModal = ({
@@ -36,10 +36,10 @@ const LeaveModal = ({
   const targetEmployeeId = employeeId || user?.employeeId;
 
   const [formData, setFormData] = useState({
-    startDate: "",
-    endDate: "",
-    leaveType: "",
-    reason: "",
+    startDate: '',
+    endDate: '',
+    leaveType: '',
+    reason: '',
   });
   const [loading, setLoading] = useState(false);
 
@@ -57,34 +57,34 @@ const LeaveModal = ({
       !formData.leaveType ||
       !formData.reason
     ) {
-      toast.error("Please fill all required fields");
+      toast.error('Please fill all required fields');
       return;
     }
 
     if (!targetEmployeeId) {
-      toast.error("Employee not identified");
+      toast.error('Employee not identified');
       return;
     }
 
     setLoading(true);
     try {
-      await ApiClient.post("/leave/apply", {
+      await ApiClient.post('/leave/apply', {
         employeeId: targetEmployeeId,
         ...formData,
       });
-      toast.success("Leave applied successfully");
+      toast.success('Leave applied successfully');
       onSuccess?.();
       onClose();
       // Reset form
       setFormData({
-        startDate: "",
-        endDate: "",
-        leaveType: "",
-        reason: "",
+        startDate: '',
+        endDate: '',
+        leaveType: '',
+        reason: '',
       });
     } catch (error: any) {
-      console.error("Failed to apply leave", error);
-      toast.error(error.response?.data?.message || "Failed to apply leave");
+      console.error('Failed to apply leave', error);
+      toast.error(error.response?.data?.message || 'Failed to apply leave');
     } finally {
       setLoading(false);
     }

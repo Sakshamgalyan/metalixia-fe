@@ -1,5 +1,5 @@
-import ProductionContextProvider from "@/context/Summary/Production";
-import ProductionCompt from "@/components/dashboard/summary/Production/ProductionCompt";
+import ProductionContextProvider from '@/context/Summary/Production';
+import ProductionCompt from '@/components/dashboard/summary/Production/ProductionCompt';
 
 const Page = () => {
   return (

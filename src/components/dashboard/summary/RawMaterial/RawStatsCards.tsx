@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import React from "react";
-import Chart from "@/components/UI/Chart";
-import Typography from "@/components/UI/Typography";
+import React from 'react';
+import Chart from '@/components/UI/Chart';
+import Typography from '@/components/UI/Typography';
 import {
   Layers,
   IndianRupee,
   Truck,
   Calendar,
   ArrowUpRight,
-} from "lucide-react";
-import { motion } from "framer-motion";
+} from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface RawStatsCardsProps {
   statsData: any;
@@ -26,13 +26,13 @@ export const RawStatsCards: React.FC<RawStatsCardsProps> = ({
   const dailyCounts = statsData?.dailyCounts || [];
   const chartLabels = dailyCounts.map((d: any) => {
     const date = new Date(d.date);
-    return date.toLocaleDateString("en-IN", { weekday: "short" });
+    return date.toLocaleDateString('en-IN', { weekday: 'short' });
   });
 
   const formatCurrency = (val: number) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
       maximumFractionDigits: 0,
     }).format(val);
   };
@@ -88,7 +88,7 @@ export const RawStatsCards: React.FC<RawStatsCardsProps> = ({
 
           <div className="mt-8">
             <Typography className="text-4xl font-black text-slate-900 tracking-tight">
-              {statsLoading ? "..." : (statsData?.totalThisWeek ?? 0)}
+              {statsLoading ? '...' : (statsData?.totalThisWeek ?? 0)}
             </Typography>
             <div className="flex items-center gap-1.5 mt-2">
               <div className="flex -space-x-2">
@@ -160,7 +160,7 @@ export const RawStatsCards: React.FC<RawStatsCardsProps> = ({
             <div className="mt-8">
               <Typography className="text-3xl font-black text-slate-900 tracking-tight leading-tight">
                 {statsLoading
-                  ? "..."
+                  ? '...'
                   : formatCurrency(statsData?.totalInvestmentThisWeek ?? 0)}
               </Typography>
               <div className="flex items-center gap-1.5 mt-2">
@@ -222,7 +222,7 @@ export const RawStatsCards: React.FC<RawStatsCardsProps> = ({
 
           <div className="mt-8">
             <Typography className="text-4xl font-black text-slate-900 tracking-tight">
-              {statsLoading ? "..." : (statsData?.activeSources ?? 0)}
+              {statsLoading ? '...' : (statsData?.activeSources ?? 0)}
             </Typography>
             <div className="flex items-center gap-1.5 mt-2">
               <span className="flex h-2 w-2 relative">

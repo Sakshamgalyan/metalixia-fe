@@ -1,5 +1,5 @@
-import InventoryContextProvider from "@/context/Summary/Inventory";
-import DispatchCompt from "@/components/dashboard/summary/Dispatch/DispatchCompt";
+import InventoryContextProvider from '@/context/Summary/Inventory';
+import DispatchCompt from '@/components/dashboard/summary/Dispatch/DispatchCompt';
 
 const Page = () => {
   return (

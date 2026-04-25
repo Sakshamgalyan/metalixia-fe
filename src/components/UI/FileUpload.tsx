@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from 'react';
 import {
   UploadCloud,
   X,
   FileText,
   File as FileIcon,
   FileImage,
-} from "lucide-react";
-import Typography from "@/components/UI/Typography";
-import { toast } from "sonner";
+} from 'lucide-react';
+import Typography from '@/components/UI/Typography';
+import { toast } from 'sonner';
 
 interface FileUploadProps {
   label?: React.ReactNode;
@@ -24,13 +24,13 @@ interface FileUploadProps {
 
 const FileUpload: React.FC<FileUploadProps> = ({
   label,
-  description = "or drop here",
-  accept = "*",
+  description = 'or drop here',
+  accept = '*',
   maxSize = 20, // 20 MB default
   allowMultiple = true,
   onChange,
   value,
-  className = "",
+  className = '',
 }) => {
   const [dragActive, setDragActive] = useState(false);
   const [fileList, setFileList] = useState<File[]>(value || []);
@@ -46,9 +46,9 @@ const FileUpload: React.FC<FileUploadProps> = ({
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
+    if (e.type === 'dragenter' || e.type === 'dragover') {
       setDragActive(true);
-    } else if (e.type === "dragleave") {
+    } else if (e.type === 'dragleave') {
       setDragActive(false);
     }
   };
@@ -61,17 +61,17 @@ const FileUpload: React.FC<FileUploadProps> = ({
     }
 
     // Check type (basic validation based on extension or mime type if accept is provided)
-    if (accept && accept !== "*") {
-      const acceptedTypes = accept.split(",").map((t) => t.trim());
+    if (accept && accept !== '*') {
+      const acceptedTypes = accept.split(',').map((t) => t.trim());
       const fileType = file.type;
       const fileName = file.name.toLowerCase();
 
       const isValid = acceptedTypes.some((type) => {
-        if (type.endsWith("/*")) {
-          const baseType = type.split("/")[0];
+        if (type.endsWith('/*')) {
+          const baseType = type.split('/')[0];
           return fileType.startsWith(baseType);
         }
-        if (type.startsWith(".")) {
+        if (type.startsWith('.')) {
           return fileName.endsWith(type.toLowerCase());
         }
         return fileType === type;
@@ -146,26 +146,26 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
     // Reset input value to allow selecting the same file again if needed
     if (inputRef.current) {
-      inputRef.current.value = "";
+      inputRef.current.value = '';
     }
   };
 
   const getFileIcon = (fileName: string) => {
-    const ext = fileName.split(".").pop()?.toLowerCase();
-    if (ext === "pdf") return <FileText className="w-8 h-8 text-red-500" />;
-    if (["doc", "docx"].includes(ext || ""))
+    const ext = fileName.split('.').pop()?.toLowerCase();
+    if (ext === 'pdf') return <FileText className="w-8 h-8 text-red-500" />;
+    if (['doc', 'docx'].includes(ext || ''))
       return <FileText className="w-8 h-8 text-blue-600" />;
-    if (["png", "jpg", "jpeg", "gif", "webp"].includes(ext || ""))
+    if (['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext || ''))
       return <FileImage className="w-8 h-8 text-purple-500" />;
     return <FileIcon className="w-8 h-8 text-slate-400" />;
   };
 
   const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return "0 Bytes";
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(0)) + " " + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(0)) + ' ' + sizes[i];
   };
 
   return (
@@ -176,8 +176,8 @@ const FileUpload: React.FC<FileUploadProps> = ({
         className={`relative w-full h-32 border-2 border-dashed rounded-xl transition-all duration-200 ease-in-out flex flex-col items-center justify-center text-center
         ${
           dragActive
-            ? "border-[#707FDD] bg-[#707FDD]/5"
-            : "border-slate-300 hover:border-[#707FDD]/50 hover:bg-slate-50"
+            ? 'border-[#707FDD] bg-[#707FDD]/5'
+            : 'border-slate-300 hover:border-[#707FDD]/50 hover:bg-slate-50'
         }
         `}
         onDragEnter={handleDrag}
@@ -198,11 +198,11 @@ const FileUpload: React.FC<FileUploadProps> = ({
           <Typography variant="p" className="text-sm">
             <span className="text-[#707FDD] font-semibold underline underline-offset-2 cursor-pointer">
               {label}
-            </span>{" "}
+            </span>{' '}
             <span className="text-slate-500">{description}</span>
           </Typography>
           <Typography variant="span" className="text-xs text-slate-400">
-            {accept === "*" ? "All files" : accept.replace(/,/g, ", ")} only max{" "}
+            {accept === '*' ? 'All files' : accept.replace(/,/g, ', ')} only max{' '}
             {maxSize} MB each
           </Typography>
         </div>

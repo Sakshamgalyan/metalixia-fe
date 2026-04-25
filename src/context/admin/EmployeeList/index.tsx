@@ -1,8 +1,8 @@
-"use client"
-import React, { createContext, useReducer, useCallback } from "react";
-import type { Dispatch, ReactNode } from "react";
-import { EmployeeListState, EmployeeListAction } from "./type";
-import reducer, { initialState } from "./reducer";
+'use client';
+import React, { createContext, useReducer, useCallback } from 'react';
+import type { Dispatch, ReactNode } from 'react';
+import { EmployeeListState, EmployeeListAction } from './type';
+import reducer, { initialState } from './reducer';
 
 type StateContext = {
   state: EmployeeListState;
@@ -16,9 +16,9 @@ const EmployeeListStateContext = createContext<StateContext | undefined>(
   undefined,
 );
 
-const EmployeeListDispatchContext = createContext<
-  DispatchContext | undefined
->(undefined);
+const EmployeeListDispatchContext = createContext<DispatchContext | undefined>(
+  undefined,
+);
 
 const EmployeeListContextProvider: React.FC<{ children: ReactNode }> = ({
   children,

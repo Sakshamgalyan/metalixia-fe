@@ -1,24 +1,24 @@
-"use client";
+'use client';
 
-import Button from "@/components/UI/Button";
-import Card from "@/components/UI/Card";
-import Dropdown from "@/components/UI/DropDown";
-import FileUpload from "@/components/UI/FileUpload";
-import Input from "@/components/UI/Input";
-import Table from "@/components/UI/Table";
-import Typography from "@/components/UI/Typography";
-import ApiClient from "@/lib/apiClient";
-import { Calendar, FileText, UploadCloud, User } from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { columns, months } from "./Constant";
+import Button from '@/components/UI/Button';
+import Card from '@/components/UI/Card';
+import Dropdown from '@/components/UI/DropDown';
+import FileUpload from '@/components/UI/FileUpload';
+import Input from '@/components/UI/Input';
+import Table from '@/components/UI/Table';
+import Typography from '@/components/UI/Typography';
+import ApiClient from '@/lib/apiClient';
+import { Calendar, FileText, UploadCloud, User } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { columns, months } from './Constant';
 
 const PaySlip = () => {
   const [employees, setEmployees] = useState<
     { label: string; value: string }[]
   >([]);
-  const [selectedEmployee, setSelectedEmployee] = useState<string>("");
-  const [month, setMonth] = useState<string>("");
+  const [selectedEmployee, setSelectedEmployee] = useState<string>('');
+  const [month, setMonth] = useState<string>('');
   const [year, setYear] = useState<string>(new Date().getFullYear().toString());
   const [files, setFiles] = useState<File[]>([]);
   const [payslips, setPayslips] = useState<any[]>([]);
@@ -27,7 +27,7 @@ const PaySlip = () => {
 
   const fetchEmployees = async () => {
     try {
-      const response = await ApiClient.get<any>("/employee/get-employees");
+      const response = await ApiClient.get<any>('/employee/get-employees');
       if (response.data) {
         setEmployees(
           response.data.map((emp: any) => ({
@@ -37,21 +37,21 @@ const PaySlip = () => {
         );
       }
     } catch (error) {
-      console.error("Failed to fetch employees", error);
-      toast.error("Failed to fetch employees");
+      console.error('Failed to fetch employees', error);
+      toast.error('Failed to fetch employees');
     }
   };
 
   const fetchPayslips = async () => {
     setLoading(true);
     try {
-      const response = await ApiClient.get<any>("/payslip/get-all-payslips");
+      const response = await ApiClient.get<any>('/payslip/get-all-payslips');
       if (response.data) {
         setPayslips(response.data);
       }
     } catch (error) {
-      console.error("Failed to fetch payslips", error);
-      toast.error("Failed to fetch payslips");
+      console.error('Failed to fetch payslips', error);
+      toast.error('Failed to fetch payslips');
     } finally {
       setLoading(false);
     }
@@ -64,29 +64,29 @@ const PaySlip = () => {
 
   const handleUpload = async () => {
     if (!selectedEmployee || !month || !year || files.length === 0) {
-      toast.error("Please fill all fields");
+      toast.error('Please fill all fields');
       return;
     }
 
     const formData = new FormData();
-    formData.append("employeeId", selectedEmployee);
-    formData.append("month", month);
-    formData.append("year", year);
-    formData.append("file", files[0]);
+    formData.append('employeeId', selectedEmployee);
+    formData.append('month', month);
+    formData.append('year', year);
+    formData.append('file', files[0]);
 
     setUploadLoading(true);
     try {
-      await ApiClient.post("/payslip/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      await ApiClient.post('/payslip/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
-      toast.success("Payslip uploaded successfully");
+      toast.success('Payslip uploaded successfully');
       setFiles([]);
-      setSelectedEmployee("");
-      setMonth("");
+      setSelectedEmployee('');
+      setMonth('');
       fetchPayslips();
     } catch (error: any) {
-      console.error("Failed to upload payslip", error);
-      toast.error(error.response?.data?.message || "Failed to upload payslip");
+      console.error('Failed to upload payslip', error);
+      toast.error(error.response?.data?.message || 'Failed to upload payslip');
     } finally {
       setUploadLoading(false);
     }
@@ -95,31 +95,31 @@ const PaySlip = () => {
   const handleDownload = async (id: string, fileName: string) => {
     try {
       const response = await ApiClient.get(`/payslip/download/${id}`, {
-        responseType: "blob",
+        responseType: 'blob',
       });
       const url = window.URL.createObjectURL(new Blob([response as any]));
-      const link = document.createElement("a");
+      const link = document.createElement('a');
       link.href = url;
-      link.setAttribute("download", fileName);
+      link.setAttribute('download', fileName);
       document.body.appendChild(link);
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Failed to download payslip", error);
-      toast.error("Failed to download payslip");
+      console.error('Failed to download payslip', error);
+      toast.error('Failed to download payslip');
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this payslip?")) return;
+    if (!confirm('Are you sure you want to delete this payslip?')) return;
     try {
       await ApiClient.delete(`/payslip/${id}`);
-      toast.success("Payslip deleted successfully");
+      toast.success('Payslip deleted successfully');
       fetchPayslips();
     } catch (error) {
-      console.error("Failed to delete payslip", error);
-      toast.error("Failed to delete payslip");
+      console.error('Failed to delete payslip', error);
+      toast.error('Failed to delete payslip');
     }
   };
 

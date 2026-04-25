@@ -5,7 +5,7 @@ export interface EmployeeListPayload {
   post?: string[];
 }
 
-import { PaginatedResponse } from "@/types/common";
+import { PaginatedResponse } from '@/types/common';
 
 export interface EmployeeData {
   id: string;

@@ -1,7 +1,9 @@
-import { Dispatch } from "react";
-import ApiClient from "@/lib/apiClient";
-import { toast } from "sonner";
-import { EmailAction, EmailTemplateItem } from "./types";
+import { Dispatch } from 'react';
+import ApiClient from '@/lib/apiClient';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/error';
+import { EmailAction, EmailTemplateItem } from './types';
+
 import {
   sendEmailLoading,
   sendEmailSuccess,
@@ -9,7 +11,7 @@ import {
   fetchEmailHistorySuccess,
   fetchTemplatesLoading,
   fetchTemplatesSuccess,
-} from "./actions";
+} from './actions';
 
 export const sendEmailApi = async (
   dispatch: Dispatch<EmailAction>,
@@ -17,14 +19,14 @@ export const sendEmailApi = async (
 ) => {
   dispatch(sendEmailLoading(true));
   try {
-    await ApiClient.post("/email/send", data, {
-      headers: { "Content-Type": "multipart/form-data" },
+    await ApiClient.post('/email/send', data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
     });
     dispatch(sendEmailSuccess());
-    toast.success("Email sent successfully");
+    toast.success('Email sent successfully');
     return true;
-  } catch (error: any) {
-    toast.error(error.response?.data?.message || "Failed to send email");
+  } catch (error: unknown) {
+    toast.error(getErrorMessage(error));
     dispatch(sendEmailLoading(false));
     return false;
   }
@@ -38,12 +40,12 @@ export const getEmailHistoryApi = async (
 ) => {
   dispatch(fetchEmailHistoryLoading(true));
   try {
-    const response = await ApiClient.get("/email/history", {
+    const response = await ApiClient.get('/email/history', {
       params: { employeeId, page, limit },
     });
-    dispatch(fetchEmailHistorySuccess(response)); // Removed .data since ApiClient response format
-  } catch (error: any) {
-    console.error("Failed to fetch email history", error);
+    dispatch(fetchEmailHistorySuccess(response as any));
+  } catch (error: unknown) {
+    console.error('Failed to fetch email history', getErrorMessage(error));
     dispatch(fetchEmailHistoryLoading(false));
   }
 };
@@ -51,10 +53,10 @@ export const getEmailHistoryApi = async (
 export const getTemplatesApi = async (dispatch: Dispatch<EmailAction>) => {
   dispatch(fetchTemplatesLoading(true));
   try {
-    const response = await ApiClient.get("/email/templates");
+    const response = await ApiClient.get('/email/templates');
     dispatch(fetchTemplatesSuccess(response as unknown as EmailTemplateItem[]));
-  } catch (error: any) {
-    console.error("Failed to fetch templates", error);
+  } catch (error: unknown) {
+    console.error('Failed to fetch templates', getErrorMessage(error));
     dispatch(fetchTemplatesLoading(false));
   }
 };

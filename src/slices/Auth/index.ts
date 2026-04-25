@@ -1,9 +1,9 @@
-import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { User, initialState } from "@/slices/Auth/type";
-import { logoutApi, profileApi } from "@/ApiClient/Auth/auth";
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { User, initialState } from '@/slices/Auth/type';
+import { logoutApi, profileApi } from '@/ApiClient/Auth/auth';
 
 export const getProfile = createAsyncThunk(
-  "auth/getProfile",
+  'auth/getProfile',
   async (_, { rejectWithValue }) => {
     try {
       const response = await profileApi();
@@ -11,38 +11,34 @@ export const getProfile = createAsyncThunk(
     } catch (error: any) {
       const status = error?.response?.status;
       if (status && status !== 200) {
-        if (typeof window !== "undefined") {
-          window.location.href = "/sign-in";
+        if (typeof window !== 'undefined') {
+          window.location.href = '/sign-in';
         }
       }
-      return rejectWithValue(error?.message || "Failed to fetch profile");
+      return rejectWithValue(error?.message || 'Failed to fetch profile');
     }
   },
 );
 
 export const logout = createAsyncThunk(
-  "auth/logout",
+  'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
       document.cookie =
-        "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
       document.cookie =
-        "refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        'refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
 
-      document.cookie =
-        "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.galyan.in";
-      document.cookie =
-        "refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.galyan.in";
       await logoutApi();
       return null;
     } catch (error: any) {
-      return rejectWithValue(error?.message || "Logout failed");
+      return rejectWithValue(error?.message || 'Logout failed');
     }
   },
 );
 
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<User | null>) => {

@@ -1,21 +1,21 @@
-import { useEffect, useState } from "react";
-import Modal from "@/components/UI/Modal";
-import Button from "@/components/UI/Button";
-import Input from "@/components/UI/Input";
-import { AllPosts, AllRoles } from "@/lib/constants";
-import Dropdown from "@/components/UI/DropDown";
-import { toast } from "sonner";
+import { useEffect, useState } from 'react';
+import Modal from '@/components/UI/Modal';
+import Button from '@/components/UI/Button';
+import Input from '@/components/UI/Input';
+import { AllPosts, AllRoles } from '@/lib/constants';
+import Dropdown from '@/components/UI/DropDown';
+import { toast } from 'sonner';
 import {
   addEmployee,
   getAllEmployees,
   updateEmployee,
-} from "@/ApiClient/Admin/admin";
+} from '@/ApiClient/Admin/admin';
 import {
   useEmployeeListDispatchContext,
   useEmployeeListStateContext,
-} from "@/context/admin/EmployeeList/hooks";
-import { setFilterData } from "@/context/admin/EmployeeList/action";
-import { limit } from "./Constants";
+} from '@/context/admin/EmployeeList/hooks';
+import { setFilterData } from '@/context/admin/EmployeeList/action';
+import { limit } from './Constants';
 
 interface EmployeeModalProps {
   isOpen: boolean;
@@ -25,13 +25,13 @@ interface EmployeeModalProps {
 
 const EmployeeModal = ({ isOpen, onClose, employee }: EmployeeModalProps) => {
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    mobileNo: "",
-    role: "",
-    post: "",
-    password: "",
-    confirmPassword: "",
+    name: '',
+    email: '',
+    mobileNo: '',
+    role: '',
+    post: '',
+    password: '',
+    confirmPassword: '',
   });
 
   const dispatch = useEmployeeListDispatchContext();
@@ -41,23 +41,23 @@ const EmployeeModal = ({ isOpen, onClose, employee }: EmployeeModalProps) => {
     if (isOpen) {
       if (employee) {
         setFormData({
-          name: employee.name || "",
-          email: employee.email || "",
-          mobileNo: employee.mobileNo || "",
-          role: employee.role || "",
-          post: employee.post || "",
-          password: "",
-          confirmPassword: "",
+          name: employee.name || '',
+          email: employee.email || '',
+          mobileNo: employee.mobileNo || '',
+          role: employee.role || '',
+          post: employee.post || '',
+          password: '',
+          confirmPassword: '',
         });
       } else {
         setFormData({
-          name: "",
-          email: "",
-          mobileNo: "",
-          role: "",
-          post: "",
-          password: "",
-          confirmPassword: "",
+          name: '',
+          email: '',
+          mobileNo: '',
+          role: '',
+          post: '',
+          password: '',
+          confirmPassword: '',
         });
       }
     }
@@ -96,17 +96,17 @@ const EmployeeModal = ({ isOpen, onClose, employee }: EmployeeModalProps) => {
 
   const handleSubmit = () => {
     if (!formData.name || !formData.email || !formData.role) {
-      toast.error("Please fill in all required fields (Name, Email, Role)");
+      toast.error('Please fill in all required fields (Name, Email, Role)');
       return;
     }
 
     if (!employee && (!formData.password || !formData.confirmPassword)) {
-      toast.error("Password is required for new employees");
+      toast.error('Password is required for new employees');
       return;
     }
 
     if (!employee && formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match");
+      toast.error('Passwords do not match');
       return;
     }
     const data = {
@@ -123,7 +123,7 @@ const EmployeeModal = ({ isOpen, onClose, employee }: EmployeeModalProps) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={isEditMode ? "Edit Employee" : "Add New Employee"}
+      title={isEditMode ? 'Edit Employee' : 'Add New Employee'}
       width="lg"
       footer={
         <>
@@ -131,7 +131,7 @@ const EmployeeModal = ({ isOpen, onClose, employee }: EmployeeModalProps) => {
             Cancel
           </Button>
           <Button variant="primary" onClick={handleSubmit}>
-            {isEditMode ? "Update Employee" : "Create Employee"}
+            {isEditMode ? 'Update Employee' : 'Create Employee'}
           </Button>
         </>
       }
@@ -174,7 +174,7 @@ const EmployeeModal = ({ isOpen, onClose, employee }: EmployeeModalProps) => {
                 value: key,
               }))}
               value={formData.role ? [formData.role] : []}
-              onChange={(val) => handleDropdownChange("role", val)}
+              onChange={(val) => handleDropdownChange('role', val)}
             />
           </div>
         </div>
@@ -188,7 +188,7 @@ const EmployeeModal = ({ isOpen, onClose, employee }: EmployeeModalProps) => {
               value: p,
             }))}
             value={formData.post ? [formData.post] : []}
-            onChange={(val) => handleDropdownChange("post", val)}
+            onChange={(val) => handleDropdownChange('post', val)}
           />
         </div>
 
