@@ -1,7 +1,14 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Search, Plus, Archive, Trash2 } from 'lucide-react';
+import {
+  Search,
+  Plus,
+  Archive,
+  Trash2,
+  Pencil,
+  CheckCircle,
+} from 'lucide-react';
 import Typography from '@/components/UI/Typography';
 import Button from '@/components/UI/Button';
 import Input from '@/components/UI/Input';
@@ -18,12 +25,12 @@ import {
 import { useAppSelector } from '@/store/hooks';
 import { setPage, setModal } from '@/context/Summary/RawMaterial/actions';
 import { RawMaterialItem } from '@/context/Summary/RawMaterial/type';
-import AddModal from './AddModal';
-import ExportModal from './ExportModal';
-import DeleteModal from '@/components/Common/DeleteModal';
-import { RawStatsCards } from './RawStatsCards';
+import RawMaterialModal from './RawMaterialModal';
 import SummaryTableWrapper from '@/components/Common/SummaryTableWrapper';
 import debounce from 'lodash/debounce';
+import DeleteModal from '@/components/Common/DeleteModal';
+import { RawStatsCards } from './RawStatsCards';
+import ExportModal from './ExportModal';
 
 const RawMaterialCompt = () => {
   const [searchInput, setSearchInput] = useState('');
@@ -73,8 +80,8 @@ const RawMaterialCompt = () => {
   }, [debouncedSearch]);
 
   const handleSearchChange = (value: string) => {
-    setSearchInput(value); // Update the input field immediately
-    debouncedSearch(value, page); // Debounce the actual query and context dispatch
+    setSearchInput(value);
+    debouncedSearch(value, page);
   };
 
   const { user } = useAppSelector((state) => state.auth);
@@ -93,11 +100,19 @@ const RawMaterialCompt = () => {
   };
 
   const handleOpenAdd = () => {
-    dispatch(setModal({ isOpen: true, type: 'add' }));
+    dispatch(setModal({ isOpen: true, type: 'add', selectedItem: null }));
+  };
+
+  const handleOpenEdit = (item: RawMaterialItem) => {
+    dispatch(setModal({ isOpen: true, type: 'edit', selectedItem: item }));
+  };
+
+  const handleOpenReceive = (item: RawMaterialItem) => {
+    dispatch(setModal({ isOpen: true, type: 'receive', selectedItem: item }));
   };
 
   const handleOpenExport = () => {
-    dispatch(setModal({ isOpen: true, type: 'export' }));
+    dispatch(setModal({ isOpen: true, type: 'export', selectedItem: null }));
   };
 
   const columns: TableColumn<RawMaterialItem>[] = [
@@ -150,24 +165,54 @@ const RawMaterialCompt = () => {
       ),
     },
     {
-      header: 'Received Time',
-      accessor: 'receivedAt',
-      render: (row) => new Date(row.receivedAt).toLocaleString(),
-    },
-    {
       header: 'Expected On',
       accessor: 'expectedOn',
       render: (row) => new Date(row.expectedOn).toLocaleDateString(),
     },
     {
+      header: 'Status',
+      accessor: 'isReceived',
+      render: (row) =>
+        row.isReceived ? (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+            <CheckCircle size={12} />
+            Received
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
+            Pending
+          </span>
+        ),
+    },
+    {
       header: 'Received By',
       accessor: 'receivedBy',
+      fixedColumn: 'right',
       render: (row) => (
-        <div className="flex flex-col text-left">
-          <span className="font-medium text-slate-900">{row.receivedBy}</span>
-          <span className="text-[10px] text-slate-400 font-mono">
-            ID: {row.receivedById.match(/\((.*?)\)/)?.[1] || row.receivedById}
-          </span>
+        <div className="flex items-center gap-2">
+          {row.isReceived && row.receivedBy ? (
+            <div className="flex flex-col text-left">
+              <span className="font-medium text-slate-900">
+                {row.receivedBy}
+              </span>
+              <span className="text-[10px] text-slate-400 font-mono">
+                ID:{' '}
+                {row.receivedById.match(/\((.*?)\)/)?.[1] || row.receivedById}
+              </span>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center">
+              <Button
+                bgColor="#16a34a"
+                textColor="#ffffff"
+                size="sm"
+                leftIcon={<CheckCircle size={14} />}
+                onClick={() => handleOpenReceive(row)}
+              >
+                Receive
+              </Button>
+            </div>
+          )}
         </div>
       ),
     },
@@ -178,6 +223,13 @@ const RawMaterialCompt = () => {
             fixedColumn: 'right',
             render: (row: RawMaterialItem) => (
               <div className="flex items-center gap-2 justify-center">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  leftIcon={<Pencil size={16} className="text-blue-600" />}
+                  onClick={() => handleOpenEdit(row)}
+                  title="Edit"
+                />
                 <Button
                   variant="outline"
                   size="sm"
@@ -269,7 +321,8 @@ const RawMaterialCompt = () => {
         />
       </div>
 
-      <AddModal onSuccess={() => fetchData(page, searchQuery)} />
+      {/* Unified Modal (handles add, edit, receive) */}
+      <RawMaterialModal />
       <ExportModal />
 
       <DeleteModal

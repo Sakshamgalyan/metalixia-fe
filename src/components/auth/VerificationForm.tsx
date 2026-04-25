@@ -9,7 +9,7 @@ import { verifyOtpApi, sendOtpApi } from '@/ApiClient/Auth/auth';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 import { useAuthContext } from './AuthContext';
 
 const VerificationForm = () => {

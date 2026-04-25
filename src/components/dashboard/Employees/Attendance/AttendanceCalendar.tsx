@@ -19,7 +19,7 @@ import Button from '@/components/UI/Button';
 import Card from '@/components/UI/Card';
 import ApiClient from '@/lib/apiClient';
 import LeaveModal from './LeaveModal';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 import { useAppSelector } from '@/store/hooks';
 
 interface AttendanceRecord {

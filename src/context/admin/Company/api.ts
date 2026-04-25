@@ -1,12 +1,13 @@
 import { Dispatch } from 'react';
 import ApiClient from '@/lib/apiClient';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 import { CompanyAction, CompanyListResponse } from './type';
 import {
   fetchCompanyListLoading,
   fetchCompanyListSuccess,
   actionLoading,
   actionSuccess,
+  toggleCompanyStatus,
 } from './actions';
 
 export const getCompaniesApi = async (
@@ -86,12 +87,24 @@ export const deleteCompanyApi = async (
     dispatch(actionSuccess());
     toast.success('Company deleted successfully');
     return response;
+  } finally {
+    dispatch(actionLoading(false));
+  }
+};
+
+export const toggleCompanyStatusApi = async (
+  dispatch: Dispatch<CompanyAction>,
+  id: string,
+) => {
+  try {
+    const response = await ApiClient.patch<any>(`/company/${id}/toggle-status`);
+    dispatch(toggleCompanyStatus(id));
+    toast.success(response.message || 'Status updated successfully');
+    return response;
   } catch (error: any) {
-    toast.error('Failed to delete company', {
+    toast.error('Failed to update status', {
       description: error?.response?.data?.message || 'Something went wrong',
     });
     throw error;
-  } finally {
-    dispatch(actionLoading(false));
   }
 };

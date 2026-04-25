@@ -10,7 +10,7 @@ import {
   searchEmployeesApi,
   getEmployeeProfileApi,
 } from '@/ApiClient/Profile/profile';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 import EmployeeProfileModal from './EmployeeProfileModal';
 
 interface Employee {

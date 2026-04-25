@@ -1,6 +1,6 @@
 import { Dispatch } from 'react';
 import ApiClient from '@/lib/apiClient';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 import { getErrorMessage } from '@/utils/error';
 import {
   QualityAction,

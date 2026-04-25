@@ -13,10 +13,15 @@ import {
   usePartStateContext,
   usePartDispatchContext,
 } from '@/context/admin/PartList/hooks';
-import { getPartsApi, deletePartApi } from '@/context/admin/PartList/api';
+import {
+  getPartsApi,
+  deletePartApi,
+  togglePartStatusApi,
+} from '@/context/admin/PartList/api';
 import { setPage, setModal } from '@/context/admin/PartList/actions';
 import { PartItem } from '@/context/admin/PartList/type';
-import { toast } from 'sonner';
+import Toggle from '@/components/UI/Toggle';
+import { toast } from '@/components/UI/Toaster';
 import SummaryTableWrapper from '@/components/Common/SummaryTableWrapper';
 
 const PartListCompt = () => {
@@ -85,6 +90,14 @@ const PartListCompt = () => {
     }
   };
 
+  const handleToggleStatus = async (item: PartItem) => {
+    try {
+      await togglePartStatusApi(dispatch, item._id);
+    } catch (error) {
+      // Error handled in API
+    }
+  };
+
   const handlePageChange = (newPage: number) => {
     dispatch(setPage(newPage));
     fetchData(newPage, searchQuery);
@@ -116,6 +129,19 @@ const PartListCompt = () => {
       accessor: 'createdAt',
       className: 'text-slate-600',
       render: (item) => new Date(item.createdAt).toLocaleDateString(),
+    },
+    {
+      header: 'Active',
+      accessor: 'isActive',
+      render: (item: PartItem) => (
+        <div className="flex justify-center">
+          <Toggle
+            checked={item.isActive}
+            onChange={() => handleToggleStatus(item)}
+            size="sm"
+          />
+        </div>
+      ),
     },
     {
       header: 'Actions',

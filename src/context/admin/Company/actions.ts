@@ -30,3 +30,8 @@ export const actionLoading = (loading: boolean): CompanyAction => ({
 export const actionSuccess = (): CompanyAction => ({
   type: 'ACTION_SUCCESS',
 });
+
+export const toggleCompanyStatus = (id: string): CompanyAction => ({
+  type: 'TOGGLE_COMPANY_STATUS',
+  payload: id,
+});

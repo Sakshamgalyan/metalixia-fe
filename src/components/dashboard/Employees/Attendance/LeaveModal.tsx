@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 import Modal from '@/components/UI/Modal';
 import Input from '@/components/UI/Input';
 import TextArea from '@/components/UI/TextArea';

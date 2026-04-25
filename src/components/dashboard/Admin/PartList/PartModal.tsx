@@ -16,7 +16,7 @@ import {
 } from '@/context/admin/PartList/api';
 import Dropdown from '@/components/UI/DropDown';
 
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 
 interface PartModalProps {
   onSuccess: () => void;

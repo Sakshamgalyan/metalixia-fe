@@ -32,7 +32,7 @@ import {
 import { setInventoryPage } from '@/context/Summary/Inventory/actions';
 import { InventoryItem } from '@/context/Summary/Inventory/type';
 import ApiClient from '@/lib/apiClient';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 
 interface DispatchStats {
   readyForDispatch: number;

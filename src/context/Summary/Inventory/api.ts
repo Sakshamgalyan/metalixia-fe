@@ -1,6 +1,6 @@
 import { Dispatch } from 'react';
 import ApiClient from '@/lib/apiClient';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 import { getErrorMessage } from '@/utils/error';
 import { InventoryAction, InventoryListResponse, InventoryStats } from './type';
 import {
@@ -70,5 +70,50 @@ export const updateMaterialStatusApi = async (
       description: getErrorMessage(error),
     });
     throw error;
+  }
+};
+
+export const setMinStockApi = async (id: string, minStock: number) => {
+  try {
+    await ApiClient.patch(`/material/inventory/${id}/min-stock`, { minStock });
+    toast.success('Minimum stock level updated');
+  } catch (error: unknown) {
+    toast.error('Failed to update min stock', {
+      description: getErrorMessage(error),
+    });
+    throw error;
+  }
+};
+
+export const consumeMaterialApi = async (
+  id: string,
+  quantity: number,
+  notes: string,
+) => {
+  try {
+    await ApiClient.patch(`/material/inventory/${id}/consume`, {
+      quantity,
+      notes,
+    });
+    toast.success('Material consumed successfully');
+  } catch (error: unknown) {
+    toast.error('Failed to consume material', {
+      description: getErrorMessage(error),
+    });
+    throw error;
+  }
+};
+
+export const getInventoryUniqueFiltersApi = async () => {
+  try {
+    const response = await ApiClient.get<{
+      materialNames: string[];
+      companyNames: string[];
+      statuses: string[];
+    }>('/material/inventory/unique-filters');
+    return response;
+  } catch (error: unknown) {
+    console.error('Failed to fetch unique filters', error);
+    return { materialNames: [], companyNames: [], statuses: [] };
   }
 };

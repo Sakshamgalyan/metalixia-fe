@@ -1,12 +1,16 @@
 import { Dispatch } from 'react';
 import ApiClient from '@/lib/apiClient';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 import { RawMaterialAction, RawMaterialListResponse } from './type';
 import {
   fetchRawMaterialListLoading,
   fetchRawMaterialListSuccess,
   createRawMaterialLoading,
   createRawMaterialSuccess,
+  updateRawMaterialLoading,
+  updateRawMaterialSuccess,
+  receiveRawMaterialLoading,
+  receiveRawMaterialSuccess,
   fetchRawMaterialStatsLoading,
   fetchRawMaterialStatsSuccess,
 } from './actions';
@@ -39,7 +43,7 @@ export const getRawMaterialsApi = async (
 ) => {
   dispatch(fetchRawMaterialListLoading(true));
   try {
-    const params: any = { page, limit };
+    const params: Record<string, string | number> = { page, limit };
     if (search) params.search = search;
 
     const response = await ApiClient.get<RawMaterialListResponse>(
@@ -62,7 +66,7 @@ export const getRawMaterialsApi = async (
 
 export const createRawMaterialApi = async (
   dispatch: Dispatch<RawMaterialAction>,
-  data: any,
+  data: Record<string, unknown>,
 ) => {
   dispatch(createRawMaterialLoading(true));
   try {
@@ -83,6 +87,54 @@ export const createRawMaterialApi = async (
   }
 };
 
+export const updateRawMaterialApi = async (
+  dispatch: Dispatch<RawMaterialAction>,
+  id: string,
+  data: Record<string, unknown>,
+) => {
+  dispatch(updateRawMaterialLoading(true));
+  try {
+    const response = await ApiClient.patch<RawMaterialItem>(
+      `/material/raw/${id}`,
+      data,
+    );
+    dispatch(updateRawMaterialSuccess(response));
+    toast.success('Raw material updated successfully');
+    return response;
+  } catch (error: unknown) {
+    toast.error('Failed to update raw material', {
+      description: getErrorMessage(error),
+    });
+    throw error;
+  } finally {
+    dispatch(updateRawMaterialLoading(false));
+  }
+};
+
+export const receiveRawMaterialApi = async (
+  dispatch: Dispatch<RawMaterialAction>,
+  id: string,
+  data: { receivedBy: string; receivedById: string },
+) => {
+  dispatch(receiveRawMaterialLoading(true));
+  try {
+    const response = await ApiClient.patch<RawMaterialItem>(
+      `/material/raw/${id}/receive`,
+      data,
+    );
+    dispatch(receiveRawMaterialSuccess(response));
+    toast.success('Raw material marked as received');
+    return response;
+  } catch (error: unknown) {
+    toast.error('Failed to mark as received', {
+      description: getErrorMessage(error),
+    });
+    throw error;
+  } finally {
+    dispatch(receiveRawMaterialLoading(false));
+  }
+};
+
 export const deleteRawMaterialApi = async (id: string) => {
   try {
     const response = await ApiClient.delete(`/material/raw/${id}`);
@@ -98,12 +150,27 @@ export const deleteRawMaterialApi = async (id: string) => {
 
 export const getEmployeesListApi = async () => {
   try {
-    const response = await ApiClient.get<any[]>('/admin/get-all-employee');
+    const response = await ApiClient.get<{ value: string; label: string }[]>(
+      '/admin/get-all-employee',
+    );
     return response;
   } catch (error: unknown) {
     toast.error('Failed to fetch employees list', {
       description: getErrorMessage(error),
     });
     return [];
+  }
+};
+
+export const getRawUniqueFiltersApi = async () => {
+  try {
+    const response = await ApiClient.get<{
+      materialNames: string[];
+      sources: string[];
+    }>('/material/raw/unique-filters');
+    return response;
+  } catch (error: unknown) {
+    console.error('Failed to fetch unique filters', error);
+    return { materialNames: [], sources: [] };
   }
 };

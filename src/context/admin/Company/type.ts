@@ -5,6 +5,7 @@ export interface CompanyItem {
   phone?: string;
   address?: string;
   contactPerson?: string;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -30,4 +31,5 @@ export type CompanyAction =
   | { type: 'SET_PAGE'; payload: number }
   | { type: 'SET_MODAL'; payload: CompanyState['modal'] }
   | { type: 'ACTION_LOADING'; payload: boolean }
-  | { type: 'ACTION_SUCCESS' };
+  | { type: 'ACTION_SUCCESS' }
+  | { type: 'TOGGLE_COMPANY_STATUS'; payload: string };
