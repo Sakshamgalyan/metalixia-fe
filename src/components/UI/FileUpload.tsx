@@ -9,7 +9,7 @@ import {
   FileImage,
 } from 'lucide-react';
 import Typography from '@/components/UI/Typography';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 
 interface FileUploadProps {
   label?: React.ReactNode;

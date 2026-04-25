@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Send, AlignLeft, FileText as FileIcon } from 'lucide-react';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 import Typography from '@/components/UI/Typography';
 import Input from '@/components/UI/Input';
 import Button from '@/components/UI/Button';

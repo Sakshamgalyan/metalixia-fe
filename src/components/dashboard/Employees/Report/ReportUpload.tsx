@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 import { Clock } from 'lucide-react';
 import Typography from '@/components/UI/Typography';
 import Input from '@/components/UI/Input';

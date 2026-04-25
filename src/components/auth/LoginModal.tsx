@@ -16,7 +16,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/store';
 import { setError, setUser } from '@/slices/Auth';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 import { useAuthContext } from './AuthContext';
 
 const LoginModal = () => {

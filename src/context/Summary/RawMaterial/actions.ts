@@ -7,6 +7,14 @@ import {
   CREATE_RAWMATERIAL_LOADING_ACTION,
   CREATE_RAWMATERIAL_SUCCESS,
   CREATE_RAWMATERIAL_SUCCESS_ACTION,
+  UPDATE_RAWMATERIAL_LOADING,
+  UPDATE_RAWMATERIAL_LOADING_ACTION,
+  UPDATE_RAWMATERIAL_SUCCESS,
+  UPDATE_RAWMATERIAL_SUCCESS_ACTION,
+  RECEIVE_RAWMATERIAL_LOADING,
+  RECEIVE_RAWMATERIAL_LOADING_ACTION,
+  RECEIVE_RAWMATERIAL_SUCCESS,
+  RECEIVE_RAWMATERIAL_SUCCESS_ACTION,
   SET_PAGE,
   SET_PAGE_ACTION,
   SET_MODAL,
@@ -18,6 +26,7 @@ import {
   FETCH_RAWMATERIAL_STATS_SUCCESS_ACTION,
   RawMaterialStats,
   RawMaterialItem,
+  ModalState,
 } from './type';
 
 export const fetchRawMaterialStatsLoading = (
@@ -62,15 +71,40 @@ export const createRawMaterialSuccess = (
   payload,
 });
 
+export const updateRawMaterialLoading = (
+  loading: boolean,
+): UPDATE_RAWMATERIAL_LOADING_ACTION => ({
+  type: UPDATE_RAWMATERIAL_LOADING,
+  payload: loading,
+});
+
+export const updateRawMaterialSuccess = (
+  payload: RawMaterialItem,
+): UPDATE_RAWMATERIAL_SUCCESS_ACTION => ({
+  type: UPDATE_RAWMATERIAL_SUCCESS,
+  payload,
+});
+
+export const receiveRawMaterialLoading = (
+  loading: boolean,
+): RECEIVE_RAWMATERIAL_LOADING_ACTION => ({
+  type: RECEIVE_RAWMATERIAL_LOADING,
+  payload: loading,
+});
+
+export const receiveRawMaterialSuccess = (
+  payload: RawMaterialItem,
+): RECEIVE_RAWMATERIAL_SUCCESS_ACTION => ({
+  type: RECEIVE_RAWMATERIAL_SUCCESS,
+  payload,
+});
+
 export const setPage = (page: number): SET_PAGE_ACTION => ({
   type: SET_PAGE,
   payload: page,
 });
 
-export const setModal = (modalState: {
-  isOpen: boolean;
-  type: 'add' | 'export' | null;
-}): SET_MODAL_ACTION => ({
+export const setModal = (modalState: ModalState): SET_MODAL_ACTION => ({
   type: SET_MODAL,
   payload: modalState,
 });

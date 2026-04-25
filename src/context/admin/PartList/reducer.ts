@@ -10,6 +10,7 @@ import {
   ACTION_SUCCESS,
   FETCH_COMPANIES_LIST_SUCCESS,
   FETCH_COMPANIES_LIST_LOADING,
+  TOGGLE_PART_STATUS,
 } from './type';
 
 export const initialState: PartState = {
@@ -47,6 +48,19 @@ const reducer: Reducer<PartState, PartAction> = (state, action) => {
       return { ...state, companiesListLoading: action.payload };
     case FETCH_COMPANIES_LIST_SUCCESS:
       return { ...state, companiesList: action.payload };
+    case TOGGLE_PART_STATUS:
+      if (!state.listData) return state;
+      return {
+        ...state,
+        listData: {
+          ...state.listData,
+          data: state.listData.data.map((part) =>
+            part._id === action.payload
+              ? { ...part, isActive: !part.isActive }
+              : part,
+          ),
+        },
+      };
     default:
       return state;
   }

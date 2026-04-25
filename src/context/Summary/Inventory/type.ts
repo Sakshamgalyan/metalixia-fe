@@ -36,37 +36,36 @@ export type InventoryAction =
   | FETCH_INVENTORY_STATS_SUCCESS_ACTION
   | SET_INVENTORY_PAGE_ACTION;
 
-// ── Data Types ────────────────────────────────────────────────
 export interface InventoryItem {
   _id: string;
-  name: string;
+  sourceType: 'company' | 'raw';
+  sourceId: string;
+  materialName: string;
   partName: string;
   partNumber: string;
-  type: 'company' | 'raw';
   companyName: string;
   quantity: number;
+  originalQuantity: number;
   unit: string;
-  location: string;
+  inventoryLocation: string;
+  minStock: number;
   status: string;
-  price?: number;
-  receivedOn: string | null;
+  receivedAt: string | null;
+  receivedBy: string;
+  receivedById: string;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface InventoryListResponse extends PaginatedResponse<InventoryItem> {}
-
-export interface InventoryDailyCount {
-  date: string;
-  company: number;
-  raw: number;
-}
 
 export interface InventoryStats {
   totalItems: number;
   totalCompany: number;
   totalRaw: number;
+  lowStockCount: number;
+  outOfStockCount: number;
   statusMap: Record<string, number>;
-  dailyCounts: InventoryDailyCount[];
 }
 
 export interface InventoryState {

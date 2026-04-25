@@ -9,7 +9,7 @@ import Button from '@/components/UI/Button';
 import { resetPasswordApi } from '@/ApiClient/Auth/auth';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 import { useAuthContext } from './AuthContext';
 
 const ResetPasswordForm = () => {

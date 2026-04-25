@@ -6,6 +6,10 @@ import {
   FETCH_RAWMATERIAL_LIST_SUCCESS,
   CREATE_RAWMATERIAL_LOADING,
   CREATE_RAWMATERIAL_SUCCESS,
+  UPDATE_RAWMATERIAL_LOADING,
+  UPDATE_RAWMATERIAL_SUCCESS,
+  RECEIVE_RAWMATERIAL_LOADING,
+  RECEIVE_RAWMATERIAL_SUCCESS,
   SET_PAGE,
   SET_MODAL,
   FETCH_RAWMATERIAL_STATS_LOADING,
@@ -18,10 +22,13 @@ export const initialState: RawMaterialState = {
   statsData: null,
   statsLoading: false,
   createLoading: false,
+  updateLoading: false,
+  receiveLoading: false,
   page: 1,
   modalState: {
     isOpen: false,
     type: null,
+    selectedItem: null,
   },
 };
 
@@ -56,6 +63,24 @@ const reducer: Reducer<RawMaterialState, RawMaterialAction> = (
         createLoading: action.payload,
       };
     case CREATE_RAWMATERIAL_SUCCESS:
+      return {
+        ...state,
+      };
+    case UPDATE_RAWMATERIAL_LOADING:
+      return {
+        ...state,
+        updateLoading: action.payload,
+      };
+    case UPDATE_RAWMATERIAL_SUCCESS:
+      return {
+        ...state,
+      };
+    case RECEIVE_RAWMATERIAL_LOADING:
+      return {
+        ...state,
+        receiveLoading: action.payload,
+      };
+    case RECEIVE_RAWMATERIAL_SUCCESS:
       return {
         ...state,
       };

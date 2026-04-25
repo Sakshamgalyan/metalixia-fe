@@ -4,7 +4,7 @@ import Button from '@/components/UI/Button';
 import Input from '@/components/UI/Input';
 import { AllPosts, AllRoles } from '@/lib/constants';
 import Dropdown from '@/components/UI/DropDown';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 import {
   addEmployee,
   getAllEmployees,

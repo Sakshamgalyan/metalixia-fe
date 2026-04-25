@@ -1,6 +1,6 @@
 import { Dispatch } from 'react';
 import ApiClient from '@/lib/apiClient';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 import { getErrorMessage } from '@/utils/error';
 import { PartAction, PartListResponse, CompanyItem } from './type';
 
@@ -11,6 +11,7 @@ import {
   actionSuccess,
   fetchCompaniesListLoading,
   fetchCompaniesListSuccess,
+  togglePartStatus,
 } from './actions';
 
 export const getPartsApi = async (
@@ -92,13 +93,27 @@ export const deletePartApi = async (
     dispatch(actionSuccess());
     toast.success('Part deleted successfully');
     return response;
+  } finally {
+    dispatch(actionLoading(false));
+  }
+};
+
+export const togglePartStatusApi = async (
+  dispatch: Dispatch<PartAction>,
+  partId: string,
+) => {
+  try {
+    const response = await ApiClient.patch<any>(
+      `/company/part/${partId}/toggle-status`,
+    );
+    dispatch(togglePartStatus(partId));
+    toast.success('Part status updated successfully');
+    return response;
   } catch (error: any) {
-    toast.error('Failed to delete part', {
+    toast.error('Failed to update status', {
       description: error?.response?.data?.message || 'Something went wrong',
     });
     throw error;
-  } finally {
-    dispatch(actionLoading(false));
   }
 };
 

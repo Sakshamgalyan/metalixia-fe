@@ -151,6 +151,7 @@ export interface CompanyMaterialItem {
   partId: string;
   quantity: number;
   unit: string;
+  isReceived: boolean;
   receivedBy: string;
   receivedById: string;
   inventoryLocation: string;

@@ -5,10 +5,11 @@ import {
   Search,
   Package,
   Factory,
-  Truck,
   AlertTriangle,
-  ArrowUpRight,
   Send,
+  Droplets,
+  Settings,
+  Archive,
 } from 'lucide-react';
 import Typography from '@/components/UI/Typography';
 import Button from '@/components/UI/Button';
@@ -16,7 +17,6 @@ import Input from '@/components/UI/Input';
 import Dropdown from '@/components/UI/DropDown';
 import Chips from '@/components/UI/Chips';
 import Card from '@/components/UI/Card';
-import Chart from '@/components/UI/Chart';
 import SummaryTableWrapper from '@/components/Common/SummaryTableWrapper';
 import { TableColumn } from '@/components/UI/Table';
 import debounce from 'lodash/debounce';
@@ -32,7 +32,9 @@ import {
 import { setInventoryPage } from '@/context/Summary/Inventory/actions';
 import { InventoryItem } from '@/context/Summary/Inventory/type';
 import ApiClient from '@/lib/apiClient';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
+import { MinStockModal, ConsumeModal } from './InventoryModals';
+import ExportModal from './ExportModal';
 
 const statusColors: Record<
   string,
@@ -49,7 +51,6 @@ const statusColors: Record<
 
 const statusLabels: Record<string, string> = {
   received: 'Received',
-  in_inventory: 'In Inventory',
   in_production: 'In Production',
   quality_check: 'Quality Check',
   ready_for_dispatch: 'Ready',
@@ -62,6 +63,18 @@ const InventoryCompt = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+
+  const [minStockModal, setMinStockModal] = useState<{
+    isOpen: boolean;
+    item: InventoryItem | null;
+  }>({ isOpen: false, item: null });
+
+  const [consumeModal, setConsumeModal] = useState<{
+    isOpen: boolean;
+    item: InventoryItem | null;
+  }>({ isOpen: false, item: null });
+
+  const [exportModalOpen, setExportModalOpen] = useState(false);
 
   const { listData, listLoading, statsData, statsLoading, page } =
     useInventoryStateContext();
@@ -108,34 +121,8 @@ const InventoryCompt = () => {
   };
 
   const handleSendToProduction = async (item: InventoryItem) => {
-    try {
-      // 1. Create a production order
-      await ApiClient.post('/production', {
-        companyMaterialId: item.type === 'company' ? item._id : undefined,
-        rawMaterialId: item.type === 'raw' ? item._id : undefined,
-        companyName: item.companyName,
-        partName: item.partName,
-        partNumber: item.partNumber,
-        quantity: item.quantity,
-        unit: item.unit,
-        priority: 'normal',
-        lineNumber: 1,
-      });
-
-      // 2. Update the material status to in_production
-      await updateMaterialStatusApi(item.type, item._id, 'in_production');
-
-      toast.success(
-        `Batch for ${item.partName} created and sent to production line 1`,
-      );
-
-      fetchData(page, searchQuery, typeFilter, statusFilter);
-      getInventoryStatsApi(dispatch);
-    } catch (error: any) {
-      toast.error('Failed to send to production', {
-        description: error?.response?.data?.message || 'Something went wrong',
-      });
-    }
+    // This will eventually open a dynamic batching modal as per user feedback
+    toast.info('Opening batching configuration...');
   };
 
   const formatDate = (date: string | null) => {
@@ -149,45 +136,64 @@ const InventoryCompt = () => {
 
   const columns: TableColumn<InventoryItem>[] = [
     {
-      header: 'Material',
-      accessor: 'name',
-      headerClassName: 'text-left',
-      className: 'text-left',
+      header: 'Material Details',
+      accessor: 'materialName',
       render: (row) => (
         <div className="flex flex-col">
-          <span className="font-semibold text-slate-900">{row.name}</span>
-          <span className="text-xs text-slate-500">{row.companyName}</span>
+          <span className="font-semibold text-slate-900">
+            {row.materialName}
+          </span>
+          <span className="text-xs text-slate-500">
+            {row.sourceType === 'company' ? row.companyName : 'In-house Supply'}
+          </span>
         </div>
       ),
     },
     {
       header: 'Type',
-      accessor: 'type',
+      accessor: 'sourceType',
       render: (row) => (
         <Chips
-          colorScheme={row.type === 'company' ? 'primary' : 'default'}
+          colorScheme={row.sourceType === 'company' ? 'primary' : 'default'}
           variant="soft"
-          label={row.type === 'company' ? 'Company' : 'Raw'}
+          label={row.sourceType === 'company' ? 'Client' : 'Raw'}
           size="sm"
         />
       ),
     },
     {
-      header: 'Quantity',
+      header: 'Stock Status',
       accessor: 'quantity',
-      render: (row) => (
-        <span className="font-medium text-slate-700">
-          {row.quantity} {row.unit}
-        </span>
-      ),
+      render: (row) => {
+        const isLow = row.quantity <= row.minStock && row.quantity > 0;
+        const isOut = row.quantity === 0;
+
+        return (
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+              <span
+                className={`font-bold ${isOut ? 'text-red-600' : isLow ? 'text-amber-600' : 'text-slate-700'}`}
+              >
+                {row.quantity} {row.unit}
+              </span>
+              {isLow && <AlertTriangle size={14} className="text-amber-500" />}
+            </div>
+            {row.minStock > 0 && (
+              <span className="text-[10px] text-slate-400">
+                Min: {row.minStock} {row.unit}
+              </span>
+            )}
+          </div>
+        );
+      },
     },
     {
       header: 'Location',
-      accessor: 'location',
+      accessor: 'inventoryLocation',
       className: 'text-slate-600',
     },
     {
-      header: 'Status',
+      header: 'Workflow Status',
       accessor: 'status',
       render: (row) => (
         <Chips
@@ -200,10 +206,10 @@ const InventoryCompt = () => {
     },
     {
       header: 'Received',
-      accessor: 'receivedOn',
+      accessor: 'receivedAt',
       render: (row) => (
         <span className="text-slate-600 text-sm">
-          {formatDate(row.receivedOn)}
+          {formatDate(row.receivedAt)}
         </span>
       ),
     },
@@ -211,172 +217,128 @@ const InventoryCompt = () => {
       header: 'Actions',
       accessor: '_id',
       fixedColumn: 'right',
-      render: (row) =>
-        row.status === 'received' || row.status === 'in_inventory' ? (
+      render: (row) => (
+        <div className="flex items-center gap-2">
+          {row.sourceType === 'raw' && row.quantity > 0 && (
+            <Button
+              size="sm"
+              variant="outline"
+              leftIcon={<Droplets size={14} className="text-blue-500" />}
+              onClick={() => setConsumeModal({ isOpen: true, item: row })}
+              title="Consume"
+            />
+          )}
+          {row.sourceType === 'company' &&
+            (row.status === 'received' || row.status === 'in_production') && (
+              <Button
+                size="sm"
+                bgColor="#7c3aed"
+                textColor="#ffffff"
+                leftIcon={<Send size={14} />}
+                onClick={() => handleSendToProduction(row)}
+              >
+                Batch
+              </Button>
+            )}
           <Button
             size="sm"
-            bgColor="#7c3aed"
-            textColor="#ffffff"
-            leftIcon={<Send size={14} />}
-            onClick={() => handleSendToProduction(row)}
-          >
-            To Production
-          </Button>
-        ) : null,
+            variant="outline"
+            leftIcon={<Settings size={14} className="text-slate-500" />}
+            onClick={() => setMinStockModal({ isOpen: true, item: row })}
+            title="Set Min Stock"
+          />
+        </div>
+      ),
     },
   ];
 
   const safeData = listData?.data || [];
 
-  // Stats cards
   const stats = [
     {
-      label: 'Total Items',
+      label: 'Inventory Items',
       value: statsData?.totalItems ?? 0,
       icon: <Package className="text-blue-500" size={20} />,
       color: 'bg-blue-50',
     },
     {
-      label: 'Company Materials',
+      label: 'Low Stock Alerts',
+      value: statsData?.lowStockCount ?? 0,
+      icon: <AlertTriangle className="text-amber-500" size={20} />,
+      color: 'bg-amber-50',
+      trend: statsData?.lowStockCount ? 'critical' : 'good',
+    },
+    {
+      label: 'Out of Stock',
+      value: statsData?.outOfStockCount ?? 0,
+      icon: <Archive className="text-red-500" size={20} />,
+      color: 'bg-red-50',
+    },
+    {
+      label: 'Client Batches',
       value: statsData?.totalCompany ?? 0,
       icon: <Factory className="text-violet-500" size={20} />,
       color: 'bg-violet-50',
     },
-    {
-      label: 'Raw Materials',
-      value: statsData?.totalRaw ?? 0,
-      icon: <Package className="text-emerald-500" size={20} />,
-      color: 'bg-emerald-50',
-    },
-    {
-      label: 'In Production',
-      value: statsData?.statusMap?.in_production ?? 0,
-      icon: <AlertTriangle className="text-orange-500" size={20} />,
-      color: 'bg-orange-50',
-    },
   ];
-
-  // Chart data
-  const chartData = statsData?.dailyCounts?.map((d) => d.company + d.raw) || [];
-  const chartLabels =
-    statsData?.dailyCounts?.map((d) => {
-      const date = new Date(d.date);
-      return date.toLocaleDateString('en-IN', { weekday: 'short' });
-    }) || [];
 
   return (
     <div className="space-y-6 w-[95%] mx-auto py-6">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <Typography variant="h3" className="text-slate-900">
-            Inventory Management
+          <Typography variant="h3" className="text-slate-900 font-bold">
+            Live Inventory
           </Typography>
           <Typography variant="p" className="text-slate-500">
-            Real-time view of company & raw materials across the production
-            pipeline
+            Monitor real-time stock levels, min-thresholds, and production
+            status
           </Typography>
+        </div>
+        <div className="flex gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            leftIcon={<Archive size={16} />}
+            onClick={() => setExportModalOpen(true)}
+            disabled={safeData.length === 0}
+          >
+            Export
+          </Button>
         </div>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
-          <Card key={index} padding="md" className="border-slate-200">
+          <Card
+            key={index}
+            padding="md"
+            className="border-slate-200 hover:shadow-md transition-shadow"
+          >
             <div className="flex items-start justify-between">
               <div>
                 <Typography
                   variant="small"
-                  className="font-medium text-slate-500"
+                  className="font-semibold text-slate-500 uppercase tracking-wider"
                 >
                   {stat.label}
                 </Typography>
                 <div className="mt-2 flex items-baseline gap-2">
-                  <Typography variant="h4" className="text-slate-900">
+                  <Typography variant="h3" className="text-slate-900 font-bold">
                     {stat.value}
                   </Typography>
                 </div>
               </div>
-              <div className={`p-2.5 rounded-lg ${stat.color}`}>
-                {stat.icon}
-              </div>
+              <div className={`p-3 rounded-xl ${stat.color}`}>{stat.icon}</div>
             </div>
           </Card>
         ))}
       </div>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Intake Chart */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-          <div className="flex justify-between items-center mb-4">
-            <Typography variant="h5">Daily Intake (Last 7 Days)</Typography>
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-gradient-to-r from-violet-600 to-violet-400" />
-              <span className="text-xs text-slate-500">Materials Received</span>
-            </div>
-          </div>
-          <Chart
-            data={chartData.length ? chartData : [0, 0, 0, 0, 0, 0, 0]}
-            height={240}
-            gradientFrom="from-violet-600"
-            gradientTo="to-violet-400"
-            labelColor="text-violet-400"
-            labels={
-              chartLabels.length
-                ? chartLabels
-                : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-            }
-            showXAxis
-          />
-        </div>
-
-        {/* Status Distribution */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-          <Typography variant="h5" className="mb-4">
-            Status Distribution
-          </Typography>
-          <div className="space-y-3">
-            {Object.entries(statsData?.statusMap || {}).map(
-              ([status, count]) => {
-                const total = statsData?.totalItems || 1;
-                const pct = Math.round((count / total) * 100);
-                return (
-                  <div key={status}>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-slate-600 capitalize">
-                        {statusLabels[status] || status}
-                      </span>
-                      <span className="font-semibold text-slate-800">
-                        {count}
-                      </span>
-                    </div>
-                    <div className="w-full bg-slate-100 rounded-full h-2">
-                      <div
-                        className="h-2 rounded-full bg-gradient-to-r from-violet-500 to-blue-500 transition-all"
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              },
-            )}
-            {!statsData?.statusMap ||
-            Object.keys(statsData.statusMap).length === 0 ? (
-              <p className="text-sm text-slate-400 text-center py-6">
-                No data yet
-              </p>
-            ) : null}
-          </div>
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">
-        <div className="flex flex-col md:flex-row gap-4 mb-6 justify-between items-start md:items-center">
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+        <div className="p-6 border-b border-slate-100 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center bg-slate-50/30">
           <div className="w-full md:w-96">
             <Input
-              placeholder="Search materials, companies..."
+              placeholder="Search by material, part or company..."
               leftIcon={<Search size={18} />}
               value={searchInput}
               onChange={(e) => handleSearchChange(e.target.value)}
@@ -384,56 +346,82 @@ const InventoryCompt = () => {
             />
           </div>
           <div className="flex gap-3">
-            <div className="w-40">
-              <Dropdown
-                options={[
-                  { label: 'All Types', value: 'all' },
-                  { label: 'Company Material', value: 'company' },
-                  { label: 'Raw Material', value: 'raw' },
-                ]}
-                value={typeFilter}
-                onChange={(val) => {
-                  setTypeFilter(val as string);
-                  dispatch(setInventoryPage(1));
-                }}
-              />
-            </div>
-            <div className="w-40">
-              <Dropdown
-                options={[
-                  { label: 'All Status', value: 'all' },
-                  { label: 'Received', value: 'received' },
-                  { label: 'In Production', value: 'in_production' },
-                  { label: 'Quality Check', value: 'quality_check' },
-                  { label: 'Ready', value: 'ready_for_dispatch' },
-                ]}
-                value={statusFilter}
-                onChange={(val) => {
-                  setStatusFilter(val as string);
-                  dispatch(setInventoryPage(1));
-                }}
-              />
-            </div>
+            <Dropdown
+              options={[
+                { label: 'All Types', value: 'all' },
+                { label: 'Client Material', value: 'company' },
+                { label: 'Raw Material', value: 'raw' },
+              ]}
+              value={typeFilter}
+              onChange={(val) => {
+                setTypeFilter(val as string);
+                dispatch(setInventoryPage(1));
+              }}
+            />
+            <Dropdown
+              options={[
+                { label: 'All Status', value: 'all' },
+                { label: 'Received', value: 'received' },
+                { label: 'In Production', value: 'in_production' },
+                { label: 'Quality Check', value: 'quality_check' },
+                { label: 'Pending Dispatch', value: 'ready_for_dispatch' },
+              ]}
+              value={statusFilter}
+              onChange={(val) => {
+                setStatusFilter(val as string);
+                dispatch(setInventoryPage(1));
+              }}
+            />
           </div>
         </div>
 
-        <SummaryTableWrapper
-          data={safeData}
-          columns={columns}
-          isLoading={listLoading}
-          keyExtractor={(item) => item._id}
-          searchQuery={searchQuery}
-          paginationConfig={{
-            currentPage: page,
-            totalPages: listData?.totalPages || 1,
-            totalCount: listData?.totalCount || 0,
-            onPageChange: (newPage) => dispatch(setInventoryPage(newPage)),
-            itemsPerPage: 10,
-          }}
-          emptyTitle="No Inventory Items Found"
-          emptyMessage="Materials will appear here once they are received via Company Material or Raw Material pages."
-        />
+        <div className="p-0">
+          <SummaryTableWrapper
+            data={safeData}
+            columns={columns}
+            isLoading={listLoading}
+            keyExtractor={(item) => item._id}
+            searchQuery={searchQuery}
+            paginationConfig={{
+              currentPage: page,
+              totalPages: listData?.totalPages || 1,
+              totalCount: listData?.totalCount || 0,
+              onPageChange: (newPage) => dispatch(setInventoryPage(newPage)),
+              itemsPerPage: 10,
+            }}
+            emptyTitle="Inventory is Empty"
+            emptyMessage="New materials will appear here automatically when they are marked as 'Received' in the procurement sections."
+          />
+        </div>
       </div>
+
+      <MinStockModal
+        isOpen={minStockModal.isOpen}
+        item={minStockModal.item}
+        onClose={() => setMinStockModal({ isOpen: false, item: null })}
+        onSuccess={() => {
+          fetchData(page, searchQuery, typeFilter, statusFilter);
+          getInventoryStatsApi(dispatch);
+        }}
+      />
+
+      <ConsumeModal
+        isOpen={consumeModal.isOpen}
+        item={consumeModal.item}
+        onClose={() => setConsumeModal({ isOpen: false, item: null })}
+        onSuccess={() => {
+          fetchData(page, searchQuery, typeFilter, statusFilter);
+          getInventoryStatsApi(dispatch);
+        }}
+      />
+
+      <ExportModal
+        isOpen={exportModalOpen}
+        onClose={() => setExportModalOpen(false)}
+        searchQuery={searchQuery}
+        typeFilter={typeFilter}
+        statusFilter={statusFilter}
+      />
     </div>
   );
 };

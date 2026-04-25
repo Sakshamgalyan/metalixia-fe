@@ -10,10 +10,15 @@ import {
   useCompanyStateContext,
   useCompanyDispatchContext,
 } from '@/context/admin/Company/hooks';
-import { getCompaniesApi, deleteCompanyApi } from '@/context/admin/Company/api';
+import {
+  getCompaniesApi,
+  deleteCompanyApi,
+  toggleCompanyStatusApi,
+} from '@/context/admin/Company/api';
 import { setPage, setModal } from '@/context/admin/Company/actions';
 import { CompanyItem } from '@/context/admin/Company/type';
 import CompanyModal from './CompanyModal';
+import Toggle from '@/components/UI/Toggle';
 import NoDataState from '@/components/Common/NoDataState';
 import DeleteModal from '@/components/Common/DeleteModal';
 import SummaryTableWrapper from '@/components/Common/SummaryTableWrapper';
@@ -82,6 +87,14 @@ const CompaniesCompt = () => {
     }
   };
 
+  const handleToggleStatus = async (item: CompanyItem) => {
+    try {
+      await toggleCompanyStatusApi(dispatch, item._id);
+    } catch (error) {
+      // Error handled in API
+    }
+  };
+
   const handlePageChange = (page: number) => {
     dispatch(setPage(page));
     fetchData(page, searchQuery);
@@ -112,6 +125,19 @@ const CompaniesCompt = () => {
       header: 'Address',
       accessor: 'address',
       className: 'text-slate-600',
+    },
+    {
+      header: 'Active',
+      accessor: 'isActive',
+      render: (item: CompanyItem) => (
+        <div className="flex justify-center">
+          <Toggle
+            checked={item.isActive}
+            onChange={() => handleToggleStatus(item)}
+            size="sm"
+          />
+        </div>
+      ),
     },
     {
       header: 'Actions',

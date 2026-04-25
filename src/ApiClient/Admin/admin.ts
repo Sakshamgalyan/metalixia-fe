@@ -1,6 +1,6 @@
 import ApiClient from '@/lib/apiClient';
 import { EmployeeListPayload, EmployeeListResponse } from './type';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 
 export const getAllEmployees = async (data?: EmployeeListPayload) => {
   try {

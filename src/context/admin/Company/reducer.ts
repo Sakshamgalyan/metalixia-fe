@@ -28,6 +28,19 @@ export const companyReducer = (
       return { ...state, actionLoading: action.payload };
     case 'ACTION_SUCCESS':
       return { ...state, modal: { mode: null, selectedItem: null } };
+    case 'TOGGLE_COMPANY_STATUS':
+      if (!state.listData) return state;
+      return {
+        ...state,
+        listData: {
+          ...state.listData,
+          data: state.listData.data.map((company) =>
+            company._id === action.payload
+              ? { ...company, isActive: !company.isActive }
+              : company,
+          ),
+        },
+      };
     default:
       return state;
   }

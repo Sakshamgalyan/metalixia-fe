@@ -17,7 +17,7 @@ import Input from '@/components/UI/Input';
 import TextArea from '@/components/UI/TextArea';
 import DropDown from '@/components/UI/DropDown';
 import Card from '@/components/UI/Card';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 import {
   updateProfileApi,
   changePasswordApi,

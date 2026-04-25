@@ -31,6 +31,7 @@ import { formatDate } from './Constants';
 import DeleteModal from '@/components/Common/DeleteModal';
 import SummaryTableWrapper from '@/components/Common/SummaryTableWrapper';
 import debounce from 'lodash/debounce';
+import ExportModal from './ExportModal';
 
 const CompanyMaterialCompt = () => {
   const [searchInput, setSearchInput] = useState('');
@@ -40,6 +41,7 @@ const CompanyMaterialCompt = () => {
     null,
   );
   const [isDeleting, setIsDeleting] = useState(false);
+  const [exportModalOpen, setExportModalOpen] = useState(false);
   // Context
   const { listData, listLoading, page, statsData, statsLoading } =
     useCompanyMaterialStateContext();
@@ -165,16 +167,19 @@ const CompanyMaterialCompt = () => {
       ),
     },
     {
-      header: 'Received On',
-      accessor: 'receivedOn',
-      render: (row) => (
-        <span className="text-slate-600">{formatDate(row.receivedOn)}</span>
-      ),
-    },
-    {
-      header: 'Inventory Location',
-      accessor: 'inventoryLocation',
-      className: 'text-slate-600',
+      header: 'Status',
+      accessor: 'isReceived',
+      render: (row) =>
+        row.isReceived ? (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+            <CheckCircle size={12} />
+            Received
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
+            Pending
+          </span>
+        ),
     },
     {
       header: 'Received By',
@@ -182,7 +187,7 @@ const CompanyMaterialCompt = () => {
       fixedColumn: 'right',
       render: (row) => (
         <div className="flex items-center gap-2">
-          {row.receivedBy ? (
+          {row.isReceived && row.receivedBy ? (
             <span className="font-medium text-slate-900">{row.receivedBy}</span>
           ) : (
             <div className="flex items-center justify-center">
@@ -245,7 +250,13 @@ const CompanyMaterialCompt = () => {
           </Typography>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" size="sm" leftIcon={<Archive size={16} />}>
+          <Button
+            variant="outline"
+            size="sm"
+            leftIcon={<Archive size={16} />}
+            onClick={() => setExportModalOpen(true)}
+            disabled={safeData.length === 0}
+          >
             Export
           </Button>
           <Button
@@ -296,6 +307,12 @@ const CompanyMaterialCompt = () => {
 
       {/* All Modals (reads state from context) */}
       <MaterialModals />
+
+      <ExportModal
+        isOpen={exportModalOpen}
+        onClose={() => setExportModalOpen(false)}
+        searchQuery={searchQuery}
+      />
 
       <DeleteModal
         itemName={

@@ -6,6 +6,7 @@ export const ACTION_LOADING = 'ACTION_LOADING';
 export const ACTION_SUCCESS = 'ACTION_SUCCESS';
 export const FETCH_COMPANIES_LIST_LOADING = 'FETCH_COMPANIES_LIST_LOADING';
 export const FETCH_COMPANIES_LIST_SUCCESS = 'FETCH_COMPANIES_LIST_SUCCESS';
+export const TOGGLE_PART_STATUS = 'TOGGLE_PART_STATUS';
 
 export interface FETCH_PART_LIST_LOADING_ACTION {
   type: typeof FETCH_PART_LIST_LOADING;
@@ -53,6 +54,11 @@ export interface FETCH_COMPANIES_LIST_SUCCESS_ACTION {
   payload: CompanyItem[];
 }
 
+export interface TOGGLE_PART_STATUS_ACTION {
+  type: typeof TOGGLE_PART_STATUS;
+  payload: string;
+}
+
 export type PartAction =
   | FETCH_PART_LIST_LOADING_ACTION
   | FETCH_PART_LIST_SUCCESS_ACTION
@@ -61,7 +67,8 @@ export type PartAction =
   | ACTION_LOADING_ACTION
   | ACTION_SUCCESS_ACTION
   | FETCH_COMPANIES_LIST_LOADING_ACTION
-  | FETCH_COMPANIES_LIST_SUCCESS_ACTION;
+  | FETCH_COMPANIES_LIST_SUCCESS_ACTION
+  | TOGGLE_PART_STATUS_ACTION;
 
 export interface PartItem {
   _id: string;
@@ -70,6 +77,7 @@ export interface PartItem {
   partName: string;
   partNumber: string;
   description?: string;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }

@@ -7,7 +7,7 @@ import Button from '@/components/UI/Button';
 import Input from '@/components/UI/Input';
 import Table, { TableColumn } from '@/components/UI/Table';
 import Chips from '@/components/UI/Chips';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 
 // Mock Data
 const MOCK_PAYSLIPS = [

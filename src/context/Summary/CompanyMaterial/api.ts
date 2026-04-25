@@ -1,6 +1,6 @@
 import { Dispatch } from 'react';
 import ApiClient from '@/lib/apiClient';
-import { toast } from 'sonner';
+import { toast } from '@/components/UI/Toaster';
 import { getErrorMessage } from '@/utils/error';
 
 import {
@@ -193,5 +193,18 @@ export const deleteCompanyMaterialApi = async (id: string) => {
       description: getErrorMessage(error),
     });
     throw error;
+  }
+};
+
+export const getCompanyUniqueFiltersApi = async () => {
+  try {
+    const response = await ApiClient.get<{
+      companyNames: string[];
+      partNames: string[];
+    }>('/material/company/unique-filters');
+    return response;
+  } catch (error: unknown) {
+    console.error('Failed to fetch unique filters', error);
+    return { companyNames: [], partNames: [] };
   }
 };

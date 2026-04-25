@@ -10,6 +10,7 @@ import {
   ACTION_SUCCESS,
   FETCH_COMPANIES_LIST_LOADING,
   FETCH_COMPANIES_LIST_SUCCESS,
+  TOGGLE_PART_STATUS,
   CompanyItem,
 } from './type';
 
@@ -50,4 +51,9 @@ export const fetchCompaniesListLoading = (loading: boolean): PartAction => ({
 export const fetchCompaniesListSuccess = (data: CompanyItem[]): PartAction => ({
   type: FETCH_COMPANIES_LIST_SUCCESS,
   payload: data,
+});
+
+export const togglePartStatus = (id: string): PartAction => ({
+  type: TOGGLE_PART_STATUS,
+  payload: id,
 });
