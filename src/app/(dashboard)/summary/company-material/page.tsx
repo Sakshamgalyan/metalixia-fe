@@ -1,5 +1,5 @@
-import CompanyMaterialCompt from "@/components/dashboard/summary/CompanyMaterial/CompanyMaterialCompt";
-import CompanyMaterialContextProvider from "@/context/Summary/CompanyMaterial";
+import CompanyMaterialCompt from '@/components/dashboard/summary/CompanyMaterial/CompanyMaterialCompt';
+import CompanyMaterialContextProvider from '@/context/Summary/CompanyMaterial';
 
 const Page = () => {
   return (

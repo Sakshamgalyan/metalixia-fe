@@ -1,26 +1,26 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { Send, AlignLeft, FileText as FileIcon } from "lucide-react";
-import { toast } from "sonner";
-import Typography from "@/components/UI/Typography";
-import Input from "@/components/UI/Input";
-import Button from "@/components/UI/Button";
-import FileUpload from "@/components/UI/FileUpload";
-import TextArea from "@/components/UI/TextArea";
+import { useEffect, useState } from 'react';
+import { Send, AlignLeft, FileText as FileIcon } from 'lucide-react';
+import { toast } from 'sonner';
+import Typography from '@/components/UI/Typography';
+import Input from '@/components/UI/Input';
+import Button from '@/components/UI/Button';
+import FileUpload from '@/components/UI/FileUpload';
+import TextArea from '@/components/UI/TextArea';
 import {
   EmailProvider,
   useEmailDispatch,
   useEmailState,
-} from "@/context/Email";
+} from '@/context/Email';
 import {
   getEmailHistoryApi,
   getTemplatesApi,
   sendEmailApi,
-} from "@/context/Email/api";
-import EmailHistoryList from "./EmailHistoryList";
-import EmailTemplateList from "./EmailTemplateList";
-import { useAppSelector } from "@/store/hooks";
+} from '@/context/Email/api';
+import EmailHistoryList from './EmailHistoryList';
+import EmailTemplateList from './EmailTemplateList';
+import { useAppSelector } from '@/store/hooks';
 
 const SendEmailContent = () => {
   const dispatch = useEmailDispatch();
@@ -30,9 +30,9 @@ const SendEmailContent = () => {
   const employeeId = user?.employeeId;
 
   const [emailData, setEmailData] = useState({
-    to: "",
-    subject: "",
-    message: "",
+    to: '',
+    subject: '',
+    message: '',
   });
   const [files, setFiles] = useState<File[]>([]);
 
@@ -70,37 +70,37 @@ const SendEmailContent = () => {
     e.preventDefault();
 
     if (!employeeId) {
-      toast.error("Employee ID is missing");
+      toast.error('Employee ID is missing');
       return;
     }
 
     if (!emailData.to || !validateEmail(emailData.to)) {
-      toast.error("Please enter a valid recipient email");
+      toast.error('Please enter a valid recipient email');
       return;
     }
     if (!emailData.subject.trim()) {
-      toast.error("Please enter a subject");
+      toast.error('Please enter a subject');
       return;
     }
     if (!emailData.message.trim()) {
-      toast.error("Please enter a message");
+      toast.error('Please enter a message');
       return;
     }
 
     const formData = new FormData();
-    formData.append("to", emailData.to);
-    formData.append("subject", emailData.subject);
-    formData.append("message", emailData.message);
-    formData.append("employeeId", employeeId);
+    formData.append('to', emailData.to);
+    formData.append('subject', emailData.subject);
+    formData.append('message', emailData.message);
+    formData.append('employeeId', employeeId);
 
     files.forEach((file) => {
-      formData.append("attachments", file);
+      formData.append('attachments', file);
     });
 
     const success = await sendEmailApi(dispatch, formData);
 
     if (success) {
-      setEmailData({ to: "", subject: "", message: "" });
+      setEmailData({ to: '', subject: '', message: '' });
       setFiles([]);
       getEmailHistoryApi(dispatch, employeeId);
     }

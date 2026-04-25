@@ -7,7 +7,7 @@ import {
   FETCH_EMAIL_HISTORY_SUCCESS,
   FETCH_TEMPLATES_LOADING,
   FETCH_TEMPLATES_SUCCESS,
-} from "./types";
+} from './types';
 
 export const initialState: EmailState = {
   sendLoading: false,

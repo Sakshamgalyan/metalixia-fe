@@ -1,4 +1,4 @@
-import type { Reducer } from "react";
+import type { Reducer } from 'react';
 import {
   InventoryState,
   InventoryAction,
@@ -7,7 +7,7 @@ import {
   FETCH_INVENTORY_STATS_LOADING,
   FETCH_INVENTORY_STATS_SUCCESS,
   SET_INVENTORY_PAGE,
-} from "./type";
+} from './type';
 
 export const initialState: InventoryState = {
   listLoading: false,

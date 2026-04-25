@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/store";
-import { logout } from "@/slices/Auth";
-import { useState } from "react";
+import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/store';
+import { logout } from '@/slices/Auth';
+import { useState } from 'react';
 
 const NotAccess = () => {
   const router = useRouter();
@@ -15,11 +15,11 @@ const NotAccess = () => {
     setIsLoggingOut(true);
     try {
       await dispatch(logout()).unwrap();
-      router.push("/sign-in");
+      router.push('/sign-in');
     } catch (error) {
-      console.error("Logout error:", error);
+      console.error('Logout error:', error);
       // Even if there's an error, redirect to sign-in
-      router.push("/sign-in");
+      router.push('/sign-in');
     } finally {
       setIsLoggingOut(false);
     }
@@ -139,7 +139,7 @@ const NotAccess = () => {
 
           {/* Footer Note */}
           <p className="text-xs text-gray-500 text-center mt-6">
-            Need help?{" "}
+            Need help?{' '}
             <a
               href="mailto:support@metalixia.com"
               className="text-gray-700 hover:text-gray-900 font-medium underline"

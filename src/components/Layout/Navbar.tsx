@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { User, Settings, LogOut } from "lucide-react";
-import Accordion from "../UI/Accordion";
-import Typography from "../UI/Typography";
-import Button from "../UI/Button";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { logout } from "@/slices/Auth";
-import { useRouter } from "next/navigation";
-import ProfileModal from "./ProfileModal";
+import { useState } from 'react';
+import { User, Settings, LogOut } from 'lucide-react';
+import Accordion from '../UI/Accordion';
+import Typography from '../UI/Typography';
+import Button from '../UI/Button';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { logout } from '@/slices/Auth';
+import { useRouter } from 'next/navigation';
+import ProfileModal from './ProfileModal';
 
 const Navbar = () => {
   const { user } = useAppSelector((state) => state.auth);
@@ -19,7 +19,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await dispatch(logout());
-      router.push("/sign-in");
+      router.push('/sign-in');
     } catch (error) {
       console.log(error);
     }
@@ -30,7 +30,7 @@ const Navbar = () => {
   };
 
   const handleSettings = () => {
-    router.push("/settings");
+    router.push('/settings');
   };
 
   return (
@@ -44,11 +44,11 @@ const Navbar = () => {
                   {(user as any)?.profilePicture ? (
                     <img
                       src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${(user as any).profilePicture}`}
-                      alt={user?.name || "User"}
+                      alt={user?.name || 'User'}
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    user?.name?.charAt(0).toUpperCase() || "U"
+                    user?.name?.charAt(0).toUpperCase() || 'U'
                   )}
                 </div>
                 <Typography
@@ -57,7 +57,7 @@ const Navbar = () => {
                   textColor="#334155"
                   className="hidden sm:block capitalize text-sm"
                 >
-                  {user?.name || "User"}
+                  {user?.name || 'User'}
                 </Typography>
               </div>
             }

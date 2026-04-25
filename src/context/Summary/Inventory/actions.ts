@@ -11,7 +11,7 @@ import {
   SET_INVENTORY_PAGE_ACTION,
   InventoryListResponse,
   InventoryStats,
-} from "./type";
+} from './type';
 
 export const fetchInventoryListLoading = (
   loading: boolean,
@@ -41,9 +41,7 @@ export const fetchInventoryStatsSuccess = (
   payload,
 });
 
-export const setInventoryPage = (
-  page: number,
-): SET_INVENTORY_PAGE_ACTION => ({
+export const setInventoryPage = (page: number): SET_INVENTORY_PAGE_ACTION => ({
   type: SET_INVENTORY_PAGE,
   payload: page,
 });

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   User,
@@ -7,12 +7,12 @@ import {
   Briefcase,
   MessageSquare,
   FileText,
-} from "lucide-react";
-import Typography from "@/components/UI/Typography";
-import Card from "@/components/UI/Card";
-import Modal from "@/components/UI/Modal";
+} from 'lucide-react';
+import Typography from '@/components/UI/Typography';
+import Card from '@/components/UI/Card';
+import Modal from '@/components/UI/Modal';
 
-import { useAppSelector } from "@/store/hooks";
+import { useAppSelector } from '@/store/hooks';
 
 interface EmployeeProfileModalProps {
   isOpen: boolean;
@@ -24,30 +24,30 @@ const ProfileModal = ({ isOpen, onClose }: EmployeeProfileModalProps) => {
 
   const getPostLabel = (post: string) => {
     const postMap: Record<string, string> = {
-      hr: "HR",
-      manager: "Manager",
-      quality: "Quality",
-      production: "Production",
-      maintenance: "Maintenance",
-      labIncharge: "Lab Incharge",
-      Owner: "Owner",
-      employee: "Employee",
+      hr: 'HR',
+      manager: 'Manager',
+      quality: 'Quality',
+      production: 'Production',
+      maintenance: 'Maintenance',
+      labIncharge: 'Lab Incharge',
+      Owner: 'Owner',
+      employee: 'Employee',
     };
     return postMap[post] || post;
   };
 
   const getPostColor = (post: string) => {
     const colorMap: Record<string, string> = {
-      hr: "bg-purple-100 text-purple-700",
-      manager: "bg-blue-100 text-blue-700",
-      quality: "bg-green-100 text-green-700",
-      production: "bg-orange-100 text-orange-700",
-      maintenance: "bg-yellow-100 text-yellow-700",
-      labIncharge: "bg-pink-100 text-pink-700",
-      Owner: "bg-red-100 text-red-700",
-      employee: "bg-slate-100 text-slate-700",
+      hr: 'bg-purple-100 text-purple-700',
+      manager: 'bg-blue-100 text-blue-700',
+      quality: 'bg-green-100 text-green-700',
+      production: 'bg-orange-100 text-orange-700',
+      maintenance: 'bg-yellow-100 text-yellow-700',
+      labIncharge: 'bg-pink-100 text-pink-700',
+      Owner: 'bg-red-100 text-red-700',
+      employee: 'bg-slate-100 text-slate-700',
     };
-    return colorMap[post] || "bg-slate-100 text-slate-700";
+    return colorMap[post] || 'bg-slate-100 text-slate-700';
   };
 
   return (
@@ -87,9 +87,9 @@ const ProfileModal = ({ isOpen, onClose }: EmployeeProfileModalProps) => {
               </Typography>
               <div className="flex flex-wrap gap-2">
                 <span
-                  className={`text-sm font-medium px-4 py-1.5 rounded-full ${getPostColor(user.post || "")}`}
+                  className={`text-sm font-medium px-4 py-1.5 rounded-full ${getPostColor(user.post || '')}`}
                 >
-                  {getPostLabel(user.post || "")}
+                  {getPostLabel(user.post || '')}
                 </span>
                 <span className="text-sm font-medium px-4 py-1.5 rounded-full bg-slate-100 text-slate-700">
                   ID: {user.employeeId}

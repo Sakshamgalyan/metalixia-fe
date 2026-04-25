@@ -1,14 +1,14 @@
-import { useContext } from "react";
+import { useContext } from 'react';
 import {
   UploadedReportStateContext,
   UploadedReportDispatchContext,
-} from "./index";
+} from './index';
 
 export const useUploadedReportStateContext = () => {
   const context = useContext(UploadedReportStateContext);
   if (!context) {
     throw new Error(
-      "useUploadedReportStateContext should be wrap under UploadedReportContextProvider",
+      'useUploadedReportStateContext should be wrap under UploadedReportContextProvider',
     );
   }
   const { state } = context;
@@ -19,7 +19,7 @@ export const useUploadedReportDispatchContext = () => {
   const dispatchContext = useContext(UploadedReportDispatchContext);
   if (!dispatchContext) {
     throw new Error(
-      "useUploadedReportDispatchContext should be wrap under UploadedReportContextProvider",
+      'useUploadedReportDispatchContext should be wrap under UploadedReportContextProvider',
     );
   }
   const { dispatch } = dispatchContext;

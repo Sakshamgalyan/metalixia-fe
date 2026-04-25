@@ -1,13 +1,22 @@
-import type { Reducer } from "react";
-import { EmployeeListState, EmployeeListAction, SET_FILTER_ROLE, SET_FILTER_POST, SET_LOADING, SET_PAGE, SET_FILTER_DATA, SET_FILTER_PAYLOAD } from "./type";
+import type { Reducer } from 'react';
+import {
+  EmployeeListState,
+  EmployeeListAction,
+  SET_FILTER_ROLE,
+  SET_FILTER_POST,
+  SET_LOADING,
+  SET_PAGE,
+  SET_FILTER_DATA,
+  SET_FILTER_PAYLOAD,
+} from './type';
 
 export const initialState: EmployeeListState = {
-    filterRole: null,
-    filterPost: null,
-    loading: false,
-    page: 1,
-    filterData: null,
-    filterPayload: null,
+  filterRole: null,
+  filterPost: null,
+  loading: false,
+  page: 1,
+  filterData: null,
+  filterPayload: null,
 };
 
 const reducer: Reducer<EmployeeListState, EmployeeListAction> = (

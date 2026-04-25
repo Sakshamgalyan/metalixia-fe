@@ -1,9 +1,9 @@
-export const SEND_EMAIL_LOADING = "SEND_EMAIL_LOADING";
-export const SEND_EMAIL_SUCCESS = "SEND_EMAIL_SUCCESS";
-export const FETCH_EMAIL_HISTORY_LOADING = "FETCH_EMAIL_HISTORY_LOADING";
-export const FETCH_EMAIL_HISTORY_SUCCESS = "FETCH_EMAIL_HISTORY_SUCCESS";
-export const FETCH_TEMPLATES_LOADING = "FETCH_TEMPLATES_LOADING";
-export const FETCH_TEMPLATES_SUCCESS = "FETCH_TEMPLATES_SUCCESS";
+export const SEND_EMAIL_LOADING = 'SEND_EMAIL_LOADING';
+export const SEND_EMAIL_SUCCESS = 'SEND_EMAIL_SUCCESS';
+export const FETCH_EMAIL_HISTORY_LOADING = 'FETCH_EMAIL_HISTORY_LOADING';
+export const FETCH_EMAIL_HISTORY_SUCCESS = 'FETCH_EMAIL_HISTORY_SUCCESS';
+export const FETCH_TEMPLATES_LOADING = 'FETCH_TEMPLATES_LOADING';
+export const FETCH_TEMPLATES_SUCCESS = 'FETCH_TEMPLATES_SUCCESS';
 
 export interface EmailHistoryItem {
   _id: string;
@@ -21,7 +21,7 @@ export interface EmailTemplateItem {
   body: string;
 }
 
-import { PaginatedResponse } from "@/types/common";
+import { PaginatedResponse } from '@/types/common';
 
 export interface EmailState {
   sendLoading: boolean;

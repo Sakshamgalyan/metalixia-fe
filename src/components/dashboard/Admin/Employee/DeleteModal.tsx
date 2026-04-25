@@ -1,12 +1,12 @@
-import Modal from "@/components/UI/Modal";
-import Button from "@/components/UI/Button";
-import Typography from "@/components/UI/Typography";
+import Modal from '@/components/UI/Modal';
+import Button from '@/components/UI/Button';
+import Typography from '@/components/UI/Typography';
 import {
   useEmployeeListDispatchContext,
   useEmployeeListStateContext,
-} from "@/context/admin/EmployeeList/hooks";
-import { setFilterData, setLoading } from "@/context/admin/EmployeeList/action";
-import { deleteEmployee } from "@/ApiClient/Admin/admin";
+} from '@/context/admin/EmployeeList/hooks';
+import { setFilterData, setLoading } from '@/context/admin/EmployeeList/action';
+import { deleteEmployee } from '@/ApiClient/Admin/admin';
 
 interface DeleteModalProps {
   isOpen: boolean;
@@ -26,7 +26,7 @@ const DeleteModal = ({
 
   const handleConfirmDelete = async () => {
     dispatch(setLoading(true));
-    console.log("employe list loading", loading);
+    console.log('employe list loading', loading);
     try {
       await deleteEmployee(employee?.id);
       const newData = filterData?.data
@@ -34,7 +34,7 @@ const DeleteModal = ({
         : [];
       dispatch(setFilterData({ ...filterData, data: newData }));
     } catch (error) {
-      console.error("Error deleting employee:", error);
+      console.error('Error deleting employee:', error);
     } finally {
       dispatch(setLoading(false));
       onClose();

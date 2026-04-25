@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React from "react";
-import Button from "@/components/UI/Button";
-import Typography from "@/components/UI/Typography";
-import { AlertTriangle } from "lucide-react";
-import Modal from "../UI/Modal";
+import React from 'react';
+import Button from '@/components/UI/Button';
+import Typography from '@/components/UI/Typography';
+import { AlertTriangle } from 'lucide-react';
+import Modal from '../UI/Modal';
 
 interface DeleteModalProps {
   isOpen: boolean;
@@ -20,7 +20,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
-  title = "Confirm Deletion",
+  title = 'Confirm Deletion',
   message,
   itemName,
   isLoading = false,
@@ -67,7 +67,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
             ? message
             : itemName
               ? `Do you really want to delete "${itemName}"? This process cannot be undone.`
-              : "Do you really want to delete this item? This process cannot be undone."}
+              : 'Do you really want to delete this item? This process cannot be undone.'}
         </Typography>
       </div>
     </Modal>

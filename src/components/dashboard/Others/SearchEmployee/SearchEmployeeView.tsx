@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Search, Mail } from "lucide-react";
-import Typography from "@/components/UI/Typography";
-import Input from "@/components/UI/Input";
-import Card from "@/components/UI/Card";
-import Button from "@/components/UI/Button";
+import { useState, useEffect } from 'react';
+import { Search, Mail } from 'lucide-react';
+import Typography from '@/components/UI/Typography';
+import Input from '@/components/UI/Input';
+import Card from '@/components/UI/Card';
+import Button from '@/components/UI/Button';
 import {
   searchEmployeesApi,
   getEmployeeProfileApi,
-} from "@/ApiClient/Profile/profile";
-import { toast } from "sonner";
-import EmployeeProfileModal from "./EmployeeProfileModal";
+} from '@/ApiClient/Profile/profile';
+import { toast } from 'sonner';
+import EmployeeProfileModal from './EmployeeProfileModal';
 
 interface Employee {
   _id: string;
@@ -27,7 +27,7 @@ interface Employee {
 }
 
 const SearchEmployeeView = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -38,7 +38,7 @@ const SearchEmployeeView = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(false);
 
-  const fetchEmployees = async (search: string = "", pageNum: number = 1) => {
+  const fetchEmployees = async (search: string = '', pageNum: number = 1) => {
     setLoading(true);
     try {
       const result = await searchEmployeesApi(search, pageNum, 15);
@@ -56,8 +56,8 @@ const SearchEmployeeView = () => {
 
       setPage(pageNum);
     } catch (error) {
-      console.error("Search failed:", error);
-      toast.error("Failed to fetch employees");
+      console.error('Search failed:', error);
+      toast.error('Failed to fetch employees');
     } finally {
       setLoading(false);
     }
@@ -72,7 +72,7 @@ const SearchEmployeeView = () => {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       handleSearch();
     }
   };
@@ -91,8 +91,8 @@ const SearchEmployeeView = () => {
         setSelectedEmployee(result);
       }
     } catch (error) {
-      console.error("Failed to fetch profile:", error);
-      toast.error("Failed to load employee profile");
+      console.error('Failed to fetch profile:', error);
+      toast.error('Failed to load employee profile');
       setIsModalOpen(false);
     } finally {
       setLoadingProfile(false);
@@ -106,30 +106,30 @@ const SearchEmployeeView = () => {
 
   const getPostLabel = (post: string) => {
     const postMap: Record<string, string> = {
-      hr: "HR",
-      manager: "Manager",
-      quality: "Quality",
-      production: "Production",
-      maintenance: "Maintenance",
-      labIncharge: "Lab Incharge",
-      Owner: "Owner", 
-      employee: "Employee",
+      hr: 'HR',
+      manager: 'Manager',
+      quality: 'Quality',
+      production: 'Production',
+      maintenance: 'Maintenance',
+      labIncharge: 'Lab Incharge',
+      Owner: 'Owner',
+      employee: 'Employee',
     };
     return postMap[post] || post;
   };
 
   const getPostColor = (post: string) => {
     const colorMap: Record<string, string> = {
-      hr: "bg-purple-100 text-purple-700",
-      manager: "bg-blue-100 text-blue-700",
-      quality: "bg-green-100 text-green-700",
-      production: "bg-orange-100 text-orange-700",
-      maintenance: "bg-yellow-100 text-yellow-700",
-      labIncharge: "bg-pink-100 text-pink-700",
-      Owner: "bg-red-100 text-red-700",
-      employee: "bg-slate-100 text-slate-700",
+      hr: 'bg-purple-100 text-purple-700',
+      manager: 'bg-blue-100 text-blue-700',
+      quality: 'bg-green-100 text-green-700',
+      production: 'bg-orange-100 text-orange-700',
+      maintenance: 'bg-yellow-100 text-yellow-700',
+      labIncharge: 'bg-pink-100 text-pink-700',
+      Owner: 'bg-red-100 text-red-700',
+      employee: 'bg-slate-100 text-slate-700',
     };
-    return colorMap[post] || "bg-slate-100 text-slate-700";
+    return colorMap[post] || 'bg-slate-100 text-slate-700';
   };
 
   return (
@@ -186,8 +186,8 @@ const SearchEmployeeView = () => {
           <Card className="p-12 text-center">
             <Typography variant="p" textColor="#64748b">
               {searchTerm
-                ? "No employees found matching your search"
-                : "No employees found"}
+                ? 'No employees found matching your search'
+                : 'No employees found'}
             </Typography>
           </Card>
         ) : (

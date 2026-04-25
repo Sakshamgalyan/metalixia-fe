@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { createContext, useReducer, useContext } from "react";
-import { EmailState, EmailAction } from "./types";
-import { emailReducer, initialState } from "./reducer";
+import { createContext, useReducer, useContext } from 'react';
+import { EmailState, EmailAction } from './types';
+import { emailReducer, initialState } from './reducer';
 
 const EmailStateContext = createContext<EmailState>(initialState);
 const EmailDispatchContext = createContext<React.Dispatch<EmailAction>>(

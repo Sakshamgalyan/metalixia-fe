@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   User,
   Mail,
@@ -10,33 +10,33 @@ import {
   Camera,
   Save,
   MessageSquare,
-} from "lucide-react";
-import Typography from "@/components/UI/Typography";
-import Button from "@/components/UI/Button";
-import Input from "@/components/UI/Input";
-import TextArea from "@/components/UI/TextArea";
-import DropDown from "@/components/UI/DropDown";
-import Card from "@/components/UI/Card";
-import { toast } from "sonner";
+} from 'lucide-react';
+import Typography from '@/components/UI/Typography';
+import Button from '@/components/UI/Button';
+import Input from '@/components/UI/Input';
+import TextArea from '@/components/UI/TextArea';
+import DropDown from '@/components/UI/DropDown';
+import Card from '@/components/UI/Card';
+import { toast } from 'sonner';
 import {
   updateProfileApi,
   changePasswordApi,
   uploadProfilePictureApi,
-} from "@/ApiClient/Profile/profile";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
-import Image from "next/image";
+} from '@/ApiClient/Profile/profile';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
+import Image from 'next/image';
 
 const SettingsView = () => {
   const { user } = useSelector((state: RootState) => state.auth);
 
   // Profile state
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [mobileNo, setMobileNo] = useState("");
-  const [post, setPost] = useState("");
-  const [description, setDescription] = useState("");
-  const [address, setAddress] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [mobileNo, setMobileNo] = useState('');
+  const [post, setPost] = useState('');
+  const [description, setDescription] = useState('');
+  const [address, setAddress] = useState('');
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [profilePictureFile, setProfilePictureFile] = useState<File | null>(
     null,
@@ -46,9 +46,9 @@ const SettingsView = () => {
   >(null);
 
   // Password state
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   // Loading states
   const [isSavingProfile, setIsSavingProfile] = useState(false);
@@ -58,12 +58,12 @@ const SettingsView = () => {
   // Load user data on mount
   useEffect(() => {
     if (user) {
-      setName(user.name || "");
-      setEmail(user.email || "");
-      setMobileNo(user.mobileNo || "");
-      setPost(user.post || "");
-      setDescription((user as any).description || "");
-      setAddress((user as any).address || "");
+      setName(user.name || '');
+      setEmail(user.email || '');
+      setMobileNo(user.mobileNo || '');
+      setPost(user.post || '');
+      setDescription((user as any).description || '');
+      setAddress((user as any).address || '');
       setProfilePicture((user as any).profilePicture || null);
     }
   }, [user]);
@@ -74,14 +74,14 @@ const SettingsView = () => {
     const file = e.target.files?.[0];
     if (file) {
       // Validate file type
-      if (!file.type.startsWith("image/")) {
-        toast.error("Please select an image file");
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select an image file');
         return;
       }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image size must be less than 5MB");
+        toast.error('Image size must be less than 5MB');
         return;
       }
 
@@ -98,7 +98,7 @@ const SettingsView = () => {
 
   const handleUploadProfilePicture = async () => {
     if (!profilePictureFile) {
-      toast.error("Please select an image first");
+      toast.error('Please select an image first');
       return;
     }
 
@@ -108,9 +108,9 @@ const SettingsView = () => {
       setProfilePicture(result.filename);
       setProfilePicturePreview(null);
       setProfilePictureFile(null);
-      toast.success("Profile picture updated successfully");
+      toast.success('Profile picture updated successfully');
     } catch (error) {
-      console.error("Upload failed:", error);
+      console.error('Upload failed:', error);
     } finally {
       setIsUploadingPicture(false);
     }
@@ -127,9 +127,9 @@ const SettingsView = () => {
         description,
         address,
       });
-      toast.success("Profile updated successfully");
+      toast.success('Profile updated successfully');
     } catch (error) {
-      console.error("Profile update failed:", error);
+      console.error('Profile update failed:', error);
     } finally {
       setIsSavingProfile(false);
     }
@@ -137,12 +137,12 @@ const SettingsView = () => {
 
   const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match");
+      toast.error('Passwords do not match');
       return;
     }
 
     if (newPassword.length < 6) {
-      toast.error("Password must be at least 6 characters");
+      toast.error('Password must be at least 6 characters');
       return;
     }
 
@@ -153,24 +153,24 @@ const SettingsView = () => {
         newPassword,
         confirmPassword,
       });
-      toast.success("Password changed successfully");
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+      toast.success('Password changed successfully');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
     } catch (error) {
-      console.error("Password change failed:", error);
+      console.error('Password change failed:', error);
     } finally {
       setIsChangingPassword(false);
     }
   };
 
   const postOptions = [
-    { value: "hr", label: "HR" },
-    { value: "manager", label: "Manager" },
-    { value: "quality", label: "Quality" },
-    { value: "production", label: "Production" },
-    { value: "maintenance", label: "Maintenance" },
-    { value: "labIncharge", label: "Lab Incharge" },
+    { value: 'hr', label: 'HR' },
+    { value: 'manager', label: 'Manager' },
+    { value: 'quality', label: 'Quality' },
+    { value: 'production', label: 'Production' },
+    { value: 'maintenance', label: 'Maintenance' },
+    { value: 'labIncharge', label: 'Lab Incharge' },
   ];
 
   return (

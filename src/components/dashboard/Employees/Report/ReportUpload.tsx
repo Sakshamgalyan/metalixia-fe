@@ -1,33 +1,33 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { Clock } from "lucide-react";
-import Typography from "@/components/UI/Typography";
-import Input from "@/components/UI/Input";
-import Button from "@/components/UI/Button";
-import FileUpload from "@/components/UI/FileUpload";
-import Table from "@/components/UI/Table";
-import { columns, Report } from "./Constants";
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { Clock } from 'lucide-react';
+import Typography from '@/components/UI/Typography';
+import Input from '@/components/UI/Input';
+import Button from '@/components/UI/Button';
+import FileUpload from '@/components/UI/FileUpload';
+import Table from '@/components/UI/Table';
+import { columns, Report } from './Constants';
 import {
   useReportUploadDispatchContext,
   useReportUploadStateContext,
-} from "@/context/Employee/ReportUpload/hooks";
+} from '@/context/Employee/ReportUpload/hooks';
 import {
   deleteReportApi,
   getMyReports,
   uploadReportApi,
   downloadReportApi,
-} from "@/context/Employee/ReportUpload/api";
-import NoDataState from "@/components/Common/NoDataState";
-import { fetchReportUploadLoading } from "@/context/Employee/ReportUpload/actions";
-import { useAppSelector } from "@/store/hooks";
-import Card from "@/components/UI/Card";
-import DeleteModal from "@/components/Common/DeleteModal";
-import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
+} from '@/context/Employee/ReportUpload/api';
+import NoDataState from '@/components/Common/NoDataState';
+import { fetchReportUploadLoading } from '@/context/Employee/ReportUpload/actions';
+import { useAppSelector } from '@/store/hooks';
+import Card from '@/components/UI/Card';
+import DeleteModal from '@/components/Common/DeleteModal';
+import SummaryTableWrapper from '@/components/Common/SummaryTableWrapper';
 
 const ReportUpload = () => {
-  const [reportName, setReportName] = useState<string>("");
+  const [reportName, setReportName] = useState<string>('');
   const [files, setFiles] = useState<File[]>([]);
   const { user } = useAppSelector((state) => state.auth);
   const employeeId = user?.employeeId;
@@ -46,30 +46,30 @@ const ReportUpload = () => {
 
   const handleSubmit = async () => {
     if (!employeeId) {
-      toast.error("Employee ID is missing");
+      toast.error('Employee ID is missing');
       return;
     }
 
     if (files.length === 0) {
-      toast.error("Please attach at least one file");
+      toast.error('Please attach at least one file');
       return;
     }
 
     dispatch(fetchReportUploadLoading(true));
     const formData = new FormData();
-    formData.append("reportName", reportName);
-    formData.append("employeeId", employeeId);
+    formData.append('reportName', reportName);
+    formData.append('employeeId', employeeId);
     files.forEach((file) => {
-      formData.append("files", file);
+      formData.append('files', file);
     });
 
     try {
       await uploadReportApi(dispatch, formData);
-      setReportName("");
+      setReportName('');
       setFiles([]);
       getMyReports(dispatch, 1, 10, employeeId);
     } catch (error) {
-      console.error("Upload failed", error);
+      console.error('Upload failed', error);
     } finally {
       dispatch(fetchReportUploadLoading(false));
     }
@@ -91,26 +91,26 @@ const ReportUpload = () => {
         getMyReports(dispatch, 1, 10, employeeId);
       }
     } catch (error) {
-      console.error("Delete failed", error);
+      console.error('Delete failed', error);
     } finally {
       setIsDeleting(false);
     }
   };
 
   const handleDownload = async (item: Report) => {
-    let extension = "pdf";
-    const type = item.fileType?.toLowerCase() || "";
-    if (type.includes("word") || type.includes("document")) extension = "docx";
-    else if (type.includes("excel") || type.includes("spreadsheet"))
-      extension = "xlsx";
-    else if (type.includes("image")) extension = "png";
-    else if (type.includes("csv")) extension = "csv";
+    let extension = 'pdf';
+    const type = item.fileType?.toLowerCase() || '';
+    if (type.includes('word') || type.includes('document')) extension = 'docx';
+    else if (type.includes('excel') || type.includes('spreadsheet'))
+      extension = 'xlsx';
+    else if (type.includes('image')) extension = 'png';
+    else if (type.includes('csv')) extension = 'csv';
 
     const filename = `${item.name}.${extension}`;
     try {
       await downloadReportApi(item.id, filename);
     } catch (error) {
-      console.error("Download failed", error);
+      console.error('Download failed', error);
     }
   };
 

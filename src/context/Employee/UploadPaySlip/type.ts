@@ -1,9 +1,9 @@
-export const FETCH_REPORT_LIST_LOADING = "FETCH_REPORT_LIST_LOADING";
-export const FETCH_REPORT_LIST_SUCCESS = "FETCH_REPORT_LIST_SUCCESS";
-export const FETCH_REPORT_UPLOAD_LOADING = "FETCH_REPORT_UPLOAD_LOADING";
-export const FETCH_REPORT_UPLOAD_SUCCESS = "FETCH_REPORT_UPLOAD_SUCCESS";
-export const SET_PAGE = "SET_PAGE";
-export const DELETE_REPORT_LOADING = "DELETE_REPORT_LOADING";
+export const FETCH_REPORT_LIST_LOADING = 'FETCH_REPORT_LIST_LOADING';
+export const FETCH_REPORT_LIST_SUCCESS = 'FETCH_REPORT_LIST_SUCCESS';
+export const FETCH_REPORT_UPLOAD_LOADING = 'FETCH_REPORT_UPLOAD_LOADING';
+export const FETCH_REPORT_UPLOAD_SUCCESS = 'FETCH_REPORT_UPLOAD_SUCCESS';
+export const SET_PAGE = 'SET_PAGE';
+export const DELETE_REPORT_LOADING = 'DELETE_REPORT_LOADING';
 
 export interface FETCH_REPORT_LIST_LOADING_ACTION {
   type: typeof FETCH_REPORT_LIST_LOADING;
@@ -56,9 +56,9 @@ export interface Payslip {
   uploadedBy: string;
 }
 
-import { PaginatedResponse } from "@/types/common";
+import { PaginatedResponse } from '@/types/common';
 
 export interface ReportList extends PaginatedResponse<Payslip> {}
 
-import { Dispatch } from "react";
+import { Dispatch } from 'react';
 export type UploadPaySlipDispatch = Dispatch<UploadPaySlipAction>;

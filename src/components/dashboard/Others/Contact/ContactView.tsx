@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { toast } from "sonner";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
-import Typography from "@/components/UI/Typography";
-import Input from "@/components/UI/Input";
-import Button from "@/components/UI/Button";
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import Typography from '@/components/UI/Typography';
+import Input from '@/components/UI/Input';
+import Button from '@/components/UI/Button';
 
 const ContactView = () => {
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
   });
   const [sending, setSending] = useState(false);
 
@@ -30,7 +30,7 @@ const ContactView = () => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     toast.success("Message sent! We'll get back to you soon.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    setFormData({ name: '', email: '', subject: '', message: '' });
     setSending(false);
   };
 

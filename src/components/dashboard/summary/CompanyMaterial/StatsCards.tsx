@@ -1,6 +1,6 @@
-import Chart from "@/components/UI/Chart";
-import Typography from "@/components/UI/Typography";
-import { Building2, CalendarDays, Package, TrendingUp } from "lucide-react";
+import Chart from '@/components/UI/Chart';
+import Typography from '@/components/UI/Typography';
+import { Building2, CalendarDays, Package, TrendingUp } from 'lucide-react';
 
 interface StatsCardsProps {
   statsData: any;
@@ -15,7 +15,7 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
   const chartData = dailyCounts.map((d: any) => d.count);
   const chartLabels = dailyCounts.map((d: any) => {
     const date = new Date(d.date);
-    return date.toLocaleDateString("en-IN", { weekday: "short" });
+    return date.toLocaleDateString('en-IN', { weekday: 'short' });
   });
 
   return (
@@ -41,7 +41,7 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
                 variant="h3"
                 className="text-slate-900 text-2xl font-bold"
               >
-                {statsLoading ? "..." : (statsData?.totalThisWeek ?? 0)}
+                {statsLoading ? '...' : (statsData?.totalThisWeek ?? 0)}
               </Typography>
               <Typography variant="p" className="text-slate-500 text-xs">
                 Materials received
@@ -62,7 +62,7 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
               />
             ) : (
               <div className="h-[80px] flex items-center justify-center text-xs text-slate-400">
-                {statsLoading ? "Loading..." : "No data"}
+                {statsLoading ? 'Loading...' : 'No data'}
               </div>
             )}
           </div>
@@ -90,9 +90,9 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
               className="text-slate-900 text-2xl font-bold"
             >
               {statsLoading
-                ? "..."
+                ? '...'
                 : (statsData?.totalQuantityThisWeek ?? 0).toLocaleString(
-                    "en-IN",
+                    'en-IN',
                   )}
             </Typography>
             <Typography variant="p" className="text-slate-500 text-xs">
@@ -113,7 +113,7 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
               />
             ) : (
               <div className="h-[80px] flex items-center justify-center text-xs text-slate-400">
-                {statsLoading ? "Loading..." : "No data"}
+                {statsLoading ? 'Loading...' : 'No data'}
               </div>
             )}
           </div>
@@ -140,7 +140,7 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
               variant="h3"
               className="text-slate-900 text-2xl font-bold"
             >
-              {statsLoading ? "..." : (statsData?.activeCompanies ?? 0)}
+              {statsLoading ? '...' : (statsData?.activeCompanies ?? 0)}
             </Typography>
             <Typography variant="p" className="text-slate-500 text-xs">
               Companies this week

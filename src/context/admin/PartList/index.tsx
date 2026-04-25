@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React, { createContext, useReducer, useCallback } from "react";
-import type { Dispatch, ReactNode } from "react";
-import { PartState, PartAction } from "./type";
-import reducer, { initialState } from "./reducer";
+import React, { createContext, useReducer, useCallback } from 'react';
+import type { Dispatch, ReactNode } from 'react';
+import { PartState, PartAction } from './type';
+import reducer, { initialState } from './reducer';
 
 type StateContext = {
   state: PartState;
@@ -14,10 +14,10 @@ type DispatchContext = {
 };
 
 export const PartStateContext = createContext<StateContext | undefined>(
-  undefined
+  undefined,
 );
 export const PartDispatchContext = createContext<DispatchContext | undefined>(
-  undefined
+  undefined,
 );
 
 export default function PartContextProvider({
@@ -31,7 +31,7 @@ export default function PartContextProvider({
     (action: PartAction) => {
       return dispatch(action);
     },
-    [dispatch]
+    [dispatch],
   );
 
   return (

@@ -1,24 +1,24 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import Table from "@/components/UI/Table";
-import Typography from "@/components/UI/Typography";
-import NoDataState from "@/components/Common/NoDataState";
-import { columns } from "./Constants";
+import { useEffect } from 'react';
+import Table from '@/components/UI/Table';
+import Typography from '@/components/UI/Typography';
+import NoDataState from '@/components/Common/NoDataState';
+import { columns } from './Constants';
 import {
   approveReportApi,
   getAllReports,
   deleteReportApi,
   downloadReportApi,
-} from "@/context/admin/UploadedReports/api";
+} from '@/context/admin/UploadedReports/api';
 import {
   useUploadedReportDispatchContext,
   useUploadedReportStateContext,
-} from "@/context/admin/UploadedReports/hooks";
-import { Report } from "@/components/dashboard/Employees/Report/Constants";
-import { mailedReportsApi } from "@/context/Employee/ReportUpload/api";
-import Button from "@/components/UI/Button";
-import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
+} from '@/context/admin/UploadedReports/hooks';
+import { Report } from '@/components/dashboard/Employees/Report/Constants';
+import { mailedReportsApi } from '@/context/Employee/ReportUpload/api';
+import Button from '@/components/UI/Button';
+import SummaryTableWrapper from '@/components/Common/SummaryTableWrapper';
 
 const UploadedReport = () => {
   const dispatch = useUploadedReportDispatchContext();
@@ -29,30 +29,30 @@ const UploadedReport = () => {
   }, []);
 
   const handleApprove = async (item: any) => {
-    await approveReportApi(dispatch, item.id, "approved");
+    await approveReportApi(dispatch, item.id, 'approved');
     getAllReports(dispatch, 1, 10);
   };
 
   const handleReject = async (item: any) => {
     await deleteReportApi(dispatch, item.id);
-    await approveReportApi(dispatch, item.id, "rejected");
+    await approveReportApi(dispatch, item.id, 'rejected');
     getAllReports(dispatch, 1, 10);
   };
 
   const handleDownload = async (item: Report) => {
-    let extension = "pdf";
-    const type = item.fileType?.toLowerCase() || "";
-    if (type.includes("word") || type.includes("document")) extension = "docx";
-    else if (type.includes("excel") || type.includes("spreadsheet"))
-      extension = "xlsx";
-    else if (type.includes("image")) extension = "png";
-    else if (type.includes("csv")) extension = "csv";
+    let extension = 'pdf';
+    const type = item.fileType?.toLowerCase() || '';
+    if (type.includes('word') || type.includes('document')) extension = 'docx';
+    else if (type.includes('excel') || type.includes('spreadsheet'))
+      extension = 'xlsx';
+    else if (type.includes('image')) extension = 'png';
+    else if (type.includes('csv')) extension = 'csv';
 
     const filename = `${item.name}.${extension}`;
     try {
       await downloadReportApi(item.id, filename);
     } catch (error) {
-      console.error("Download failed", error);
+      console.error('Download failed', error);
     }
   };
 

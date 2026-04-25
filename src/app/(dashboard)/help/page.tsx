@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Mail,
   Phone,
   HelpCircle,
   ChevronDown,
   MessageCircle,
-} from "lucide-react";
-import Typography from "@/components/UI/Typography";
-import Button from "@/components/UI/Button";
+} from 'lucide-react';
+import Typography from '@/components/UI/Typography';
+import Button from '@/components/UI/Button';
 
 interface FAQItem {
   question: string;
@@ -19,27 +19,27 @@ interface FAQItem {
 
 const faqs: FAQItem[] = [
   {
-    question: "How do I add a new employee?",
+    question: 'How do I add a new employee?',
     answer:
       "Navigate to the 'Employees' page from the sidebar. Click on the 'Add Employee' button at the top right corner. Fill in the required details such as Name, Email, Role, and Post, then click 'Create Employee'.",
   },
   {
-    question: "How do I approve new user registrations?",
+    question: 'How do I approve new user registrations?',
     answer:
       "Go to the 'Approvals' page. You will see a list of users pending approval. Click the green checkmark icon to approve a user and promote them to an 'Employee' role. To reject/delete a user, click the red trash icon.",
   },
   {
-    question: "How do I upload my monthly report?",
+    question: 'How do I upload my monthly report?',
     answer:
       "Navigate to the 'Report Upload' page. Enter a name for your report (e.g., 'October 2023 Performance'), drag and drop your files into the upload area, and click 'Submit Report'. You can view your submission history on the same page.",
   },
   {
-    question: "What file formats are supported for uploads?",
+    question: 'What file formats are supported for uploads?',
     answer:
-      "We currently support PDF, Word documents (DOC/DOCX), Excel spreadsheets (XLS/XLSX), PowerPoint presentations, and basic text files. The maximum file size per file is 25MB.",
+      'We currently support PDF, Word documents (DOC/DOCX), Excel spreadsheets (XLS/XLSX), PowerPoint presentations, and basic text files. The maximum file size per file is 25MB.',
   },
   {
-    question: "Who should I contact for technical issues?",
+    question: 'Who should I contact for technical issues?',
     answer:
       "For any technical issues or bugs, please contact the development team using the email or phone number provided in the 'Contact Developer' section on this page.",
   },
@@ -59,7 +59,7 @@ const FAQAccordion = ({ item }: { item: FAQItem }) => {
         </Typography>
         <ChevronDown
           className={`text-slate-400 transition-transform duration-300 ${
-            isOpen ? "rotate-180" : ""
+            isOpen ? 'rotate-180' : ''
           }`}
           size={20}
         />
@@ -68,7 +68,7 @@ const FAQAccordion = ({ item }: { item: FAQItem }) => {
         {isOpen && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
+            animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
@@ -156,7 +156,7 @@ const ContactUsPage = () => {
                 fullWidth
                 variant="primary"
                 onClick={() =>
-                  (window.location.href = "mailto:saksham4503@gmail.com")
+                  (window.location.href = 'mailto:saksham4503@gmail.com')
                 }
               >
                 Contact Support

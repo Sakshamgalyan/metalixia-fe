@@ -1,4 +1,4 @@
-color 
+color
 
 bg
 #d1d3e2

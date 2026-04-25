@@ -1,12 +1,14 @@
-import { PaginatedResponse } from "@/types/common";
+import { PaginatedResponse } from '@/types/common';
 
-export const FETCH_PRODUCTION_LIST_LOADING = "FETCH_PRODUCTION_LIST_LOADING";
-export const FETCH_PRODUCTION_LIST_SUCCESS = "FETCH_PRODUCTION_LIST_SUCCESS";
-export const FETCH_PRODUCTION_STATS_LOADING = "FETCH_PRODUCTION_STATS_LOADING";
-export const FETCH_PRODUCTION_STATS_SUCCESS = "FETCH_PRODUCTION_STATS_SUCCESS";
-export const FETCH_PRODUCTION_PIPELINE_LOADING = "FETCH_PRODUCTION_PIPELINE_LOADING";
-export const FETCH_PRODUCTION_PIPELINE_SUCCESS = "FETCH_PRODUCTION_PIPELINE_SUCCESS";
-export const SET_PRODUCTION_PAGE = "SET_PRODUCTION_PAGE";
+export const FETCH_PRODUCTION_LIST_LOADING = 'FETCH_PRODUCTION_LIST_LOADING';
+export const FETCH_PRODUCTION_LIST_SUCCESS = 'FETCH_PRODUCTION_LIST_SUCCESS';
+export const FETCH_PRODUCTION_STATS_LOADING = 'FETCH_PRODUCTION_STATS_LOADING';
+export const FETCH_PRODUCTION_STATS_SUCCESS = 'FETCH_PRODUCTION_STATS_SUCCESS';
+export const FETCH_PRODUCTION_PIPELINE_LOADING =
+  'FETCH_PRODUCTION_PIPELINE_LOADING';
+export const FETCH_PRODUCTION_PIPELINE_SUCCESS =
+  'FETCH_PRODUCTION_PIPELINE_SUCCESS';
+export const SET_PRODUCTION_PAGE = 'SET_PRODUCTION_PAGE';
 
 export interface ProcessStep {
   name: string;
@@ -75,13 +77,34 @@ export interface ProductionState {
   page: number;
 }
 
-export interface FETCH_PRODUCTION_LIST_LOADING_ACTION { type: typeof FETCH_PRODUCTION_LIST_LOADING; payload: boolean; }
-export interface FETCH_PRODUCTION_LIST_SUCCESS_ACTION { type: typeof FETCH_PRODUCTION_LIST_SUCCESS; payload: ProductionListResponse; }
-export interface FETCH_PRODUCTION_STATS_LOADING_ACTION { type: typeof FETCH_PRODUCTION_STATS_LOADING; payload: boolean; }
-export interface FETCH_PRODUCTION_STATS_SUCCESS_ACTION { type: typeof FETCH_PRODUCTION_STATS_SUCCESS; payload: ProductionStats; }
-export interface FETCH_PRODUCTION_PIPELINE_LOADING_ACTION { type: typeof FETCH_PRODUCTION_PIPELINE_LOADING; payload: boolean; }
-export interface FETCH_PRODUCTION_PIPELINE_SUCCESS_ACTION { type: typeof FETCH_PRODUCTION_PIPELINE_SUCCESS; payload: ProductionOrder[]; }
-export interface SET_PRODUCTION_PAGE_ACTION { type: typeof SET_PRODUCTION_PAGE; payload: number; }
+export interface FETCH_PRODUCTION_LIST_LOADING_ACTION {
+  type: typeof FETCH_PRODUCTION_LIST_LOADING;
+  payload: boolean;
+}
+export interface FETCH_PRODUCTION_LIST_SUCCESS_ACTION {
+  type: typeof FETCH_PRODUCTION_LIST_SUCCESS;
+  payload: ProductionListResponse;
+}
+export interface FETCH_PRODUCTION_STATS_LOADING_ACTION {
+  type: typeof FETCH_PRODUCTION_STATS_LOADING;
+  payload: boolean;
+}
+export interface FETCH_PRODUCTION_STATS_SUCCESS_ACTION {
+  type: typeof FETCH_PRODUCTION_STATS_SUCCESS;
+  payload: ProductionStats;
+}
+export interface FETCH_PRODUCTION_PIPELINE_LOADING_ACTION {
+  type: typeof FETCH_PRODUCTION_PIPELINE_LOADING;
+  payload: boolean;
+}
+export interface FETCH_PRODUCTION_PIPELINE_SUCCESS_ACTION {
+  type: typeof FETCH_PRODUCTION_PIPELINE_SUCCESS;
+  payload: ProductionOrder[];
+}
+export interface SET_PRODUCTION_PAGE_ACTION {
+  type: typeof SET_PRODUCTION_PAGE;
+  payload: number;
+}
 
 export type ProductionAction =
   | FETCH_PRODUCTION_LIST_LOADING_ACTION

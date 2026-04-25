@@ -1,29 +1,29 @@
-import React from "react";
+import React from 'react';
 
 interface SkeletonProps {
   width?: string;
   height?: string;
   className?: string;
-  variant?: "text" | "circular" | "rectangular";
+  variant?: 'text' | 'circular' | 'rectangular';
 }
 
 const Skeleton: React.FC<SkeletonProps> = ({
-  width = "100%",
-  height = "20px",
-  className = "",
-  variant = "rectangular",
+  width = '100%',
+  height = '20px',
+  className = '',
+  variant = 'rectangular',
 }) => {
   const baseClasses =
-    "animate-pulse bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 bg-[length:200%_100%]";
+    'animate-pulse bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 bg-[length:200%_100%]';
 
   const variantClasses = {
-    text: "rounded",
-    circular: "rounded-full",
-    rectangular: "rounded-md",
+    text: 'rounded',
+    circular: 'rounded-full',
+    rectangular: 'rounded-md',
   };
 
   const animationStyle = {
-    animation: "shimmer 1.5s ease-in-out infinite",
+    animation: 'shimmer 1.5s ease-in-out infinite',
   };
 
   return (

@@ -1,4 +1,4 @@
-import { TableColumn } from "@/components/UI/Table";
+import { TableColumn } from '@/components/UI/Table';
 import {
   Calendar,
   EditIcon,
@@ -8,9 +8,9 @@ import {
   FileImage,
   File,
   ArrowDown,
-} from "lucide-react";
-import Chips from "@/components/UI/Chips";
-import Button from "@/components/UI/Button";
+} from 'lucide-react';
+import Chips from '@/components/UI/Chips';
+import Button from '@/components/UI/Button';
 
 export interface Report {
   id: string;
@@ -26,9 +26,9 @@ export const columns = (
   onDelete: (item: Report) => void,
 ): TableColumn<Report>[] => [
   {
-    header: "Report Name",
-    accessor: "name",
-    className: "font-medium text-slate-900",
+    header: 'Report Name',
+    accessor: 'name',
+    className: 'font-medium text-slate-900',
     render: (item) => (
       <div className="flex items-center gap-2">
         <div className="p-2 bg-slate-100 rounded-lg text-slate-500">
@@ -39,8 +39,8 @@ export const columns = (
     ),
   },
   {
-    header: "Date Uploaded",
-    accessor: "date",
+    header: 'Date Uploaded',
+    accessor: 'date',
     render: (item) => (
       <div className="flex items-center gap-2 text-slate-500">
         <Calendar size={14} />
@@ -49,25 +49,25 @@ export const columns = (
     ),
   },
   {
-    header: "Type",
-    accessor: "fileType",
+    header: 'Type',
+    accessor: 'fileType',
     render: (item) => {
-      const type = item.fileType?.toLowerCase() || "";
+      const type = item.fileType?.toLowerCase() || '';
       let icon = <File size={16} className="text-slate-500" />;
-      let label = "FILE";
+      let label = 'FILE';
 
-      if (type.includes("pdf")) {
+      if (type.includes('pdf')) {
         icon = <FileText size={16} className="text-red-500" />;
-        label = "PDF";
-      } else if (type.includes("word") || type.includes("document")) {
+        label = 'PDF';
+      } else if (type.includes('word') || type.includes('document')) {
         icon = <FileText size={16} className="text-blue-500" />;
-        label = "DOCX";
-      } else if (type.includes("excel") || type.includes("spreadsheet")) {
+        label = 'DOCX';
+      } else if (type.includes('excel') || type.includes('spreadsheet')) {
         icon = <FileSpreadsheet size={16} className="text-green-500" />;
-        label = "XLSX";
-      } else if (type.includes("image")) {
+        label = 'XLSX';
+      } else if (type.includes('image')) {
         icon = <FileImage size={16} className="text-purple-500" />;
-        label = "IMG";
+        label = 'IMG';
       }
 
       return (
@@ -79,18 +79,18 @@ export const columns = (
     },
   },
   {
-    header: "Status",
-    accessor: "status",
+    header: 'Status',
+    accessor: 'status',
     render: (item) => {
-      let variant: "default" | "success" | "warning" | "danger" = "default";
-      if (item.status === "approved") variant = "success";
-      else if (item.status === "pending") variant = "warning";
-      else if (item.status === "rejected") variant = "danger";
-      else if (item.status === "mailed") variant = "default";
+      let variant: 'default' | 'success' | 'warning' | 'danger' = 'default';
+      if (item.status === 'approved') variant = 'success';
+      else if (item.status === 'pending') variant = 'warning';
+      else if (item.status === 'rejected') variant = 'danger';
+      else if (item.status === 'mailed') variant = 'default';
 
       return (
         <Chips
-          label={item.status || ""}
+          label={item.status || ''}
           colorScheme={variant}
           className="capitalize"
         />
@@ -98,22 +98,22 @@ export const columns = (
     },
   },
   {
-    header: "Actions",
-    accessor: "action",
-    className: "flex gap-2 justify-center",
+    header: 'Actions',
+    accessor: 'action',
+    className: 'flex gap-2 justify-center',
     render: (item) => (
       <div className="flex items-center gap-2">
         <Button
           size="sm"
           leftIcon={<ArrowDown />}
-          disabled={item.status === "rejected"}
+          disabled={item.status === 'rejected'}
           onClick={() => onDownload(item)}
         />
         <Button
           variant="danger"
           size="sm"
           leftIcon={<TrashIcon />}
-          disabled={item.status === "mailed" || item.status === "rejected"}
+          disabled={item.status === 'mailed' || item.status === 'rejected'}
           onClick={() => onDelete(item)}
         />
       </div>

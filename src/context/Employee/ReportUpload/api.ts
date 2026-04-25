@@ -1,13 +1,13 @@
-import { Dispatch } from "react";
-import ApiClient from "@/lib/apiClient";
-import { toast } from "sonner";
-import { ReportList, ReportUpload, ReportUploadAction } from "./type";
+import { Dispatch } from 'react';
+import ApiClient from '@/lib/apiClient';
+import { toast } from 'sonner';
+import { ReportList, ReportUpload, ReportUploadAction } from './type';
 import {
   deleteReportLoading,
   fetchReportListLoading,
   fetchReportListSuccess,
   fetchReportUploadSuccess,
-} from "./actions";
+} from './actions';
 
 export const uploadReportApi = async (
   dispatch: Dispatch<ReportUploadAction>,
@@ -15,20 +15,20 @@ export const uploadReportApi = async (
 ) => {
   try {
     const response = await ApiClient.post<ReportUpload>(
-      "/employee/report-upload",
+      '/employee/report-upload',
       data,
       {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
         },
       },
     );
-    toast.success("Report uploaded successfully");
+    toast.success('Report uploaded successfully');
     dispatch(fetchReportUploadSuccess(response));
     return;
   } catch (error: any) {
-    toast.error("Failed to upload report", {
-      description: error?.response?.data?.message || "Something went wrong",
+    toast.error('Failed to upload report', {
+      description: error?.response?.data?.message || 'Something went wrong',
     });
     throw error;
   }
@@ -53,8 +53,8 @@ export const getMyReports = async (
     dispatch(fetchReportListSuccess(response));
     return;
   } catch (error: any) {
-    toast.error("Failed to fetch reports", {
-      description: error?.response?.data?.message || "Something went wrong",
+    toast.error('Failed to fetch reports', {
+      description: error?.response?.data?.message || 'Something went wrong',
     });
     throw error;
   }
@@ -67,11 +67,11 @@ export const deleteReportApi = async (
   dispatch(deleteReportLoading(true));
   try {
     await ApiClient.post(`/employee/delete-report`, { id });
-    toast.success("Report deleted successfully");
+    toast.success('Report deleted successfully');
     return;
   } catch (error: any) {
-    toast.error("Failed to delete report", {
-      description: error?.response?.data?.message || "Something went wrong",
+    toast.error('Failed to delete report', {
+      description: error?.response?.data?.message || 'Something went wrong',
     });
     throw error;
   } finally {
@@ -84,21 +84,21 @@ export const downloadReportApi = async (id: string, filename: string) => {
     const response = await ApiClient.get<Blob>(
       `/employee/download-report/${id}`,
       {
-        responseType: "blob",
+        responseType: 'blob',
       },
     );
     const url = window.URL.createObjectURL(new Blob([response])); // response is data (Blob)
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     link.href = url;
-    link.setAttribute("download", filename);
+    link.setAttribute('download', filename);
     document.body.appendChild(link);
     link.click();
     link.remove();
     window.URL.revokeObjectURL(url);
     return response;
   } catch (error: any) {
-    toast.error("Failed to download report", {
-      description: error?.response?.data?.message || "Something went wrong",
+    toast.error('Failed to download report', {
+      description: error?.response?.data?.message || 'Something went wrong',
     });
     throw error;
   }
@@ -123,8 +123,8 @@ export const mailedReportsApi = async (
     dispatch(fetchReportListSuccess(response));
     return;
   } catch (error: any) {
-    toast.error("Failed to fetch reports", {
-      description: error?.response?.data?.message || "Something went wrong",
+    toast.error('Failed to fetch reports', {
+      description: error?.response?.data?.message || 'Something went wrong',
     });
     throw error;
   } finally {
@@ -139,17 +139,20 @@ export const getAllReports = async (
 ) => {
   try {
     dispatch(fetchReportListLoading(true));
-    const response = await ApiClient.get<ReportList>("/employee/get-all-reports", {
-      params: {
-        page,
-        limit,
+    const response = await ApiClient.get<ReportList>(
+      '/employee/get-all-reports',
+      {
+        params: {
+          page,
+          limit,
+        },
       },
-    });
+    );
     dispatch(fetchReportListSuccess(response));
     return;
   } catch (error: any) {
-    toast.error("Failed to fetch reports", {
-      description: error?.response?.data?.message || "Something went wrong",
+    toast.error('Failed to fetch reports', {
+      description: error?.response?.data?.message || 'Something went wrong',
     });
     throw error;
   } finally {

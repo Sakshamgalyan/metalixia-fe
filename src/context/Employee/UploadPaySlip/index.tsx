@@ -1,8 +1,8 @@
-"use client"
-import React, { createContext, useReducer, useCallback } from "react";
-import type { Dispatch, ReactNode } from "react";
-import reducer, { initialState } from "./reducer";
-import { UploadPaySlipState, UploadPaySlipAction } from "./type";
+'use client';
+import React, { createContext, useReducer, useCallback } from 'react';
+import type { Dispatch, ReactNode } from 'react';
+import reducer, { initialState } from './reducer';
+import { UploadPaySlipState, UploadPaySlipAction } from './type';
 
 type StateContext = {
   state: UploadPaySlipState;
@@ -16,9 +16,9 @@ const UploadPaySlipStateContext = createContext<StateContext | undefined>(
   undefined,
 );
 
-const UploadPaySlipDispatchContext = createContext<
-  DispatchContext | undefined
->(undefined);
+const UploadPaySlipDispatchContext = createContext<DispatchContext | undefined>(
+  undefined,
+);
 
 const UploadPaySlipContextProvider: React.FC<{ children: ReactNode }> = ({
   children,

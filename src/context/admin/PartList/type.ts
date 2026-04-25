@@ -1,11 +1,11 @@
-export const FETCH_PART_LIST_LOADING = "FETCH_PART_LIST_LOADING";
-export const FETCH_PART_LIST_SUCCESS = "FETCH_PART_LIST_SUCCESS";
-export const SET_PAGE = "SET_PAGE";
-export const SET_MODAL = "SET_MODAL";
-export const ACTION_LOADING = "ACTION_LOADING";
-export const ACTION_SUCCESS = "ACTION_SUCCESS";
-export const FETCH_COMPANIES_LIST_LOADING = "FETCH_COMPANIES_LIST_LOADING";
-export const FETCH_COMPANIES_LIST_SUCCESS = "FETCH_COMPANIES_LIST_SUCCESS";
+export const FETCH_PART_LIST_LOADING = 'FETCH_PART_LIST_LOADING';
+export const FETCH_PART_LIST_SUCCESS = 'FETCH_PART_LIST_SUCCESS';
+export const SET_PAGE = 'SET_PAGE';
+export const SET_MODAL = 'SET_MODAL';
+export const ACTION_LOADING = 'ACTION_LOADING';
+export const ACTION_SUCCESS = 'ACTION_SUCCESS';
+export const FETCH_COMPANIES_LIST_LOADING = 'FETCH_COMPANIES_LIST_LOADING';
+export const FETCH_COMPANIES_LIST_SUCCESS = 'FETCH_COMPANIES_LIST_SUCCESS';
 
 export interface FETCH_PART_LIST_LOADING_ACTION {
   type: typeof FETCH_PART_LIST_LOADING;
@@ -22,7 +22,7 @@ export interface SET_PAGE_ACTION {
   payload: number;
 }
 
-export type ModalMode = "add" | "edit" | null;
+export type ModalMode = 'add' | 'edit' | null;
 
 export interface ModalState {
   mode: ModalMode;
@@ -74,7 +74,7 @@ export interface PartItem {
   updatedAt: string;
 }
 
-import { PaginatedResponse } from "@/types/common";
+import { PaginatedResponse } from '@/types/common';
 
 export interface PartListResponse extends PaginatedResponse<PartItem> {}
 

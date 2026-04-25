@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
-import Button from "@/components/UI/Button";
-import Input from "@/components/UI/Input";
-import Modal from "@/components/UI/Modal";
-import Dropdown from "@/components/UI/DropDown";
-import DatePicker from "@/components/UI/DatePicker";
-import { useAppSelector } from "@/store/hooks";
+import { useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import Button from '@/components/UI/Button';
+import Input from '@/components/UI/Input';
+import Modal from '@/components/UI/Modal';
+import Dropdown from '@/components/UI/DropDown';
+import DatePicker from '@/components/UI/DatePicker';
+import { useAppSelector } from '@/store/hooks';
 import {
   useCompanyMaterialStateContext,
   useCompanyMaterialDispatchContext,
-} from "@/context/Summary/CompanyMaterial/hooks";
+} from '@/context/Summary/CompanyMaterial/hooks';
 import {
   createCompanyMaterialApi,
   updateCompanyMaterialApi,
@@ -20,18 +20,21 @@ import {
   getCompanyMaterialStatsApi,
   getCompaniesListApi,
   getCompanyPartsApi,
-} from "@/context/Summary/CompanyMaterial/api";
-import { setModal } from "@/context/Summary/CompanyMaterial/actions";
-import { CompanyList, CompanyPart } from "@/context/Summary/CompanyMaterial/type";
+} from '@/context/Summary/CompanyMaterial/api';
+import { setModal } from '@/context/Summary/CompanyMaterial/actions';
+import {
+  CompanyList,
+  CompanyPart,
+} from '@/context/Summary/CompanyMaterial/type';
 
 // ─── Constants ───────────────────────────────────────────────────
 const UNIT_OPTIONS = [
-  { value: "kg", label: "Kilograms (kg)" },
-  { value: "pcs", label: "Pieces (pcs)" },
-  { value: "liters", label: "Liters" },
-  { value: "meters", label: "Meters" },
-  { value: "tons", label: "Tons" },
-  { value: "units", label: "Units" },
+  { value: 'kg', label: 'Kilograms (kg)' },
+  { value: 'pcs', label: 'Pieces (pcs)' },
+  { value: 'liters', label: 'Liters' },
+  { value: 'meters', label: 'Meters' },
+  { value: 'tons', label: 'Tons' },
+  { value: 'units', label: 'Units' },
 ];
 
 type FormValues = {
@@ -47,15 +50,15 @@ type FormValues = {
 };
 
 const defaultValues: FormValues = {
-  companyId: "",
-  partId: "",
-  quantity: "",
-  unit: "pcs",
-  expectedOn: "",
-  deliveryBy: "",
-  receivedOn: "",
-  inventoryLocation: "",
-  receivedBy: "",
+  companyId: '',
+  partId: '',
+  quantity: '',
+  unit: 'pcs',
+  expectedOn: '',
+  deliveryBy: '',
+  receivedOn: '',
+  inventoryLocation: '',
+  receivedBy: '',
 };
 
 const MaterialFormModal = () => {
@@ -74,25 +77,21 @@ const MaterialFormModal = () => {
   const dispatch = useCompanyMaterialDispatchContext();
   const { user } = useAppSelector((state) => state.auth);
 
-  const isSuperAdmin = user?.role === "superAdmin";
+  const isSuperAdmin = user?.role === 'superAdmin';
   const { mode, selectedItem } = modal;
 
-  const isEdit = mode === "edit";
-  const isReceive = mode === "receive";
-  const isOpen = mode === "add" || isEdit || isReceive;
+  const isEdit = mode === 'edit';
+  const isReceive = mode === 'receive';
+  const isOpen = mode === 'add' || isEdit || isReceive;
   const isEditOrReceive = isEdit || isReceive;
 
-  const {
-    control,
-    handleSubmit,
-    watch,
-    reset,
-    setValue,
-  } = useForm<FormValues>({
-    defaultValues,
-  });
+  const { control, handleSubmit, watch, reset, setValue } = useForm<FormValues>(
+    {
+      defaultValues,
+    },
+  );
 
-  const companyId = watch("companyId");
+  const companyId = watch('companyId');
 
   // ─── Fetch companies on modal open ──────────────────────────────
   useEffect(() => {
@@ -112,23 +111,23 @@ const MaterialFormModal = () => {
   useEffect(() => {
     if (isOpen && selectedItem && isEditOrReceive) {
       reset({
-        companyId: selectedItem.companyId || "",
-        partId: selectedItem.partId || "",
-        quantity: String(selectedItem.quantity || ""),
-        unit: selectedItem.unit || "pcs",
+        companyId: selectedItem.companyId || '',
+        partId: selectedItem.partId || '',
+        quantity: String(selectedItem.quantity || ''),
+        unit: selectedItem.unit || 'pcs',
         expectedOn: selectedItem.expectedOn
-          ? new Date(selectedItem.expectedOn).toISOString().split("T")[0]
-          : "",
+          ? new Date(selectedItem.expectedOn).toISOString().split('T')[0]
+          : '',
         deliveryBy: selectedItem.deliveryBy
-          ? new Date(selectedItem.deliveryBy).toISOString().split("T")[0]
-          : "",
+          ? new Date(selectedItem.deliveryBy).toISOString().split('T')[0]
+          : '',
         receivedOn: selectedItem.receivedOn
-          ? new Date(selectedItem.receivedOn).toISOString().split("T")[0]
-          : "",
-        inventoryLocation: selectedItem.inventoryLocation || "",
-        receivedBy: selectedItem.receivedBy || "",
+          ? new Date(selectedItem.receivedOn).toISOString().split('T')[0]
+          : '',
+        inventoryLocation: selectedItem.inventoryLocation || '',
+        receivedBy: selectedItem.receivedBy || '',
       });
-    } else if (isOpen && mode === "add") {
+    } else if (isOpen && mode === 'add') {
       reset(defaultValues);
     }
   }, [isOpen, mode, selectedItem]);
@@ -142,7 +141,7 @@ const MaterialFormModal = () => {
     if (isReceive && selectedItem && user) {
       await updateCompanyMaterialReceiverApi(dispatch, selectedItem._id, {
         receivedBy: user.name || user.email,
-        receivedById: user.id || "unknown",
+        receivedById: user.id || 'unknown',
       });
     } else {
       const payload: any = {
@@ -175,8 +174,8 @@ const MaterialFormModal = () => {
   const isSubmitting = isReceive
     ? updateReceiverLoading
     : isEdit
-    ? updateLoading
-    : createLoading;
+      ? updateLoading
+      : createLoading;
 
   return (
     <Modal
@@ -184,10 +183,10 @@ const MaterialFormModal = () => {
       onClose={closeModal}
       title={
         isReceive
-          ? "Confirm Material Receipt"
+          ? 'Confirm Material Receipt'
           : isEdit
-          ? "Edit Material Entry"
-          : "Add Material Entry"
+            ? 'Edit Material Entry'
+            : 'Add Material Entry'
       }
       width="lg"
       footer={
@@ -200,15 +199,16 @@ const MaterialFormModal = () => {
             size="sm"
             onClick={handleSubmit(onSubmit)}
             isLoading={isSubmitting}
-            disabled={isSubmitting || companiesListLoading || companyPartsLoading}
+            disabled={
+              isSubmitting || companiesListLoading || companyPartsLoading
+            }
           >
-            {isReceive ? "Confirm Receipt" : isEdit ? "Update" : "Add Entry"}
+            {isReceive ? 'Confirm Receipt' : isEdit ? 'Update' : 'Add Entry'}
           </Button>
         </>
       }
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
         {/* Company */}
         <Controller
           control={control}
@@ -223,7 +223,7 @@ const MaterialFormModal = () => {
               value={field.value}
               onChange={(val) => {
                 field.onChange(val);
-                setValue("partId", "");
+                setValue('partId', '');
               }}
               placeholder="Select Company"
               disabled={isEditOrReceive || companiesListLoading}
@@ -257,12 +257,12 @@ const MaterialFormModal = () => {
           control={control}
           name="quantity"
           render={({ field }) => (
-            <Input 
-              label="Quantity" 
-              type="number" 
-              placeholder="Enter Quantity" 
-              {...field} 
-              required 
+            <Input
+              label="Quantity"
+              type="number"
+              placeholder="Enter Quantity"
+              {...field}
+              required
             />
           )}
         />
@@ -272,61 +272,61 @@ const MaterialFormModal = () => {
           control={control}
           name="unit"
           render={({ field }) => (
-            <Dropdown 
-              label="Unit" 
+            <Dropdown
+              label="Unit"
               placeholder="Select Unit"
-              options={UNIT_OPTIONS} 
-              {...field} 
+              options={UNIT_OPTIONS}
+              {...field}
             />
           )}
         />
 
         <Controller
-            control={control}
-            name="expectedOn"
-            render={({ field }) => (
-              <DatePicker 
-                label="Expected On" 
-                placeholder="dd/mm/yyyy" 
-                {...field} 
-              />
-            )}
-          />
+          control={control}
+          name="expectedOn"
+          render={({ field }) => (
+            <DatePicker
+              label="Expected On"
+              placeholder="dd/mm/yyyy"
+              {...field}
+            />
+          )}
+        />
 
         <Controller
-            control={control}
-            name="deliveryBy"
-            render={({ field }) => (
-              <DatePicker 
-                label="Delivery By" 
-                placeholder="dd/mm/yyyy" 
-                {...field} 
-              />
-            )}
-          />
+          control={control}
+          name="deliveryBy"
+          render={({ field }) => (
+            <DatePicker
+              label="Delivery By"
+              placeholder="dd/mm/yyyy"
+              {...field}
+            />
+          )}
+        />
 
         <Controller
-            control={control}
-            name="receivedOn"
-            render={({ field }) => (
-              <DatePicker 
-                label="Received On" 
-                placeholder="dd/mm/yyyy" 
-                {...field} 
-              />
-            )}
-          />
+          control={control}
+          name="receivedOn"
+          render={({ field }) => (
+            <DatePicker
+              label="Received On"
+              placeholder="dd/mm/yyyy"
+              {...field}
+            />
+          )}
+        />
 
         {/* Location */}
         <Controller
           control={control}
           name="inventoryLocation"
           render={({ field }) => (
-            <Input 
-              label="Inventory Location" 
-              placeholder="Enter Inventory Location" 
-              {...field} 
-              required 
+            <Input
+              label="Inventory Location"
+              placeholder="Enter Inventory Location"
+              {...field}
+              required
             />
           )}
         />

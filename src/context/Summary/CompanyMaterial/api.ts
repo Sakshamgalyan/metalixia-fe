@@ -1,13 +1,18 @@
-import { Dispatch } from "react";
-import ApiClient from "@/lib/apiClient";
-import { toast } from "sonner";
+import { Dispatch } from 'react';
+import ApiClient from '@/lib/apiClient';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/error';
+
 import {
   CompanyList,
   CompanyMaterialAction,
   CompanyMaterialListResponse,
   CompanyMaterialStats,
   CompanyPart,
-} from "./type";
+  CreateCompanyMaterialRequest,
+  UpdateCompanyMaterialRequest,
+} from './type';
+
 import {
   fetchCompanyMaterialListLoading,
   fetchCompanyMaterialListSuccess,
@@ -23,7 +28,7 @@ import {
   fetchCompaniesListSuccess,
   fetchCompanyPartsLoading,
   fetchCompanyPartsSuccess,
-} from "./actions";
+} from './actions';
 
 export const getCompanyMaterialsApi = async (
   dispatch: Dispatch<CompanyMaterialAction>,
@@ -37,16 +42,16 @@ export const getCompanyMaterialsApi = async (
     if (search) params.search = search;
 
     const response = await ApiClient.get<CompanyMaterialListResponse>(
-      "/material/company",
+      '/material/company',
       {
         params,
       },
     );
     dispatch(fetchCompanyMaterialListSuccess(response));
     return;
-  } catch (error: any) {
-    toast.error("Failed to fetch company materials", {
-      description: error?.response?.data?.message || "Something went wrong",
+  } catch (error: unknown) {
+    toast.error('Failed to fetch company materials', {
+      description: getErrorMessage(error),
     });
     throw error;
   } finally {
@@ -59,12 +64,12 @@ export const getCompaniesListApi = async (
 ) => {
   dispatch(fetchCompaniesListLoading(true));
   try {
-    const response = await ApiClient.get<CompanyList[]>("/company/list");
+    const response = await ApiClient.get<CompanyList[]>('/company/list');
     dispatch(fetchCompaniesListSuccess(response));
     return response;
-  } catch (error: any) {
-    toast.error("Failed to fetch companies list", {
-      description: error?.response?.data?.message || "Something went wrong",
+  } catch (error: unknown) {
+    toast.error('Failed to fetch companies list', {
+      description: getErrorMessage(error),
     });
     throw error;
   } finally {
@@ -83,9 +88,9 @@ export const getCompanyPartsApi = async (
     );
     dispatch(fetchCompanyPartsSuccess(response));
     return response;
-  } catch (error: any) {
-    toast.error("Failed to fetch company parts", {
-      description: error?.response?.data?.message || "Something went wrong",
+  } catch (error: unknown) {
+    toast.error('Failed to fetch company parts', {
+      description: getErrorMessage(error),
     });
     throw error;
   } finally {
@@ -95,17 +100,17 @@ export const getCompanyPartsApi = async (
 
 export const createCompanyMaterialApi = async (
   dispatch: Dispatch<CompanyMaterialAction>,
-  data: any,
+  data: CreateCompanyMaterialRequest,
 ) => {
   dispatch(createCompanyMaterialLoading(true));
   try {
-    const response = await ApiClient.post("/material/company", data);
+    const response = await ApiClient.post('/material/company', data);
     dispatch(createCompanyMaterialSuccess(response));
-    toast.success("Company material created successfully");
+    toast.success('Company material created successfully');
     return;
-  } catch (error: any) {
-    toast.error("Failed to create company material", {
-      description: error?.response?.data?.message || "Something went wrong",
+  } catch (error: unknown) {
+    toast.error('Failed to create company material', {
+      description: getErrorMessage(error),
     });
     throw error;
   } finally {
@@ -116,17 +121,17 @@ export const createCompanyMaterialApi = async (
 export const updateCompanyMaterialApi = async (
   dispatch: Dispatch<CompanyMaterialAction>,
   id: string,
-  data: any,
+  data: UpdateCompanyMaterialRequest,
 ) => {
   dispatch(updateCompanyMaterialLoading(true));
   try {
     const response = await ApiClient.patch(`/material/company/${id}`, data);
     dispatch(updateCompanyMaterialSuccess(response));
-    toast.success("Company material updated successfully");
+    toast.success('Company material updated successfully');
     return;
-  } catch (error: any) {
-    toast.error("Failed to update company material", {
-      description: error?.response?.data?.message || "Something went wrong",
+  } catch (error: unknown) {
+    toast.error('Failed to update company material', {
+      description: getErrorMessage(error),
     });
     throw error;
   } finally {
@@ -146,11 +151,11 @@ export const updateCompanyMaterialReceiverApi = async (
       receiverDetails,
     );
     dispatch(updateCompanyMaterialReceiverSuccess(response));
-    toast.success("Receiver information updated successfully");
+    toast.success('Receiver information updated successfully');
     return;
-  } catch (error: any) {
-    toast.error("Failed to update receiver information", {
-      description: error?.response?.data?.message || "Something went wrong",
+  } catch (error: unknown) {
+    toast.error('Failed to update receiver information', {
+      description: getErrorMessage(error),
     });
     throw error;
   } finally {
@@ -164,13 +169,13 @@ export const getCompanyMaterialStatsApi = async (
   dispatch(fetchCompanyMaterialStatsLoading(true));
   try {
     const response = await ApiClient.get<CompanyMaterialStats>(
-      "/material/company/stats",
+      '/material/company/stats',
     );
     dispatch(fetchCompanyMaterialStatsSuccess(response));
     return;
-  } catch (error: any) {
-    toast.error("Failed to fetch stats", {
-      description: error?.response?.data?.message || "Something went wrong",
+  } catch (error: unknown) {
+    toast.error('Failed to fetch stats', {
+      description: getErrorMessage(error),
     });
     throw error;
   } finally {
@@ -181,11 +186,11 @@ export const getCompanyMaterialStatsApi = async (
 export const deleteCompanyMaterialApi = async (id: string) => {
   try {
     const response = await ApiClient.delete(`/material/company/${id}`);
-    toast.success("Company material deleted successfully");
+    toast.success('Company material deleted successfully');
     return response;
-  } catch (error: any) {
-    toast.error("Failed to delete company material", {
-      description: error?.response?.data?.message || "Something went wrong",
+  } catch (error: unknown) {
+    toast.error('Failed to delete company material', {
+      description: getErrorMessage(error),
     });
     throw error;
   }

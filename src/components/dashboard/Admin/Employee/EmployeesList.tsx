@@ -1,26 +1,26 @@
-"use client";
+'use client';
 
-import Button from "@/components/UI/Button";
-import Table from "@/components/UI/Table";
-import Typography from "@/components/UI/Typography";
-import { FunnelIcon, PlusIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import { deleteEmployee, getAllEmployees } from "@/ApiClient/Admin/admin";
+import Button from '@/components/UI/Button';
+import Table from '@/components/UI/Table';
+import Typography from '@/components/UI/Typography';
+import { FunnelIcon, PlusIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { deleteEmployee, getAllEmployees } from '@/ApiClient/Admin/admin';
 import {
   setFilterData,
   setLoading,
   setPage,
-} from "@/context/admin/EmployeeList/action";
+} from '@/context/admin/EmployeeList/action';
 import {
   useEmployeeListDispatchContext,
   useEmployeeListStateContext,
-} from "@/context/admin/EmployeeList/hooks";
-import NoDataState from "@/components/Common/NoDataState";
-import FilterModal from "./FilterModal";
-import { getColumns } from "./Constants";
-import EmployeeModal from "./EmployeeModal";
-import DeleteModal from "./DeleteModal";
-import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
+} from '@/context/admin/EmployeeList/hooks';
+import NoDataState from '@/components/Common/NoDataState';
+import FilterModal from './FilterModal';
+import { getColumns } from './Constants';
+import EmployeeModal from './EmployeeModal';
+import DeleteModal from './DeleteModal';
+import SummaryTableWrapper from '@/components/Common/SummaryTableWrapper';
 
 const EmployeesList = () => {
   const { loading, filterData, page, filterPayload } =
@@ -39,7 +39,7 @@ const EmployeesList = () => {
         const response = await getAllEmployees();
         dispatch(setFilterData(response));
       } catch (error) {
-        console.error("Error fetching employees:", error);
+        console.error('Error fetching employees:', error);
       } finally {
         dispatch(setLoading(false));
       }
@@ -53,7 +53,7 @@ const EmployeesList = () => {
       const response = await getAllEmployees({ ...filterPayload, page, limit });
       dispatch(setFilterData(response));
     } catch (error) {
-      console.error("Error fetching employees:", error);
+      console.error('Error fetching employees:', error);
     } finally {
       dispatch(setLoading(false));
     }
@@ -130,7 +130,7 @@ const EmployeesList = () => {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         employee={selectedEmployee}
-        employeeName={selectedEmployee?.name || ""}
+        employeeName={selectedEmployee?.name || ''}
       />
     </div>
   );

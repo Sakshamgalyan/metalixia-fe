@@ -1,23 +1,22 @@
-import type { Metadata } from "next";
-import { Unbounded, DM_Sans } from "next/font/google";
-import "./globals.css";
-import { Providers } from "@/components/Layout/Providers";
+import type { Metadata } from 'next';
+import { Unbounded, DM_Sans } from 'next/font/google';
+import './globals.css';
+import { Providers } from '@/components/Layout/Providers';
 
 const unbounded = Unbounded({
-  variable: "--font-unbounded",
-  subsets: ["latin"],
+  variable: '--font-unbounded',
+  subsets: ['latin'],
 });
 
 const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
-  subsets: ["latin"],
+  variable: '--font-dm-sans',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "Metalixia Admin Dashboard",
-  description: "Metalixia - Administration Panel",
+  title: 'Metalixia Admin Dashboard',
+  description: 'Metalixia - Administration Panel',
 };
-
 
 export default async function RootLayout({
   children,
@@ -26,12 +25,8 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${unbounded.variable} ${dmSans.variable} antialiased`}
-      >
-        <Providers>
-          {children}
-        </Providers>
+      <body className={`${unbounded.variable} ${dmSans.variable} antialiased`}>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

@@ -1,33 +1,33 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { Search, Plus, Archive, Trash2 } from "lucide-react";
-import Typography from "@/components/UI/Typography";
-import Button from "@/components/UI/Button";
-import Input from "@/components/UI/Input";
-import { TableColumn } from "@/components/UI/Table";
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { Search, Plus, Archive, Trash2 } from 'lucide-react';
+import Typography from '@/components/UI/Typography';
+import Button from '@/components/UI/Button';
+import Input from '@/components/UI/Input';
+import { TableColumn } from '@/components/UI/Table';
 import {
   useRawMaterialStateContext,
   useRawMaterialDispatchContext,
-} from "@/context/Summary/RawMaterial/hooks";
+} from '@/context/Summary/RawMaterial/hooks';
 import {
   getRawMaterialsApi,
   deleteRawMaterialApi,
   getRawMaterialStatsApi,
-} from "@/context/Summary/RawMaterial/api";
-import { useAppSelector } from "@/store/hooks";
-import { setPage, setModal } from "@/context/Summary/RawMaterial/actions";
-import { RawMaterialItem } from "@/context/Summary/RawMaterial/type";
-import AddModal from "./AddModal";
-import ExportModal from "./ExportModal";
-import DeleteModal from "@/components/Common/DeleteModal";
-import { RawStatsCards } from "./RawStatsCards";
-import SummaryTableWrapper from "@/components/Common/SummaryTableWrapper";
-import debounce from "lodash/debounce";
+} from '@/context/Summary/RawMaterial/api';
+import { useAppSelector } from '@/store/hooks';
+import { setPage, setModal } from '@/context/Summary/RawMaterial/actions';
+import { RawMaterialItem } from '@/context/Summary/RawMaterial/type';
+import AddModal from './AddModal';
+import ExportModal from './ExportModal';
+import DeleteModal from '@/components/Common/DeleteModal';
+import { RawStatsCards } from './RawStatsCards';
+import SummaryTableWrapper from '@/components/Common/SummaryTableWrapper';
+import debounce from 'lodash/debounce';
 
 const RawMaterialCompt = () => {
-  const [searchInput, setSearchInput] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchInput, setSearchInput] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
     id: string | null;
@@ -35,7 +35,7 @@ const RawMaterialCompt = () => {
   }>({
     isOpen: false,
     id: null,
-    name: "",
+    name: '',
   });
   const [deleting, setDeleting] = useState(false);
   const { listData, listLoading, statsData, statsLoading, page } =
@@ -43,7 +43,7 @@ const RawMaterialCompt = () => {
   const dispatch = useRawMaterialDispatchContext();
 
   const fetchData = useCallback(
-    async (p = 1, query = "") => {
+    async (p = 1, query = '') => {
       await getRawMaterialsApi(dispatch, p, 10, query);
     },
     [dispatch],
@@ -63,7 +63,7 @@ const RawMaterialCompt = () => {
           dispatch(setPage(1));
         }
       }, 500),
-    [dispatch]
+    [dispatch],
   );
 
   useEffect(() => {
@@ -78,14 +78,14 @@ const RawMaterialCompt = () => {
   };
 
   const { user } = useAppSelector((state) => state.auth);
-  const isSuperAdmin = user?.role === "superAdmin";
+  const isSuperAdmin = user?.role === 'superAdmin';
 
   const handleDelete = async () => {
     if (!deleteModal.id) return;
     setDeleting(true);
     try {
       await deleteRawMaterialApi(deleteModal.id);
-      setDeleteModal({ isOpen: false, id: null, name: "" });
+      setDeleteModal({ isOpen: false, id: null, name: '' });
       fetchData(page, searchQuery);
     } finally {
       setDeleting(false);
@@ -93,27 +93,27 @@ const RawMaterialCompt = () => {
   };
 
   const handleOpenAdd = () => {
-    dispatch(setModal({ isOpen: true, type: "add" }));
+    dispatch(setModal({ isOpen: true, type: 'add' }));
   };
 
   const handleOpenExport = () => {
-    dispatch(setModal({ isOpen: true, type: "export" }));
+    dispatch(setModal({ isOpen: true, type: 'export' }));
   };
 
   const columns: TableColumn<RawMaterialItem>[] = [
     {
-      header: "Material Name",
-      accessor: "materialName",
-      className: "font-semibold text-slate-800",
+      header: 'Material Name',
+      accessor: 'materialName',
+      className: 'font-semibold text-slate-800',
     },
     {
-      header: "Source",
-      accessor: "source",
-      className: "text-slate-600",
+      header: 'Source',
+      accessor: 'source',
+      className: 'text-slate-600',
     },
     {
-      header: "Quantity",
-      accessor: "quantity",
+      header: 'Quantity',
+      accessor: 'quantity',
       render: (row) => (
         <span className="font-medium text-slate-700">
           {row.quantity} {row.unit}
@@ -123,19 +123,19 @@ const RawMaterialCompt = () => {
     ...(isSuperAdmin
       ? [
           {
-            header: "Price",
-            accessor: "price",
+            header: 'Price',
+            accessor: 'price',
             render: (row) => (
               <span className="font-medium text-slate-700">
-                ₹{row.price.toLocaleString("en-US")}
+                ₹{row.price.toLocaleString('en-US')}
               </span>
             ),
           } as TableColumn<RawMaterialItem>,
         ]
       : []),
     {
-      header: "Inventory Location",
-      accessor: "inventoryLocation",
+      header: 'Inventory Location',
+      accessor: 'inventoryLocation',
       render: (row) => (
         <span className="font-medium text-slate-700">
           {row.inventoryLocation}
@@ -143,25 +143,25 @@ const RawMaterialCompt = () => {
       ),
     },
     {
-      header: "Invoice Number",
-      accessor: "invoiceNumber",
+      header: 'Invoice Number',
+      accessor: 'invoiceNumber',
       render: (row) => (
         <span className="font-medium text-slate-700">{row.invoiceNumber}</span>
       ),
     },
     {
-      header: "Received Time",
-      accessor: "receivedAt",
+      header: 'Received Time',
+      accessor: 'receivedAt',
       render: (row) => new Date(row.receivedAt).toLocaleString(),
     },
     {
-      header: "Expected On",
-      accessor: "expectedOn",
+      header: 'Expected On',
+      accessor: 'expectedOn',
       render: (row) => new Date(row.expectedOn).toLocaleDateString(),
     },
     {
-      header: "Received By",
-      accessor: "receivedBy",
+      header: 'Received By',
+      accessor: 'receivedBy',
       render: (row) => (
         <div className="flex flex-col text-left">
           <span className="font-medium text-slate-900">{row.receivedBy}</span>
@@ -174,8 +174,8 @@ const RawMaterialCompt = () => {
     ...(isSuperAdmin
       ? [
           {
-            header: "Actions",
-            fixedColumn: "right",
+            header: 'Actions',
+            fixedColumn: 'right',
             render: (row: RawMaterialItem) => (
               <div className="flex items-center gap-2 justify-center">
                 <Button
@@ -274,7 +274,7 @@ const RawMaterialCompt = () => {
 
       <DeleteModal
         isOpen={deleteModal.isOpen}
-        onClose={() => setDeleteModal({ isOpen: false, id: null, name: "" })}
+        onClose={() => setDeleteModal({ isOpen: false, id: null, name: '' })}
         onConfirm={handleDelete}
         itemName={deleteModal.name}
         isLoading={deleting}

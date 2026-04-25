@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import Modal from "@/components/UI/Modal";
-import Input from "@/components/UI/Input";
-import Button from "@/components/UI/Button";
-import DropDown from "@/components/UI/DropDown";
+import React, { useEffect, useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import Modal from '@/components/UI/Modal';
+import Input from '@/components/UI/Input';
+import Button from '@/components/UI/Button';
+import DropDown from '@/components/UI/DropDown';
 import {
   useRawMaterialStateContext,
   useRawMaterialDispatchContext,
-} from "@/context/Summary/RawMaterial/hooks";
-import { setModal } from "@/context/Summary/RawMaterial/actions";
+} from '@/context/Summary/RawMaterial/hooks';
+import { setModal } from '@/context/Summary/RawMaterial/actions';
 import {
   createRawMaterialApi,
   getEmployeesListApi,
-} from "@/context/Summary/RawMaterial/api";
-import DatePicker from "@/components/UI/DatePicker";
-import { useAppSelector } from "@/store/hooks";
+} from '@/context/Summary/RawMaterial/api';
+import DatePicker from '@/components/UI/DatePicker';
+import { useAppSelector } from '@/store/hooks';
 
 interface AddRawMaterialFormData {
   materialName: string;
@@ -39,7 +39,7 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
   >([]);
   const [loadingEmployees, setLoadingEmployees] = useState(false);
   const { user } = useAppSelector((state) => state.auth);
-  const isSuperAdmin = user?.role === "superAdmin";
+  const isSuperAdmin = user?.role === 'superAdmin';
 
   const {
     register,
@@ -50,14 +50,14 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
     formState: { errors },
   } = useForm<AddRawMaterialFormData>({
     defaultValues: {
-      unit: "kg",
+      unit: 'kg',
       quantity: 0,
       price: 0,
       expectedOn: new Date().toISOString(),
     },
   });
 
-  const isOpen = modalState.isOpen && modalState.type === "add";
+  const isOpen = modalState.isOpen && modalState.type === 'add';
 
   useEffect(() => {
     if (isOpen) {
@@ -74,8 +74,8 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
   }, [isOpen, reset]);
 
   useEffect(() => {
-    register("receivedById", { required: "Please select an employee" });
-    register("receivedBy");
+    register('receivedById', { required: 'Please select an employee' });
+    register('receivedBy');
   }, [register]);
 
   const handleClose = () => {
@@ -92,13 +92,13 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
     }
   };
 
-  const selectedEmployeeId = watch("receivedById");
+  const selectedEmployeeId = watch('receivedById');
 
   const handleReceivedByChange = (val: string | string[]) => {
     const value = Array.isArray(val) ? val[0] : val;
-    setValue("receivedById", value);
+    setValue('receivedById', value);
     const emp = employees.find((e) => e.value === value);
-    if (emp) setValue("receivedBy", emp.label.split(" (")[0]);
+    if (emp) setValue('receivedBy', emp.label.split(' (')[0]);
   };
 
   return (
@@ -133,8 +133,8 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
           <Input
             label="Material Name"
             placeholder="Enter material name"
-            {...register("materialName", {
-              required: "Material name is required",
+            {...register('materialName', {
+              required: 'Material name is required',
             })}
             hasError={!!errors.materialName?.message}
             errorMessage={errors.materialName?.message}
@@ -143,7 +143,7 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
           <Input
             label="Source / Vendor"
             placeholder="Enter source / vendor"
-            {...register("source", { required: "Source is required" })}
+            {...register('source', { required: 'Source is required' })}
             hasError={!!errors.source?.message}
             errorMessage={errors.source?.message}
             fullWidth
@@ -154,8 +154,8 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
           <Input
             label="Inventory Location"
             placeholder="Enter inventory location"
-            {...register("inventoryLocation", {
-              required: "Inventory location is required",
+            {...register('inventoryLocation', {
+              required: 'Inventory location is required',
             })}
             hasError={!!errors.inventoryLocation?.message}
             errorMessage={errors.inventoryLocation?.message}
@@ -164,8 +164,8 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
           <Input
             label="Invoice Number"
             placeholder="Enter invoice number"
-            {...register("invoiceNumber", {
-              required: "Invoice number is required",
+            {...register('invoiceNumber', {
+              required: 'Invoice number is required',
             })}
             hasError={!!errors.invoiceNumber?.message}
             errorMessage={errors.invoiceNumber?.message}
@@ -175,17 +175,17 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
 
         <div
           className={`grid grid-cols-1 ${
-            isSuperAdmin ? "md:grid-cols-3" : "md:grid-cols-2"
+            isSuperAdmin ? 'md:grid-cols-3' : 'md:grid-cols-2'
           } gap-4`}
         >
           <Input
             label="Quantity"
             type="number"
             placeholder="Enter quantity"
-            {...register("quantity", {
-              required: "Quantity is required",
+            {...register('quantity', {
+              required: 'Quantity is required',
               valueAsNumber: true,
-              min: { value: 0.1, message: "Quantity must be greater than 0" },
+              min: { value: 0.1, message: 'Quantity must be greater than 0' },
             })}
             hasError={!!errors.quantity?.message}
             errorMessage={errors.quantity?.message}
@@ -194,7 +194,7 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
           <Input
             label="Unit"
             placeholder="e.g. kg, ton, pcs"
-            {...register("unit", { required: "Unit is required" })}
+            {...register('unit', { required: 'Unit is required' })}
             hasError={!!errors.unit?.message}
             errorMessage={errors.unit?.message}
             fullWidth
@@ -204,10 +204,10 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
               label="Price (₹)"
               type="number"
               placeholder="0"
-              {...register("price", {
-                required: "Price is required",
+              {...register('price', {
+                required: 'Price is required',
                 valueAsNumber: true,
-                min: { value: 0, message: "Price cannot be negative" },
+                min: { value: 0, message: 'Price cannot be negative' },
               })}
               hasError={!!errors.price?.message}
               errorMessage={errors.price?.message}
@@ -219,9 +219,9 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1">
             <DatePicker
-              value={watch("expectedOn")}
+              value={watch('expectedOn')}
               label="Expected On"
-              onChange={(date) => setValue("expectedOn", date)}
+              onChange={(date) => setValue('expectedOn', date)}
               placeholder="Select date"
               hasError={!!errors.expectedOn?.message}
               errorMessage={errors.expectedOn?.message}
@@ -236,7 +236,7 @@ const AddModal = ({ onSuccess }: { onSuccess: () => void }) => {
             searchable
             onChange={handleReceivedByChange}
             placeholder={
-              loadingEmployees ? "Loading employees..." : "Select employee"
+              loadingEmployees ? 'Loading employees...' : 'Select employee'
             }
             hasError={!!errors.receivedById?.message}
             errorMessage={errors.receivedById?.message}

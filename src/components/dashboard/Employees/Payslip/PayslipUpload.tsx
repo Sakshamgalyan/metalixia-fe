@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import {
   UploadCloud,
   User,
@@ -10,25 +10,25 @@ import {
   Trash2,
   Download,
   Edit2,
-} from "lucide-react";
-import Typography from "@/components/UI/Typography";
-import Input from "@/components/UI/Input";
-import Button from "@/components/UI/Button";
-import Dropdown from "@/components/UI/DropDown";
-import FileUpload from "@/components/UI/FileUpload";
-import { getAllEmployees } from "@/ApiClient/Admin/admin";
-import Table, { TableColumn } from "@/components/UI/Table";
-import Chips from "@/components/UI/Chips";
+} from 'lucide-react';
+import Typography from '@/components/UI/Typography';
+import Input from '@/components/UI/Input';
+import Button from '@/components/UI/Button';
+import Dropdown from '@/components/UI/DropDown';
+import FileUpload from '@/components/UI/FileUpload';
+import { getAllEmployees } from '@/ApiClient/Admin/admin';
+import Table, { TableColumn } from '@/components/UI/Table';
+import Chips from '@/components/UI/Chips';
 import {
   useUploadPaySlipDispatchContext,
   useUploadPaySlipStateContext,
-} from "@/context/Employee/UploadPaySlip/hooks";
+} from '@/context/Employee/UploadPaySlip/hooks';
 import {
   deletePayslipApi,
   downloadPayslipApi,
   getAllPayslips,
   uploadPayslipApi,
-} from "@/context/Employee/UploadPaySlip/api";
+} from '@/context/Employee/UploadPaySlip/api';
 
 const PayslipUpload = () => {
   const dispatch = useUploadPaySlipDispatchContext();
@@ -38,8 +38,8 @@ const PayslipUpload = () => {
   const [employees, setEmployees] = useState<
     { label: string; value: string }[]
   >([]);
-  const [selectedEmployee, setSelectedEmployee] = useState("");
-  const [month, setMonth] = useState("");
+  const [selectedEmployee, setSelectedEmployee] = useState('');
+  const [month, setMonth] = useState('');
   const [year, setYear] = useState(new Date().getFullYear().toString());
   const [files, setFiles] = useState<File[]>([]);
   const [loadingEmployees, setLoadingEmployees] = useState(false);
@@ -54,11 +54,11 @@ const PayslipUpload = () => {
     e.preventDefault();
 
     if (!selectedEmployee) {
-      toast.error("Please select an employee");
+      toast.error('Please select an employee');
       return;
     }
     if (!month || !year) {
-      toast.error("Please select month and year");
+      toast.error('Please select month and year');
       return;
     }
     if (editingId) {
@@ -73,14 +73,14 @@ const PayslipUpload = () => {
       // );
     } else {
       if (files.length === 0) {
-        toast.error("Please upload the payslip file");
+        toast.error('Please upload the payslip file');
         return;
       }
       const formData = new FormData();
-      formData.append("employeeId", "1");
-      formData.append("month", month);
-      formData.append("year", year);
-      formData.append("file", files[0]);
+      formData.append('employeeId', '1');
+      formData.append('month', month);
+      formData.append('year', year);
+      formData.append('file', files[0]);
 
       await uploadPayslipApi(dispatch, formData, () => {
         resetForm();
@@ -91,8 +91,8 @@ const PayslipUpload = () => {
 
   const resetForm = () => {
     setFiles([]);
-    setSelectedEmployee("");
-    setMonth("");
+    setSelectedEmployee('');
+    setMonth('');
     setYear(new Date().getFullYear().toString());
     setEditingId(null);
   };
@@ -102,7 +102,7 @@ const PayslipUpload = () => {
     setSelectedEmployee(item.employeeId);
     setMonth(item.month);
     setYear(item.year);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleCancelEdit = () => {
@@ -110,7 +110,7 @@ const PayslipUpload = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this payslip?")) {
+    if (confirm('Are you sure you want to delete this payslip?')) {
       await deletePayslipApi(dispatch, id, () => {
         getAllPayslips(dispatch);
       });
@@ -118,35 +118,35 @@ const PayslipUpload = () => {
   };
 
   const handleDownload = async (id: string, fileName: string) => {
-    await downloadPayslipApi(id, fileName || "payslip.pdf");
+    await downloadPayslipApi(id, fileName || 'payslip.pdf');
   };
 
   const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
   const columns: TableColumn<any>[] = [
     {
-      header: "Employee",
-      accessor: "firstName",
+      header: 'Employee',
+      accessor: 'firstName',
       render: (item) => (
         <div className="font-medium text-slate-900">{item.firstName}</div>
       ),
     },
     {
-      header: "Month/Year",
-      accessor: "month",
+      header: 'Month/Year',
+      accessor: 'month',
       render: (item) => (
         <div className="flex gap-1">
           <Chips label={item.month} size="sm" />
@@ -155,8 +155,8 @@ const PayslipUpload = () => {
       ),
     },
     {
-      header: "Uploaded At",
-      accessor: "uploadedAt",
+      header: 'Uploaded At',
+      accessor: 'uploadedAt',
       render: (item) => (
         <span className="text-slate-500 text-sm">
           {new Date(item.uploadedAt).toLocaleDateString()}
@@ -164,8 +164,8 @@ const PayslipUpload = () => {
       ),
     },
     {
-      header: "File",
-      accessor: "fileName",
+      header: 'File',
+      accessor: 'fileName',
       render: (item) => (
         <div className="flex items-center gap-2 text-slate-500 text-sm">
           <FileText size={14} />
@@ -174,8 +174,8 @@ const PayslipUpload = () => {
       ),
     },
     {
-      header: "Actions",
-      accessor: "actions",
+      header: 'Actions',
+      accessor: 'actions',
       render: (item) => (
         <div className="flex gap-2">
           <Button
@@ -217,12 +217,12 @@ const PayslipUpload = () => {
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm sticky top-6">
           <div className="mb-6">
             <Typography variant="h3">
-              {editingId ? "Edit Payslip Details" : "Upload New Payslip"}
+              {editingId ? 'Edit Payslip Details' : 'Upload New Payslip'}
             </Typography>
             <Typography variant="p" className="text-slate-500 text-sm">
               {editingId
-                ? "Update details for the selected payslip."
-                : "Upload PDF payslip for an employee."}
+                ? 'Update details for the selected payslip.'
+                : 'Upload PDF payslip for an employee.'}
             </Typography>
           </div>
 
@@ -239,7 +239,7 @@ const PayslipUpload = () => {
                 onChange={(val) => setSelectedEmployee(val as string)}
                 loading={loadingEmployees}
                 placeholder={
-                  loadingEmployees ? "Loading..." : "Search employee..."
+                  loadingEmployees ? 'Loading...' : 'Search employee...'
                 }
                 className="w-full space-y-1"
               />
@@ -293,12 +293,12 @@ const PayslipUpload = () => {
                 onClick={handleSubmit}
                 fullWidth
                 isLoading={uploadLoading}
-                loadingText={editingId ? "Updating..." : "Uploading..."}
+                loadingText={editingId ? 'Updating...' : 'Uploading...'}
                 leftIcon={
                   editingId ? <Edit2 size={18} /> : <UploadCloud size={18} />
                 }
               >
-                {editingId ? "Update Payslip" : "Upload Payslip"}
+                {editingId ? 'Update Payslip' : 'Upload Payslip'}
               </Button>
               {editingId && (
                 <Button

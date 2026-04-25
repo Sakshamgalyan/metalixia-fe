@@ -1,21 +1,21 @@
-import Button from "@/components/UI/Button";
-import Chips from "@/components/UI/Chips";
-import { TableColumn } from "@/components/UI/Table";
-import { ArrowDown, Download, FileText, Trash2 } from "lucide-react";
+import Button from '@/components/UI/Button';
+import Chips from '@/components/UI/Chips';
+import { TableColumn } from '@/components/UI/Table';
+import { ArrowDown, Download, FileText, Trash2 } from 'lucide-react';
 
 export const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 export const columns = (
@@ -23,12 +23,12 @@ export const columns = (
   handleDelete: (id: string) => void,
 ): TableColumn<any>[] => [
   {
-    header: "Employee",
-    accessor: "firstName",
+    header: 'Employee',
+    accessor: 'firstName',
   },
   {
-    header: "Month/Year",
-    accessor: "month",
+    header: 'Month/Year',
+    accessor: 'month',
     render: (item) => (
       <div className="flex gap-1">
         <Chips label={item.month} size="sm" />
@@ -37,8 +37,8 @@ export const columns = (
     ),
   },
   {
-    header: "Uploaded At",
-    accessor: "uploadedAt",
+    header: 'Uploaded At',
+    accessor: 'uploadedAt',
     render: (item) => (
       <span className="text-slate-500 text-sm">
         {new Date(item.uploadedAt).toLocaleString()}
@@ -46,8 +46,8 @@ export const columns = (
     ),
   },
   {
-    header: "File",
-    accessor: "fileName",
+    header: 'File',
+    accessor: 'fileName',
     render: (item) => (
       <div className="flex items-center gap-2 text-slate-500 text-sm">
         <FileText size={14} />
@@ -56,8 +56,8 @@ export const columns = (
     ),
   },
   {
-    header: "Actions",
-    accessor: "actions",
+    header: 'Actions',
+    accessor: 'actions',
     render: (item) => (
       <div className="flex gap-2">
         <Button

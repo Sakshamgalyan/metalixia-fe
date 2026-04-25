@@ -1,71 +1,71 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Download, FileText, Search, CreditCard } from "lucide-react";
-import Typography from "@/components/UI/Typography";
-import Button from "@/components/UI/Button";
-import Input from "@/components/UI/Input";
-import Table, { TableColumn } from "@/components/UI/Table";
-import Chips from "@/components/UI/Chips";
-import { toast } from "sonner";
+import { useState } from 'react';
+import { Download, FileText, Search, CreditCard } from 'lucide-react';
+import Typography from '@/components/UI/Typography';
+import Button from '@/components/UI/Button';
+import Input from '@/components/UI/Input';
+import Table, { TableColumn } from '@/components/UI/Table';
+import Chips from '@/components/UI/Chips';
+import { toast } from 'sonner';
 
 // Mock Data
 const MOCK_PAYSLIPS = [
   {
-    id: "1",
-    period: "October 2023",
-    date: "2023-11-01",
-    amount: "$4,500.00",
-    status: "Paid",
-    refId: "PAY-2023-10",
+    id: '1',
+    period: 'October 2023',
+    date: '2023-11-01',
+    amount: '$4,500.00',
+    status: 'Paid',
+    refId: 'PAY-2023-10',
   },
   {
-    id: "2",
-    period: "September 2023",
-    date: "2023-10-01",
-    amount: "$4,500.00",
-    status: "Paid",
-    refId: "PAY-2023-09",
+    id: '2',
+    period: 'September 2023',
+    date: '2023-10-01',
+    amount: '$4,500.00',
+    status: 'Paid',
+    refId: 'PAY-2023-09',
   },
   {
-    id: "3",
-    period: "August 2023",
-    date: "2023-09-01",
-    amount: "$4,500.00",
-    status: "Paid",
-    refId: "PAY-2023-08",
+    id: '3',
+    period: 'August 2023',
+    date: '2023-09-01',
+    amount: '$4,500.00',
+    status: 'Paid',
+    refId: 'PAY-2023-08',
   },
   {
-    id: "4",
-    period: "July 2023",
-    date: "2023-08-01",
-    amount: "$4,500.00",
-    status: "Paid",
-    refId: "PAY-2023-07",
+    id: '4',
+    period: 'July 2023',
+    date: '2023-08-01',
+    amount: '$4,500.00',
+    status: 'Paid',
+    refId: 'PAY-2023-07',
   },
   {
-    id: "5",
-    period: "June 2023",
-    date: "2023-07-01",
-    amount: "$4,200.00",
-    status: "Paid",
-    refId: "PAY-2023-06",
+    id: '5',
+    period: 'June 2023',
+    date: '2023-07-01',
+    amount: '$4,200.00',
+    status: 'Paid',
+    refId: 'PAY-2023-06',
   },
 ];
 
 const PayslipView = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleDownload = (item: any) => {
     toast.info(`Downloading payslip for ${item.period}...`);
     // Mock download logic
-    setTimeout(() => toast.success("Download started"), 1000);
+    setTimeout(() => toast.success('Download started'), 1000);
   };
 
   const columns: TableColumn<any>[] = [
     {
-      header: "Period",
-      accessor: "period",
+      header: 'Period',
+      accessor: 'period',
       render: (item) => (
         <div className="flex items-center gap-3">
           <div className="p-2 bg-slate-100 rounded-lg text-slate-500">
@@ -81,17 +81,17 @@ const PayslipView = () => {
       ),
     },
     {
-      header: "Payment Date",
-      accessor: "date",
+      header: 'Payment Date',
+      accessor: 'date',
     },
     {
-      header: "Amount",
-      accessor: "amount",
-      className: "font-medium text-slate-900",
+      header: 'Amount',
+      accessor: 'amount',
+      className: 'font-medium text-slate-900',
     },
     {
-      header: "Status",
-      accessor: "status",
+      header: 'Status',
+      accessor: 'status',
       render: (item) => (
         <Chips
           label={item.status}
@@ -102,8 +102,8 @@ const PayslipView = () => {
       ),
     },
     {
-      header: "Actions",
-      accessor: "actions",
+      header: 'Actions',
+      accessor: 'actions',
       render: (item) => (
         <Button
           variant="secondary"

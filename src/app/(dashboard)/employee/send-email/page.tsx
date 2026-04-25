@@ -1,4 +1,4 @@
-import SendEmailView from "@/components/dashboard/Email/SendEmailView";
+import SendEmailView from '@/components/dashboard/Email/SendEmailView';
 
 const SendEmailPage = () => {
   return <SendEmailView />;

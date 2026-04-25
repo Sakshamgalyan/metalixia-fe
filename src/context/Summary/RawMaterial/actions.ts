@@ -1,75 +1,76 @@
 import {
-    FETCH_RAWMATERIAL_LIST_LOADING,
-    FETCH_RAWMATERIAL_LIST_LOADING_ACTION,
-    FETCH_RAWMATERIAL_LIST_SUCCESS,
-    FETCH_RAWMATERIAL_LIST_SUCCESS_ACTION,
-    CREATE_RAWMATERIAL_LOADING,
-    CREATE_RAWMATERIAL_LOADING_ACTION,
-    CREATE_RAWMATERIAL_SUCCESS,
-    CREATE_RAWMATERIAL_SUCCESS_ACTION,
-    SET_PAGE,
-    SET_PAGE_ACTION,
-    SET_MODAL,
-    SET_MODAL_ACTION,
-    RawMaterialListResponse,
-    FETCH_RAWMATERIAL_STATS_LOADING,
-    FETCH_RAWMATERIAL_STATS_LOADING_ACTION,
-    FETCH_RAWMATERIAL_STATS_SUCCESS,
-    FETCH_RAWMATERIAL_STATS_SUCCESS_ACTION,
-    RawMaterialStats,
-} from "./type";
+  FETCH_RAWMATERIAL_LIST_LOADING,
+  FETCH_RAWMATERIAL_LIST_LOADING_ACTION,
+  FETCH_RAWMATERIAL_LIST_SUCCESS,
+  FETCH_RAWMATERIAL_LIST_SUCCESS_ACTION,
+  CREATE_RAWMATERIAL_LOADING,
+  CREATE_RAWMATERIAL_LOADING_ACTION,
+  CREATE_RAWMATERIAL_SUCCESS,
+  CREATE_RAWMATERIAL_SUCCESS_ACTION,
+  SET_PAGE,
+  SET_PAGE_ACTION,
+  SET_MODAL,
+  SET_MODAL_ACTION,
+  RawMaterialListResponse,
+  FETCH_RAWMATERIAL_STATS_LOADING,
+  FETCH_RAWMATERIAL_STATS_LOADING_ACTION,
+  FETCH_RAWMATERIAL_STATS_SUCCESS,
+  FETCH_RAWMATERIAL_STATS_SUCCESS_ACTION,
+  RawMaterialStats,
+  RawMaterialItem,
+} from './type';
 
 export const fetchRawMaterialStatsLoading = (
-    loading: boolean,
+  loading: boolean,
 ): FETCH_RAWMATERIAL_STATS_LOADING_ACTION => ({
-    type: FETCH_RAWMATERIAL_STATS_LOADING,
-    payload: loading,
+  type: FETCH_RAWMATERIAL_STATS_LOADING,
+  payload: loading,
 });
 
 export const fetchRawMaterialStatsSuccess = (
-    payload: RawMaterialStats,
+  payload: RawMaterialStats,
 ): FETCH_RAWMATERIAL_STATS_SUCCESS_ACTION => ({
-    type: FETCH_RAWMATERIAL_STATS_SUCCESS,
-    payload,
+  type: FETCH_RAWMATERIAL_STATS_SUCCESS,
+  payload,
 });
 
 export const fetchRawMaterialListLoading = (
-    loading: boolean,
+  loading: boolean,
 ): FETCH_RAWMATERIAL_LIST_LOADING_ACTION => ({
-    type: FETCH_RAWMATERIAL_LIST_LOADING,
-    payload: loading,
+  type: FETCH_RAWMATERIAL_LIST_LOADING,
+  payload: loading,
 });
 
 export const fetchRawMaterialListSuccess = (
-    payload: RawMaterialListResponse,
+  payload: RawMaterialListResponse,
 ): FETCH_RAWMATERIAL_LIST_SUCCESS_ACTION => ({
-    type: FETCH_RAWMATERIAL_LIST_SUCCESS,
-    payload,
+  type: FETCH_RAWMATERIAL_LIST_SUCCESS,
+  payload,
 });
 
 export const createRawMaterialLoading = (
-    loading: boolean,
+  loading: boolean,
 ): CREATE_RAWMATERIAL_LOADING_ACTION => ({
-    type: CREATE_RAWMATERIAL_LOADING,
-    payload: loading,
+  type: CREATE_RAWMATERIAL_LOADING,
+  payload: loading,
 });
 
 export const createRawMaterialSuccess = (
-    payload: any,
+  payload: RawMaterialItem,
 ): CREATE_RAWMATERIAL_SUCCESS_ACTION => ({
-    type: CREATE_RAWMATERIAL_SUCCESS,
-    payload,
+  type: CREATE_RAWMATERIAL_SUCCESS,
+  payload,
 });
 
 export const setPage = (page: number): SET_PAGE_ACTION => ({
-    type: SET_PAGE,
-    payload: page,
+  type: SET_PAGE,
+  payload: page,
 });
 
 export const setModal = (modalState: {
-    isOpen: boolean;
-    type: "add" | "export" | null;
+  isOpen: boolean;
+  type: 'add' | 'export' | null;
 }): SET_MODAL_ACTION => ({
-    type: SET_MODAL,
-    payload: modalState,
+  type: SET_MODAL,
+  payload: modalState,
 });

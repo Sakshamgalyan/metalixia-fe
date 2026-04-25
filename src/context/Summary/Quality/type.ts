@@ -1,12 +1,12 @@
-import { PaginatedResponse } from "@/types/common";
+import { PaginatedResponse } from '@/types/common';
 
-export const FETCH_QUALITY_LIST_LOADING = "FETCH_QUALITY_LIST_LOADING";
-export const FETCH_QUALITY_LIST_SUCCESS = "FETCH_QUALITY_LIST_SUCCESS";
-export const FETCH_QUALITY_STATS_LOADING = "FETCH_QUALITY_STATS_LOADING";
-export const FETCH_QUALITY_STATS_SUCCESS = "FETCH_QUALITY_STATS_SUCCESS";
-export const FETCH_QUALITY_PENDING_LOADING = "FETCH_QUALITY_PENDING_LOADING";
-export const FETCH_QUALITY_PENDING_SUCCESS = "FETCH_QUALITY_PENDING_SUCCESS";
-export const SET_QUALITY_PAGE = "SET_QUALITY_PAGE";
+export const FETCH_QUALITY_LIST_LOADING = 'FETCH_QUALITY_LIST_LOADING';
+export const FETCH_QUALITY_LIST_SUCCESS = 'FETCH_QUALITY_LIST_SUCCESS';
+export const FETCH_QUALITY_STATS_LOADING = 'FETCH_QUALITY_STATS_LOADING';
+export const FETCH_QUALITY_STATS_SUCCESS = 'FETCH_QUALITY_STATS_SUCCESS';
+export const FETCH_QUALITY_PENDING_LOADING = 'FETCH_QUALITY_PENDING_LOADING';
+export const FETCH_QUALITY_PENDING_SUCCESS = 'FETCH_QUALITY_PENDING_SUCCESS';
+export const SET_QUALITY_PAGE = 'SET_QUALITY_PAGE';
 
 export interface QualityParameter {
   name: string;
@@ -79,13 +79,34 @@ export interface QualityState {
   page: number;
 }
 
-export interface FETCH_QUALITY_LIST_LOADING_ACTION { type: typeof FETCH_QUALITY_LIST_LOADING; payload: boolean; }
-export interface FETCH_QUALITY_LIST_SUCCESS_ACTION { type: typeof FETCH_QUALITY_LIST_SUCCESS; payload: QualityListResponse; }
-export interface FETCH_QUALITY_STATS_LOADING_ACTION { type: typeof FETCH_QUALITY_STATS_LOADING; payload: boolean; }
-export interface FETCH_QUALITY_STATS_SUCCESS_ACTION { type: typeof FETCH_QUALITY_STATS_SUCCESS; payload: QualityStats; }
-export interface FETCH_QUALITY_PENDING_LOADING_ACTION { type: typeof FETCH_QUALITY_PENDING_LOADING; payload: boolean; }
-export interface FETCH_QUALITY_PENDING_SUCCESS_ACTION { type: typeof FETCH_QUALITY_PENDING_SUCCESS; payload: PendingOrder[]; }
-export interface SET_QUALITY_PAGE_ACTION { type: typeof SET_QUALITY_PAGE; payload: number; }
+export interface FETCH_QUALITY_LIST_LOADING_ACTION {
+  type: typeof FETCH_QUALITY_LIST_LOADING;
+  payload: boolean;
+}
+export interface FETCH_QUALITY_LIST_SUCCESS_ACTION {
+  type: typeof FETCH_QUALITY_LIST_SUCCESS;
+  payload: QualityListResponse;
+}
+export interface FETCH_QUALITY_STATS_LOADING_ACTION {
+  type: typeof FETCH_QUALITY_STATS_LOADING;
+  payload: boolean;
+}
+export interface FETCH_QUALITY_STATS_SUCCESS_ACTION {
+  type: typeof FETCH_QUALITY_STATS_SUCCESS;
+  payload: QualityStats;
+}
+export interface FETCH_QUALITY_PENDING_LOADING_ACTION {
+  type: typeof FETCH_QUALITY_PENDING_LOADING;
+  payload: boolean;
+}
+export interface FETCH_QUALITY_PENDING_SUCCESS_ACTION {
+  type: typeof FETCH_QUALITY_PENDING_SUCCESS;
+  payload: PendingOrder[];
+}
+export interface SET_QUALITY_PAGE_ACTION {
+  type: typeof SET_QUALITY_PAGE;
+  payload: number;
+}
 
 export type QualityAction =
   | FETCH_QUALITY_LIST_LOADING_ACTION

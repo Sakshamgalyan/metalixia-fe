@@ -1,37 +1,42 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import Modal from "@/components/UI/Modal";
-import Input from "@/components/UI/Input";
-import Button from "@/components/UI/Button";
+import { useState, useEffect } from 'react';
+import Modal from '@/components/UI/Modal';
+import Input from '@/components/UI/Input';
+import Button from '@/components/UI/Button';
 import {
   usePartDispatchContext,
   usePartStateContext,
-} from "@/context/admin/PartList/hooks";
-import { setModal } from "@/context/admin/PartList/actions";
-import { createPartApi, updatePartApi, getCompaniesListApi } from "@/context/admin/PartList/api";
-import Dropdown from "@/components/UI/DropDown";
+} from '@/context/admin/PartList/hooks';
+import { setModal } from '@/context/admin/PartList/actions';
+import {
+  createPartApi,
+  updatePartApi,
+  getCompaniesListApi,
+} from '@/context/admin/PartList/api';
+import Dropdown from '@/components/UI/DropDown';
 
-import { toast } from "sonner";
+import { toast } from 'sonner';
 
 interface PartModalProps {
   onSuccess: () => void;
 }
 
 const PartModal = ({ onSuccess }: PartModalProps) => {
-  const { modal, actionLoading, companiesList, companiesListLoading } = usePartStateContext();
+  const { modal, actionLoading, companiesList, companiesListLoading } =
+    usePartStateContext();
   const dispatch = usePartDispatchContext();
 
   const [formData, setFormData] = useState({
-    companyId: "",
-    partName: "",
-    partNumber: "",
-    description: "",
+    companyId: '',
+    partName: '',
+    partNumber: '',
+    description: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const isOpen = modal.mode === "add" || modal.mode === "edit";
+  const isOpen = modal.mode === 'add' || modal.mode === 'edit';
 
   useEffect(() => {
     if (isOpen) {
@@ -40,12 +45,12 @@ const PartModal = ({ onSuccess }: PartModalProps) => {
   }, [isOpen, dispatch]);
 
   useEffect(() => {
-    if (modal.mode === "edit" && modal.selectedItem) {
+    if (modal.mode === 'edit' && modal.selectedItem) {
       setFormData({
-        companyId: (modal.selectedItem as any).companyId || "",
-        partName: modal.selectedItem.partName || "",
-        partNumber: modal.selectedItem.partNumber || "",
-        description: modal.selectedItem.description || "",
+        companyId: (modal.selectedItem as any).companyId || '',
+        partName: modal.selectedItem.partName || '',
+        partNumber: modal.selectedItem.partNumber || '',
+        description: modal.selectedItem.description || '',
       });
     }
   }, [modal]);
@@ -53,10 +58,10 @@ const PartModal = ({ onSuccess }: PartModalProps) => {
   const closeModal = () => {
     dispatch(setModal({ mode: null, selectedItem: null }));
     setFormData({
-      companyId: "",
-      partName: "",
-      partNumber: "",
-      description: "",
+      companyId: '',
+      partName: '',
+      partNumber: '',
+      description: '',
     });
     setErrors({});
   };
@@ -65,27 +70,27 @@ const PartModal = ({ onSuccess }: PartModalProps) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
+      setErrors((prev) => ({ ...prev, [name]: '' }));
     }
   };
 
   const handleDropdownChange = (name: string, value: string | string[]) => {
     setFormData((prev) => ({ ...prev, [name]: value as string }));
     if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
+      setErrors((prev) => ({ ...prev, [name]: '' }));
     }
   };
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.companyId) {
-      newErrors.companyId = "Company selection is required";
+      newErrors.companyId = 'Company selection is required';
     }
     if (!formData.partName.trim()) {
-      newErrors.partName = "Part name is required";
+      newErrors.partName = 'Part name is required';
     }
     if (!formData.partNumber.trim()) {
-      newErrors.partNumber = "Part number is required";
+      newErrors.partNumber = 'Part number is required';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -95,8 +100,11 @@ const PartModal = ({ onSuccess }: PartModalProps) => {
     if (!validate()) return;
 
     try {
-      if (modal.mode === "edit" && modal.selectedItem) {
-        await updatePartApi(dispatch, modal.selectedItem._id, { ...formData, _id: modal.selectedItem._id });
+      if (modal.mode === 'edit' && modal.selectedItem) {
+        await updatePartApi(dispatch, modal.selectedItem._id, {
+          ...formData,
+          _id: modal.selectedItem._id,
+        });
       } else {
         await createPartApi(dispatch, formData);
       }
@@ -108,13 +116,17 @@ const PartModal = ({ onSuccess }: PartModalProps) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={closeModal} title={modal.mode === "edit" ? "Edit Part" : "Add New Part"}>
+    <Modal
+      isOpen={isOpen}
+      onClose={closeModal}
+      title={modal.mode === 'edit' ? 'Edit Part' : 'Add New Part'}
+    >
       <div className="space-y-4">
         <Dropdown
           label="Company Name"
           options={companiesList}
           value={formData.companyId}
-          onChange={(v) => handleDropdownChange("companyId", v)}
+          onChange={(v) => handleDropdownChange('companyId', v)}
           loading={companiesListLoading}
           hasError={!!errors.companyId}
           errorMessage={errors.companyId}
@@ -131,7 +143,7 @@ const PartModal = ({ onSuccess }: PartModalProps) => {
           hasError={!!errors.partName}
           errorMessage={errors.partName}
         />
-        
+
         <Input
           label="Part Number"
           name="partNumber"
@@ -167,7 +179,7 @@ const PartModal = ({ onSuccess }: PartModalProps) => {
           onClick={handleSubmit}
           isLoading={actionLoading}
         >
-          {modal.mode === "edit" ? "Update Part" : "Save Part"}
+          {modal.mode === 'edit' ? 'Update Part' : 'Save Part'}
         </Button>
       </div>
     </Modal>

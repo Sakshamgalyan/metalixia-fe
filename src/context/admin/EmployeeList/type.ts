@@ -1,10 +1,13 @@
-import { EmployeeListPayload, EmployeeListResponse } from "@/ApiClient/Admin/type";
-export const SET_FILTER_ROLE = "SET_FILTER_ROLE";
-export const SET_FILTER_POST = "SET_FILTER_POST";
-export const SET_LOADING = "SET_LOADING";
-export const SET_PAGE = "SET_PAGE";
-export const SET_FILTER_DATA = "SET_FILTER_DATA";
-export const SET_FILTER_PAYLOAD = "SET_FILTER_PAYLOAD";
+import {
+  EmployeeListPayload,
+  EmployeeListResponse,
+} from '@/ApiClient/Admin/type';
+export const SET_FILTER_ROLE = 'SET_FILTER_ROLE';
+export const SET_FILTER_POST = 'SET_FILTER_POST';
+export const SET_LOADING = 'SET_LOADING';
+export const SET_PAGE = 'SET_PAGE';
+export const SET_FILTER_DATA = 'SET_FILTER_DATA';
+export const SET_FILTER_PAYLOAD = 'SET_FILTER_PAYLOAD';
 
 export interface SETFILTERROLEACTION {
   type: typeof SET_FILTER_ROLE;
@@ -51,4 +54,4 @@ export type EmployeeListAction =
   | SETLOADINGACTION
   | SETPAGEACTION
   | SETFILTERDATACTION
-  | SETFILTERPAYLOADACTION
+  | SETFILTERPAYLOADACTION;
